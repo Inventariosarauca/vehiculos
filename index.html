@@ -3,18 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mantenimiento Vehicular — Rama Judicial Arauca</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>SIGE — Mantenimiento Aires Acondicionados · Rama Judicial Arauca</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--c1:#1a3a5c;--c2:#2563a8;--bg:#f4f6f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--bg2:#f8fafc}
+:root{--c1:#1a3a5c;--c2:#2563a8;--bg:#f4f6f9;--card:#fff;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--bg2:#f8fafc;
+  --green:#155230;--green-bg:#e6f7ee;--green-b:#a8d5b8;
+  --amber:#7c5800;--amber-bg:#fff8e1;--amber-b:#fde68a;
+  --red:#8b1a1a;--red-bg:#fce8e8;--red-b:#f5c6c6;
+  --blue:#1e3a8a;--blue-bg:#e8f0fa;--blue-b:#c8daf5;
+  --purple:#5b21b6;--purple-bg:#ede9fe;--purple-b:#c4b5fd}
 body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;color:var(--text);background:var(--bg);min-height:100vh}
-.app{max-width:960px;margin:0 auto;padding:1rem .75rem}
-.header{background:var(--c1);color:#fff;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(26,58,92,.25)}
-.hicon{width:42px;height:42px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.header h1{font-size:15px;font-weight:600}
-.header p{font-size:11px;opacity:.7;margin-top:2px}
+.app{max-width:980px;margin:0 auto;padding:1rem .75rem}
+.header{background:linear-gradient(135deg,#1a3a5c,#2563a8);color:#fff;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(26,58,92,.3)}
+.hicon{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.header h1{font-size:15px;font-weight:600}.header p{font-size:11px;opacity:.7;margin-top:2px}
 .nav{display:flex;gap:3px;margin-bottom:1rem;background:#fff;border-radius:12px;padding:4px;border:.5px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .nav-btn{flex:1;padding:8px 6px;border:none;background:none;cursor:pointer;font-size:12px;color:var(--text2);border-radius:8px;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;font-weight:500}
 .nav-btn.active{background:var(--c1);color:#fff;box-shadow:0 2px 8px rgba(26,58,92,.3)}
@@ -22,21 +27,27 @@ body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;color:var(--text
 .panel{display:none}.panel.active{display:block}
 .card{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .slbl{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.9px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.fg{display:grid;gap:10px}
-.fg2{grid-template-columns:1fr 1fr}
-.fg3{grid-template-columns:1fr 1fr 1fr}
-.fg4{grid-template-columns:1fr 1fr 1fr 1fr}
-.fg1{grid-template-columns:1fr}
+.fg{display:grid;gap:10px}.fg2{grid-template-columns:1fr 1fr}.fg3{grid-template-columns:1fr 1fr 1fr}.fg4{grid-template-columns:1fr 1fr 1fr 1fr}.fg1{grid-template-columns:1fr}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;font-weight:600;color:var(--text2)}
 .field input,.field select,.field textarea{border:.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--text);transition:border-color .15s;outline:none}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--c2);box-shadow:0 0 0 3px rgba(37,99,168,.1)}
 .field input[readonly]{background:var(--bg2);color:var(--text2)}
 .field textarea{resize:vertical;min-height:65px}
-.veh-info{background:linear-gradient(135deg,#e8f0fa,#f0f4f9);border-radius:9px;padding:10px 12px;margin-bottom:10px;display:none;border:.5px solid #c8daf5}
-.veh-info-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.vi-l{font-size:10px;color:var(--text2);font-weight:500}
-.vi-v{font-size:12px;font-weight:600;margin-top:2px;color:var(--c1)}
+
+/* Sugerencias autocomplete serial */
+.serial-sug-item{padding:8px 12px;cursor:pointer;border-bottom:.5px solid var(--border);font-size:12px;display:flex;align-items:center;gap:10px}
+.serial-sug-item:last-child{border-bottom:none}
+.serial-sug-item:hover{background:var(--blue-bg)}
+.serial-sug-serial{font-family:'Courier New',monospace;font-weight:700;color:var(--c1);background:var(--blue-bg);padding:2px 7px;border-radius:4px;font-size:11px;flex-shrink:0}
+.serial-sug-info{font-size:11px;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.serial-sug-desp{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Historial compacto del equipo */
+.ei-hist-row{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:.5px solid var(--border);font-size:11px}
+.ei-hist-row:last-child{border-bottom:none}
+.equipo-info{background:linear-gradient(135deg,#e8f0fa,#f0f4f9);border-radius:9px;padding:10px 12px;margin-bottom:10px;display:none;border:.5px solid var(--blue-b)}
+.ei-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.ei-l{font-size:10px;color:var(--text2);font-weight:500}.ei-v{font-size:12px;font-weight:600;margin-top:2px;color:var(--c1)}
 .btn{padding:7px 16px;border-radius:8px;border:.5px solid var(--border);background:#fff;color:var(--text);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s;font-weight:500}
 .btn:hover{background:var(--bg2)}
 .btn-p{background:var(--c2);color:#fff;border-color:var(--c2)}.btn-p:hover{background:#1a4d8a}
@@ -50,41 +61,39 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:var(--bg2);padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1.5px solid var(--border);white-space:nowrap;font-size:11px}
 td{padding:8px 10px;border-bottom:.5px solid var(--border);vertical-align:middle}
 tr:hover td{background:#f8fafc}
-.placa{font-family:'Courier New',monospace;font-weight:700;font-size:11px;background:var(--c1);color:#fff;padding:3px 8px;border-radius:5px;letter-spacing:1.5px}
 .bdg{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:3px 9px;border-radius:12px;font-weight:600}
-.bt{background:#fff8e1;color:#7c5800}.bg{background:#fce8e8;color:#8b1a1a}
-.be{background:#e6f7ee;color:#155230}.bl{background:#e8f5e9;color:#1b5e20}
-.bv{background:var(--bg2);color:var(--text2)}
-.sbar{display:flex;gap:8px;margin-bottom:1rem}
+.b-sol{background:var(--blue-bg);color:var(--blue)}.b-mant{background:var(--amber-bg);color:var(--amber)}
+.b-eval{background:var(--purple-bg);color:var(--purple)}.b-conf{background:var(--green-bg);color:var(--green)}
+.b-nconf{background:var(--red-bg);color:var(--red)}.b-def{background:var(--bg2);color:var(--text2)}
+.serial-tag{font-family:'Courier New',monospace;font-weight:700;font-size:11px;background:var(--c1);color:#fff;padding:3px 8px;border-radius:5px;letter-spacing:1px}
+.sbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
 .sbar input,.sbar select{border:.5px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;font-family:inherit;background:#fff;color:var(--text);outline:none}
 .sbar input{flex:1}.sbar input:focus,.sbar select:focus{border-color:var(--c2)}
 .empty{text-align:center;padding:2.5rem;color:var(--text2)}
 .empty i{font-size:36px;display:block;margin-bottom:8px;opacity:.3}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-start;justify-content:center;padding:30px 12px;overflow-y:auto}
 .mo.open{display:flex}
-.mbox{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:600px;border:.5px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mbox{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:660px;border:.5px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.2)}
 .mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem}
 .mhdr h3{font-size:15px;font-weight:600;color:var(--c1)}
 .cbtn{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2);padding:2px;line-height:1}
 .tl{list-style:none;padding:0}
 .tli{display:flex;gap:10px;padding-bottom:12px}
 .tld{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--c2)}
-.tld.g{background:#c0392b}.tld.e{background:#1e8449}.tld.l{background:#1D9E75}
+.tld.g{background:#c0392b}.tld.e{background:#1e8449}.tld.l{background:#1D9E75}.tld.p{background:#7c3aed}
 .tlc p{font-size:11px;color:var(--text2);margin-top:2px}
 .divd{border:none;border-top:.5px solid var(--border);margin:.9rem 0}
 .firma-wrap{border:2px dashed var(--border);border-radius:10px;padding:1rem;background:var(--bg2);text-align:center}
 .firma-wrap canvas{border:.5px solid var(--border);border-radius:6px;background:#fff;cursor:crosshair;touch-action:none;display:block;margin:0 auto}
-.gbanner{background:#fce8e8;border:.5px solid #f5c6c6;border-radius:8px;padding:10px 14px;font-size:12px;color:#8b1a1a;display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:10px;display:none;font-weight:500}
 .alert.show{display:block}
-.as{background:#e6f7ee;color:#155230;border:.5px solid #a8d5b8}
-.ae{background:#fce8e8;color:#8b1a1a;border:.5px solid #f5c6c6}
-/* DASHBOARD */
-.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.as{background:var(--green-bg);color:var(--green);border:.5px solid var(--green-b)}
+.ae{background:var(--red-bg);color:var(--red);border:.5px solid var(--red-b)}
+.aw{background:var(--amber-bg);color:var(--amber);border:.5px solid var(--amber-b)}
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1rem}
 .kpi{background:#fff;border:.5px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .kpi .val{font-size:26px;font-weight:700;line-height:1.1;margin-bottom:2px}
-.kpi .lbl{font-size:11px;color:var(--text2);font-weight:500}
-.kpi .sub{font-size:10px;margin-top:3px;color:var(--text2)}
+.kpi .lbl{font-size:11px;color:var(--text2);font-weight:500}.kpi .sub{font-size:10px;margin-top:3px;color:var(--text2)}
 .drow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
 .drow3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:1rem}
 .cwrap{position:relative;width:100%}
@@ -103,31 +112,88 @@ tr:hover td{background:#f8fafc}
 .evl{font-size:11px;font-weight:700;min-width:28px;text-align:right;color:var(--text2)}
 .tli-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:.5px solid var(--border)}
 .tli-row:last-child{border-bottom:none}
-.storage-info{background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border:.5px solid #c8daf5;border-radius:10px;padding:10px 14px;font-size:11px;color:var(--c1);display:flex;align-items:center;gap:8px;margin-bottom:1rem}
-@media(max-width:600px){.fg2,.fg3,.fg4{grid-template-columns:1fr}.krow{grid-template-columns:1fr 1fr}.drow2,.drow3{grid-template-columns:1fr}.veh-info-grid{grid-template-columns:1fr 1fr}.nav-btn span.nav-txt{display:none}}
+.storage-info{background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border:.5px solid var(--blue-b);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--c1);display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.enc-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:2px solid var(--border);cursor:pointer;margin-bottom:8px;transition:all .18s;background:#fff;width:100%;text-align:left;font-family:inherit}
+.enc-opt:hover{border-color:var(--c2);background:var(--blue-bg)}
+.steps-hdr{display:flex;align-items:center;gap:0;background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:1rem;overflow-x:auto}
+.step-item{display:flex;align-items:center;gap:8px;flex:1;min-width:110px}
+.step-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;border:2px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .2s}
+.step-num.active{background:var(--c1);color:#fff;border-color:var(--c1)}
+.step-num.done{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.step-lbl{font-size:11px;font-weight:600;color:var(--text2)}.step-sub{font-size:10px;color:var(--text2)}
+.step-item.active .step-lbl,.step-item.active .step-sub{color:var(--c1)}
+.step-item.done .step-lbl,.step-item.done .step-sub{color:var(--green)}
+.step-conn{flex-shrink:0;height:2px;width:28px;background:var(--border);transition:background .3s;margin:0 4px}
+.step-conn.done{background:var(--green)}
+.dec-card{border:2px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;text-align:center;background:#fff}
+.dec-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.dec-card.sel-conf{border-color:#1e8449;background:var(--green-bg)}
+.dec-card.sel-nconf{border-color:#c0392b;background:var(--red-bg)}
+.dec-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 10px}
+.dec-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.dec-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.oc{background:#fff;border:.5px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s;border-left:4px solid var(--c2)}
+.oc.oc-cerrada{border-left-color:#1e8449}.oc.oc-nconf{border-left-color:#c0392b}
+.oc:hover{box-shadow:0 3px 12px rgba(0,0,0,.1)}
+.oc-head{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 16px;gap:12px;flex-wrap:wrap}
+.oc-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.oc-sub{font-size:11px;color:var(--text2);margin-bottom:3px}
+.oc-desc{font-size:11px;color:var(--text);font-style:italic;max-width:480px}
+.oc-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end}
+.oc-foot{display:flex;gap:16px;flex-wrap:wrap;padding:8px 16px;background:var(--bg2);border-top:.5px solid var(--border);font-size:11px;color:var(--text2)}
+.oc-group-lbl{font-size:10px;font-family:monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);padding:4px 0 8px;display:flex;align-items:center;gap:6px}
+.mtl{display:flex;align-items:center;gap:4px;margin-top:8px;flex-wrap:wrap}
+.mtl-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);flex-shrink:0}
+.mtl-dot.done{background:var(--green-bg);border-color:#16a34a;color:var(--green)}
+.mtl-dot.curr{background:var(--c1);border-color:var(--c1);color:#fff}
+.mtl-lbl{font-size:10px;color:var(--text2);white-space:nowrap}
+.mtl-line{width:14px;height:1.5px;background:var(--border);flex-shrink:0}
+.mtl-line.done{background:#16a34a}
+.ecard{background:#fff;border:.5px solid var(--border);border-radius:14px;margin-bottom:1.1rem;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.ecard-hdr{background:var(--c1);color:#fff;padding:.9rem 1.1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ecard-serial{font-family:'Courier New',monospace;font-size:15px;font-weight:700;letter-spacing:2px;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:6px;flex-shrink:0}
+.ecard-info{flex:1}.ecard-info h3{font-size:13px;font-weight:600;margin-bottom:2px}.ecard-info p{font-size:11px;opacity:.75}
+.ecard-badge-hdr{background:rgba(255,255,255,.15);border-radius:6px;padding:3px 10px;font-size:10px;font-weight:600}
+.ecard-body{padding:1rem 1.1rem}
+.ecard-datos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1rem;background:var(--bg2);border-radius:9px;padding:10px 12px;border:.5px solid var(--border)}
+.ecard-dato .ed-l{font-size:10px;color:var(--text2);font-weight:500}.ecard-dato .ed-v{font-size:12px;font-weight:600;color:var(--c1);margin-top:1px}
+.ecard-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1rem}
+.ecard-stat{background:var(--bg2);border-radius:8px;padding:9px 10px;text-align:center;border:.5px solid var(--border)}
+.ecard-stat .sv{font-size:20px;font-weight:700;line-height:1.1}.ecard-stat .sl{font-size:10px;color:var(--text2);margin-top:2px}
+.ecard-reg-table{width:100%;border-collapse:collapse;font-size:11px}
+.ecard-reg-table th{background:var(--bg2);padding:6px 8px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);font-size:10px;white-space:nowrap}
+.ecard-reg-table td{padding:6px 8px;border-bottom:.5px solid var(--border);vertical-align:middle}
+.ecard-reg-table tr:hover td{background:var(--bg2)}
+.sat-dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+.ecard-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:12px}
+.ecard-section-lbl{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin:10px 0 6px;display:flex;align-items:center;gap:4px}
+
+.toast{position:fixed;bottom:20px;right:20px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;color:#fff;background:#1a3a5c;box-shadow:0 6px 24px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;display:flex;align-items:center;gap:8px;max-width:340px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ts{background:#1e8449}.toast.te{background:#c0392b}.toast.tw{background:#d4871a}
+@media(max-width:600px){.fg2,.fg3,.fg4{grid-template-columns:1fr}.krow{grid-template-columns:1fr 1fr}.drow2,.drow3{grid-template-columns:1fr}.ei-grid,.ecard-datos,.ecard-stats{grid-template-columns:1fr 1fr}.nav-btn span.nav-txt{display:none}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="hicon"><i class="ti ti-car" style="font-size:22px"></i></div>
+    <div class="hicon"><i class="ti ti-wind"></i></div>
     <div style="flex:1">
-      <h1>Sistema Integral de Mantenimiento Vehicular</h1>
+      <h1>SIGE — Gestión de Mantenimiento de Aires Acondicionados</h1>
       <p>Dirección Seccional Administrativa — Rama Judicial Arauca</p>
     </div>
     <div style="font-size:10px;opacity:.65;text-align:right;line-height:1.5" id="last-update"></div>
   </div>
-
-  <div class="storage-info">
+  <div id="storage-status" class="storage-info">
     <i class="ti ti-database" style="font-size:16px;flex-shrink:0"></i>
-    <span><strong>Almacenamiento local activo.</strong> Los datos se guardan automáticamente en este navegador y persisten al cerrar el archivo. Use "Exportar CSV" para respaldar.</span>
+    <span id="storage-status-txt"><strong>Verificando almacenamiento...</strong></span>
   </div>
-
   <nav class="nav">
     <button class="nav-btn active" onclick="goTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span class="nav-txt">Dashboard</span></button>
-    <button class="nav-btn" onclick="goTab('nuevo',this)"><i class="ti ti-plus"></i><span class="nav-txt">Nuevo registro</span></button>
+    <button class="nav-btn" onclick="goTab('nuevo',this)"><i class="ti ti-plus"></i><span class="nav-txt">Nueva orden</span></button>
     <button class="nav-btn" onclick="goTab('historial',this)"><i class="ti ti-list"></i><span class="nav-txt">Historial</span></button>
-    <button class="nav-btn" onclick="goTab('buscar',this)"><i class="ti ti-search"></i><span class="nav-txt">Buscar</span></button>
+    <button class="nav-btn" onclick="goTab('buscar',this)"><i class="ti ti-search"></i><span class="nav-txt">Buscar equipo</span></button>
+    <button class="nav-btn" onclick="goTab('config',this)"><i class="ti ti-database"></i><span class="nav-txt">Firebase</span></button>
   </nav>
 
   <!-- DASHBOARD -->
@@ -136,16 +202,17 @@ tr:hover td{background:#f8fafc}
     <div class="drow2">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div class="slbl" style="margin:0"><i class="ti ti-chart-bar"></i>Registros por tipo</div>
+          <div class="slbl" style="margin:0"><i class="ti ti-chart-bar"></i>Órdenes por tipo</div>
           <button class="btn btn-sm" onclick="renderDash()"><i class="ti ti-refresh"></i>Actualizar</button>
         </div>
         <div class="dlegend" id="leg-tipo"></div>
         <div class="cwrap" style="height:185px"><canvas id="ch-tipo"></canvas></div>
       </div>
-      <div class="card">
-        <div class="slbl"><i class="ti ti-car"></i>Actividad por vehículo</div>
-        <div id="veh-act"></div>
-      </div>
+      <div class="card"><div class="slbl"><i class="ti ti-map-pin"></i>Actividad por municipio</div><div id="mun-act"></div></div>
+    </div>
+    <div class="drow2">
+      <div class="card"><div class="slbl"><i class="ti ti-star"></i>Satisfacción promedio por municipio</div><div class="cwrap" style="height:185px"><canvas id="ch-sat"></canvas></div></div>
+      <div class="card"><div class="slbl"><i class="ti ti-award"></i>Satisfacción global</div><div id="sat-global"></div></div>
     </div>
     <div class="drow3">
       <div class="card">
@@ -155,122 +222,269 @@ tr:hover td{background:#f8fafc}
           <div id="leg-est"></div>
         </div>
       </div>
-      <div class="card">
-        <div class="slbl"><i class="ti ti-target"></i>Indicadores de gestión</div>
-        <div id="ind-panel"></div>
-      </div>
+      <div class="card"><div class="slbl"><i class="ti ti-target"></i>Indicadores</div><div id="ind-panel"></div></div>
     </div>
     <div class="drow2">
-      <div class="card">
-        <div class="slbl"><i class="ti ti-history"></i>Actividad reciente</div>
-        <div id="act-rec"></div>
-      </div>
-      <div class="card">
-        <div class="slbl"><i class="ti ti-list-details"></i>Estado actual de la flota</div>
-        <div id="flota-det"></div>
-      </div>
+      <div class="card"><div class="slbl"><i class="ti ti-history"></i>Actividad reciente</div><div id="act-rec"></div></div>
+      <div class="card"><div class="slbl"><i class="ti ti-list-details"></i>Estado actual de equipos</div><div id="equipo-det"></div></div>
     </div>
   </div>
 
-  <!-- NUEVO REGISTRO -->
+  <!-- NUEVA ORDEN -->
   <div id="panel-nuevo" class="panel">
     <div id="alert-box" class="alert"></div>
-    <div class="card">
-      <div class="slbl"><i class="ti ti-car"></i>Datos del vehículo</div>
-      <div class="fg fg2" style="margin-bottom:10px">
-        <div class="field">
-          <label>Placa del vehículo *</label>
-          <select id="f-placa" onchange="autocompletar()">
-            <option value="">Seleccionar placa...</option>
-            <option value="OBH363">OBH363 — Prado VX / Saravena</option>
-            <option value="OBI314">OBI314 — Prado TX / Arauca</option>
-            <option value="OFK327">OFK327 — Prado TX / Arauca</option>
-            <option value="OBI683">OBI683 — Prado TX / Arauca</option>
-          </select>
-        </div>
-        <div class="field"><label>Municipio</label><input type="text" id="f-mun" readonly placeholder="Autocompletado"></div>
-      </div>
-      <div class="veh-info" id="veh-info-panel">
-        <div style="font-size:10px;font-weight:600;color:var(--c1);margin-bottom:6px;display:flex;align-items:center;gap:4px"><i class="ti ti-info-circle" style="font-size:13px"></i>Información del vehículo</div>
-        <div class="veh-info-grid">
-          <div><div class="vi-l">Clase</div><div class="vi-v" id="vi-c">—</div></div>
-          <div><div class="vi-l">Marca</div><div class="vi-v" id="vi-m">—</div></div>
-          <div><div class="vi-l">Modelo</div><div class="vi-v" id="vi-mo">—</div></div>
-          <div><div class="vi-l">Tipo</div><div class="vi-v" id="vi-t">—</div></div>
-          <div><div class="vi-l">Municipio</div><div class="vi-v" id="vi-mu">—</div></div>
-        </div>
-      </div>
+    <div class="steps-hdr">
+      <div class="step-item active" id="si1"><div class="step-num active" id="sn1">1</div><div><div class="step-lbl">Solicitud</div><div class="step-sub">Despacho</div></div></div>
+      <div class="step-conn" id="sc1"></div>
+      <div class="step-item" id="si2"><div class="step-num" id="sn2">2</div><div><div class="step-lbl">Ejecución</div><div class="step-sub">Contratista</div></div></div>
+      <div class="step-conn" id="sc2"></div>
+      <div class="step-item" id="si3"><div class="step-num" id="sn3">3</div><div><div class="step-lbl">Evaluación</div><div class="step-sub">Firma despacho</div></div></div>
+
     </div>
 
-    <div class="card">
-      <div class="slbl"><i class="ti ti-tool"></i>Datos del mantenimiento</div>
-      <div class="fg fg3" style="margin-bottom:10px">
-        <div class="field">
-          <label>Tipo de mantenimiento *</label>
-          <select id="f-tipo" onchange="aplicarTipoMant()">
-            <option value="">Seleccionar...</option>
-            <option value="Preventivo/Correctivo" selected>Preventivo / Correctivo</option>
-            <option value="Preventivo">Preventivo</option>
-            <option value="Correctivo">Correctivo</option>
-            <option value="Garantía">Garantía (reingreso)</option>
-          </select>
+    <!-- PASO 1 -->
+    <div id="etapa1">
+      <div class="card">
+        <div class="slbl" style="background:linear-gradient(90deg,var(--blue-bg),transparent);padding:6px 10px;border-radius:6px;margin:-4px -4px 12px"><i class="ti ti-file-description" style="color:var(--c2)"></i>Paso 1 — Solicitud de Servicio</div>
+        <div class="fg fg2" style="margin-bottom:10px">
+          <div class="field"><label>Ciudad / Municipio *</label>
+            <select id="f-ciudad" onchange="onCiudadChange()">
+              <option value="">Seleccionar...</option>
+              <option value="Arauca">Arauca</option><option value="Saravena">Saravena</option>
+              <option value="Tame">Tame</option><option value="Fortul">Fortul</option>
+              <option value="Puerto Rondón">Puerto Rondón</option><option value="Cravo Norte">Cravo Norte</option>
+              <option value="Cubará">Cubará</option><option value="Arauquita">Arauquita</option>
+            </select>
+          </div>
+          <div class="field"><label>Fecha de solicitud *</label><input type="date" id="f-fecha"></div>
         </div>
-        <div class="field"><label>Fecha de ingreso al taller *</label><input type="date" id="f-fecha"></div>
-        <div class="field"><label>Kilometraje actual</label><input type="number" id="f-km" placeholder="Km"></div>
-      </div>
-      <div class="fg fg2" style="margin-bottom:10px">
-        <div class="field"><label>Nombre del taller</label><input type="text" id="f-taller" value="SERVICIOS AUTOLLANOS S.A.S." placeholder="Nombre del taller"></div>
-        <div class="field"><label>NIT / RUT del taller</label><input type="text" id="f-nit" value="900589774-5" placeholder="NIT o RUT"></div>
-      </div>
-      <div class="fg fg1" style="margin-bottom:10px">
-        <div class="field"><label>Trabajos solicitados *</label><textarea id="f-trabajos">Cambio de aceite de motor, filtro de aceite y filtro de aire. Revisión, ajuste y corrección del nivel de liquidos y lubricantes (hidráulico, transmisión, diferencial, dirección, liquido de frenos y refrigerante). Revisión del sistema de frenos. Alineación de la dirección, rotación y balanceo de llantas. Sincronización del motor, revisión de sistemas eléctricos y de suspensión.</textarea></div>
-      </div>
-      <div class="fg fg1">
-        <div class="field"><label>Estado del vehículo al ingreso</label><textarea id="f-estado" placeholder="Estado general, daños visibles, accesorios, nivel de combustible..."></textarea></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="slbl" style="margin:0"><i class="ti ti-user"></i>Responsable que entrega el vehículo</div>
-        <button class="btn btn-sm" onclick="abrirModalResponsable()" title="Crear nuevo responsable">
-          <i class="ti ti-user-plus"></i>Nuevo responsable
-        </button>
-      </div>
-      <div class="fg fg2" style="margin-bottom:10px">
-        <div class="field">
-          <label>Número de cédula *</label>
-          <div style="display:flex;gap:6px">
-            <input type="text" id="f-cedula" placeholder="Ej: 12345678" style="flex:1" oninput="buscarResponsable()">
-            <button class="btn btn-sm" onclick="buscarResponsable()" title="Buscar"><i class="ti ti-search"></i></button>
+        <div id="grupo-inmueble" style="display:none;margin-bottom:10px">
+          <div class="fg fg2">
+            <div class="field"><label>Inmueble *</label>
+              <select id="f-inmueble" onchange="onInmuebleChange()">
+                <option value="">Seleccionar...</option>
+                <option value="Palacio de Justicia Calle 21">Palacio de Justicia Calle 21</option>
+                <option value="Palacio de Justicia SPA">Palacio de Justicia SPA</option>
+                <option value="Contraloría">Contraloría</option>
+                <option value="CESPA">CESPA</option>
+              </select>
+            </div>
+            <div class="field" id="grupo-despacho-arauca" style="display:none"><label>Oficina / Despacho *</label>
+              <select id="f-despacho-arauca"><option value="">Seleccionar despacho...</option></select>
+            </div>
           </div>
         </div>
-        <div class="field"><label>Nombre completo *</label><input type="text" id="f-resp" placeholder="Nombre completo (autocompletado o manual)"></div>
+        <div id="grupo-despacho-texto" style="display:none;margin-bottom:10px">
+          <div class="field"><label>Oficina / Despacho *</label><input type="text" id="f-despacho-texto" placeholder="Ej: Juzgado Promiscuo Municipal"></div>
+        </div>
+        <input type="hidden" id="f-despacho">
+        <div class="fg fg2" style="margin-bottom:10px">
+          <div class="field"><label>Tipo de mantenimiento *</label>
+            <select id="f-tipo">
+              <option value="">Seleccionar...</option>
+              <option value="Preventivo">Preventivo</option>
+              <option value="Correctivo">Correctivo</option>
+              <option value="Instalación">Instalación</option>
+              <option value="Desmonte">Desmonte</option>
+            </select>
+          </div>
+          <div class="field"><label>Número de serie del equipo</label>
+            <div style="display:flex;gap:6px">
+              <input type="text" id="f-serial" placeholder="Ej: AC-2023-001" style="flex:1" oninput="buscarEquipo()" autocomplete="off">
+              <button class="btn btn-sm" onclick="buscarEquipo()"><i class="ti ti-search"></i></button>
+            </div>
+          </div>
+        </div>
+        <!-- PANEL EQUIPO ENCONTRADO -->
+        <div id="equipo-info-panel" class="equipo-info" style="padding:0;overflow:hidden">
+          <!-- Cabecera equipo -->
+          <div style="background:var(--c1);color:#fff;padding:8px 12px;display:flex;align-items:center;gap:8px">
+            <i class="ti ti-device-air-conditioning" style="font-size:16px"></i>
+            <span style="font-size:11px;font-weight:700">Equipo registrado — datos preservados del registro original</span>
+            <button onclick="limpiarSeleccionEquipo()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;cursor:pointer;font-size:10px;padding:3px 8px;border-radius:4px">✕ Cambiar equipo</button>
+          </div>
+          <!-- Datos del equipo -->
+          <div style="padding:10px 12px">
+            <div class="ei-grid" style="margin-bottom:8px">
+              <div><div class="ei-l">Tipo</div><div class="ei-v" id="ei-tipo">—</div></div>
+              <div><div class="ei-l">Marca</div><div class="ei-v" id="ei-marca">—</div></div>
+              <div><div class="ei-l">Capacidad</div><div class="ei-v" id="ei-cap">—</div></div>
+              <div><div class="ei-l">Ubicación</div><div class="ei-v" id="ei-ubic">—</div></div>
+              <div><div class="ei-l">Último despacho</div><div class="ei-v" id="ei-despacho" style="font-size:10px">—</div></div>
+            </div>
+            <!-- Historial del equipo -->
+            <div id="ei-historial" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+        <!-- SUGERENCIAS AUTOCOMPLETE SERIAL -->
+        <div id="serial-sugerencias" style="display:none;position:relative;z-index:50;margin-top:-6px;margin-bottom:8px;background:#fff;border:.5px solid var(--blue-b);border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,.1);max-height:200px;overflow-y:auto"></div>
+
+        <!-- BUSCADOR INVERSO POR DESPACHO -->
+        <div id="busq-despacho-panel" style="background:var(--amber-bg);border:.5px solid var(--amber-b);border-radius:9px;padding:10px 12px;margin-bottom:10px;display:none">
+          <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:5px">
+            <i class="ti ti-building"></i>Equipos registrados en este despacho
+          </div>
+          <div id="busq-despacho-resultado"></div>
+        </div>
+        <div class="fg fg3" style="margin-bottom:10px" id="grupo-equipo-nuevo">
+          <div class="field"><label>Tipo de equipo</label>
+            <select id="f-tipo-eq">
+              <option value="">Seleccionar...</option>
+              <option value="Mini-split">Mini-split</option><option value="Multi-V">Multi-V</option>
+              <option value="Cassete">Cassete</option><option value="Pared">Pared</option>
+              <option value="Ventana">Ventana</option><option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="field"><label>Marca</label><input type="text" id="f-marca" placeholder="LG, Samsung, Midea..."></div>
+          <div class="field"><label>Capacidad (BTU)</label><input type="text" id="f-capacidad" placeholder="12000, 18000, 24000..."></div>
+          <div class="field"><label>Ubicación del equipo</label><input type="text" id="f-ubicacion" placeholder="Oficina 201, Piso 2..."></div>
+        </div>
+        <div class="fg fg1">
+          <div class="field"><label>Descripción de la solicitud *</label><textarea id="f-descripcion" placeholder="Síntomas del equipo, tipo de falla, trabajos requeridos..."></textarea></div>
+        </div>
       </div>
-      <div class="fg fg2">
-        <div class="field"><label>Cargo</label><input type="text" id="f-cargo" placeholder="Cargo"></div>
-        <div class="field"><label>Dependencia / Juzgado</label><input type="text" id="f-dep" placeholder="Dependencia"></div>
-      </div>
-      <div id="resp-sugerencia" style="display:none;margin-top:8px;background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border:.5px solid #c8daf5;border-radius:8px;padding:8px 12px;font-size:11px;color:var(--c1);display:flex;align-items:center;gap:8px">
-        <i class="ti ti-user-check" style="font-size:14px;flex-shrink:0"></i>
-        <span id="resp-sugerencia-txt"></span>
+      <div class="arow">
+        <button class="btn btn-p" onclick="guardarSolicitud()"><i class="ti ti-device-floppy"></i>Guardar solicitud</button>
+        <button class="btn" onclick="limpiar()"><i class="ti ti-x"></i>Limpiar</button>
       </div>
     </div>
 
-    <div class="arow">
-      <button class="btn btn-p" onclick="guardarReg()"><i class="ti ti-device-floppy"></i>Guardar registro de ingreso</button>
-      <button class="btn" onclick="limpiar()"><i class="ti ti-x"></i>Limpiar formulario</button>
+    <!-- PASO 2 -->
+    <div id="etapa2" style="display:none">
+      <div class="alert aw show" id="e2-resumen"><i class="ti ti-info-circle"></i> Cargando...</div>
+      <div class="card">
+        <div class="slbl" style="background:linear-gradient(90deg,var(--green-bg),transparent);padding:6px 10px;border-radius:6px;margin:-4px -4px 12px"><i class="ti ti-tool" style="color:#1e8449"></i>Paso 2 — Ejecución del Mantenimiento</div>
+        <div class="fg fg3" style="margin-bottom:10px">
+          <div class="field"><label>Contratista / Técnico *</label><input type="text" id="g-contratista" placeholder="Nombre completo"></div>
+          <div class="field"><label>Fecha de ejecución *</label><input type="date" id="g-fechaej"></div>
+        </div>
+        <div class="fg fg2" style="margin-bottom:10px">
+          <div class="field"><label>Estado del equipo al finalizar</label>
+            <select id="g-estado-fin">
+              <option value="Funcional">Funcional</option><option value="En Reparación">En Reparación</option>
+              <option value="Desmontado">Desmontado</option><option value="Fuera de Servicio">Fuera de Servicio</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg fg1" style="margin-bottom:10px">
+          <div class="field"><label>Actividades realizadas *</label><textarea id="g-actividades" placeholder="Limpieza de filtros, recarga de gas, cambio de componentes..." style="min-height:90px"></textarea></div>
+        </div>
+        <div class="fg fg2">
+          <div class="field"><label>Observaciones del técnico</label><textarea id="g-obs-tec" placeholder="Novedades, materiales, recomendaciones..."></textarea></div>
+        </div>
+      </div>
+      <div class="arow">
+        <button class="btn btn-s" onclick="guardarEjecucion()"><i class="ti ti-check"></i>Notificar trabajos terminados</button>
+        <button class="btn" onclick="cancelarPaso()"><i class="ti ti-x"></i>Cancelar</button>
+      </div>
     </div>
+
+    <!-- PASO 3 — EVALUACIÓN + DECISIÓN UNIFICADAS -->
+    <div id="etapa3" style="display:none">
+      <div class="alert aw show" id="e3-resumen"><i class="ti ti-info-circle"></i> Cargando...</div>
+      <div class="card">
+        <div class="slbl" style="background:linear-gradient(90deg,var(--amber-bg),transparent);padding:6px 10px;border-radius:6px;margin:-4px -4px 12px"><i class="ti ti-star" style="color:#d4871a"></i>Paso 3 — Evaluación, Firma y Decisión de Conformidad</div>
+
+        <!-- ENLACE ENCUESTA POR CORREO -->
+        <div style="background:var(--blue-bg);border:.5px solid var(--blue-b);border-radius:9px;padding:11px 14px;margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--c1);margin-bottom:7px;display:flex;align-items:center;gap:5px"><i class="ti ti-mail" style="font-size:14px"></i>Enviar encuesta por correo electrónico</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:9px">Genera un enlace único para que el responsable del despacho complete la evaluación desde su dispositivo.</div>
+          <div class="fg fg2">
+            <div class="field"><label>Correo del responsable</label><input type="email" id="g-correo-resp" placeholder="correo@ramajudicial.gov.co"></div>
+            <div style="display:flex;align-items:flex-end;gap:7px;padding-bottom:0">
+              <button class="btn btn-p btn-sm" onclick="generarEnlaceEncuesta()"><i class="ti ti-link"></i>Generar enlace</button>
+              <button class="btn btn-sm" style="background:#25D366;color:#fff;border-color:#1da851" onclick="compartirWhatsApp()"><i class="ti ti-brand-whatsapp"></i>WhatsApp</button>
+              <button class="btn btn-sm" onclick="enviarCorreo()"><i class="ti ti-send"></i>Enviar correo</button>
+            </div>
+          </div>
+          <div id="enc-link-box" style="display:none;margin-top:10px">
+            <div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:4px">ENLACE GENERADO — copie y envíe al responsable:</div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input id="enc-link-input" type="text" readonly style="flex:1;font-family:monospace;font-size:11px;background:#fff;border:.5px solid var(--border);border-radius:7px;padding:5px 8px">
+              <button class="btn btn-sm" onclick="copiarEnlace()"><i class="ti ti-copy"></i>Copiar</button>
+            </div>
+            <div id="enc-link-copied" style="display:none;font-size:10px;color:var(--green);margin-top:3px;font-weight:600"><i class="ti ti-check"></i> ¡Enlace copiado!</div>
+          </div>
+        </div>
+
+        <!-- CALIFICACIÓN -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px"><i class="ti ti-star" style="color:#f59e0b"></i> Calificación del servicio (1–5)</div>
+          <div id="enc-opciones"></div>
+        </div>
+
+        <!-- DATOS RESPONSABLE -->
+        <div class="fg fg2" style="margin-bottom:12px">
+          <div class="field"><label>Responsable que recibe *</label><input type="text" id="g-resp-recibe" placeholder="Nombre completo"></div>
+          <div class="field"><label>Cargo</label><input type="text" id="g-cargo-resp" placeholder="Juez, Secretario, Director..."></div>
+          <div class="field form-full" style="margin-top:0"><label>Observaciones al recibir</label><textarea id="g-obs-e" style="min-height:38px" placeholder="Comentarios sobre el servicio recibido..."></textarea></div>
+        </div>
+
+        <!-- FIRMA DIGITAL -->
+        <div class="firma-wrap" style="margin-bottom:16px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:7px"><i class="ti ti-pen"></i> Firma digital del responsable — dibuje con el mouse o el dedo</div>
+          <canvas id="firma-c" width="500" height="110" style="max-width:100%"></canvas>
+          <div style="display:flex;gap:7px;justify-content:center;margin-top:8px">
+            <button class="btn btn-sm" onclick="clrFirma()"><i class="ti ti-eraser"></i>Limpiar firma</button>
+            <span id="firma-estado" style="font-size:11px;align-self:center;color:var(--green)"></span>
+          </div>
+        </div>
+
+        <!-- DECISIÓN DE CONFORMIDAD -->
+        <div style="border-top:.5px solid var(--border);padding-top:14px;margin-top:4px">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px"><i class="ti ti-scale"></i> Decisión de conformidad</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div id="dec-conf" class="dec-card" onclick="selDecision('conforme')">
+              <div class="dec-icon" style="background:var(--green-bg);color:var(--green)"><i class="ti ti-circle-check" style="font-size:24px"></i></div>
+              <div class="dec-title">✅ Conforme</div>
+              <div class="dec-desc">El servicio fue recibido a satisfacción. Se registra como entregado conforme.</div>
+            </div>
+            <div id="dec-nconf" class="dec-card" onclick="selDecision('no-conforme')">
+              <div class="dec-icon" style="background:var(--red-bg);color:var(--red)"><i class="ti ti-circle-x" style="font-size:24px"></i></div>
+              <div class="dec-title">❌ No conforme</div>
+              <div class="dec-desc">El servicio no cumple con lo esperado. Se registra la inconformidad.</div>
+            </div>
+          </div>
+          <div id="grupo-inconformidad" style="display:none;background:var(--red-bg);border:.5px solid var(--red-b);border-radius:8px;padding:11px 14px;margin-bottom:8px">
+            <div style="font-size:11px;color:var(--red);font-weight:600;margin-bottom:7px"><i class="ti ti-alert-triangle"></i> Se registrará la inconformidad — queda en seguimiento.</div>
+            <div class="field"><label>Motivo de la inconformidad *</label><textarea id="g-motivo-nc" placeholder="Trabajos incompletos, falla persistente, daños causados..." style="min-height:70px"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arow">
+        <button class="btn btn-p" id="btn-finalizar" onclick="guardarEvaluacion()" disabled style="opacity:.5"><i class="ti ti-device-floppy"></i>Finalizar y guardar orden</button>
+        <button class="btn" onclick="cancelarPaso()"><i class="ti ti-x"></i>Cancelar</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- HISTORIAL -->
   <div id="panel-historial" class="panel">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="slbl" style="margin:0"><i class="ti ti-list"></i>Todos los registros</div>
-        <div style="display:flex;gap:7px">
-          <button class="btn btn-sm" onclick="exportar()"><i class="ti ti-download"></i>Exportar CSV</button>
-        </div>
+        <div class="slbl" style="margin:0"><i class="ti ti-list"></i>Órdenes de Servicio</div>
+        <button class="btn btn-sm" onclick="exportar()"><i class="ti ti-download"></i>Exportar CSV</button>
+      </div>
+      <div class="sbar">
+        <input type="text" id="inp-filtro" placeholder="Buscar por serial, despacho, municipio..." oninput="renderHist()">
+        <select id="fil-estado" onchange="renderHist()" style="min-width:160px">
+          <option value="">Todos los estados</option>
+          <option value="Solicitud">Solicitud</option>
+          <option value="En Mantenimiento">En Mantenimiento</option>
+          <option value="Entregado conforme">Entregado conforme</option>
+          <option value="No conforme">No conforme</option>
+        </select>
+        <select id="fil-municipio" onchange="renderHist()">
+          <option value="">Todos los municipios</option>
+        </select>
+        <select id="fil-tipo" onchange="renderHist()">
+          <option value="">Todos los tipos</option>
+          <option value="Preventivo">Preventivo</option><option value="Correctivo">Correctivo</option>
+          <option value="Instalación">Instalación</option><option value="Desmonte">Desmonte</option>
+        </select>
       </div>
       <div id="tabla-hist"></div>
     </div>
@@ -279,952 +493,1097 @@ tr:hover td{background:#f8fafc}
   <!-- BUSCAR -->
   <div id="panel-buscar" class="panel">
     <div class="card">
-      <div class="slbl"><i class="ti ti-search"></i>Buscar por placa</div>
-      <div class="sbar">
-        <input type="text" id="inp-bus" placeholder="Escriba la placa..." oninput="buscar()">
-        <select onchange="document.getElementById('inp-bus').value=this.value;buscar()">
-          <option value="">Todas las placas</option>
-          <option value="OBH363">OBH363 — Prado VX / Saravena</option>
-          <option value="OBI314">OBI314 — Prado TX / Arauca</option>
-          <option value="OFK327">OFK327 — Prado TX / Arauca</option>
-          <option value="OBI683">OBI683 — Prado TX / Arauca</option>
-        </select>
+      <div class="slbl"><i class="ti ti-search"></i>Buscar por número de serie</div>
+      <div class="sbar"><input type="text" id="inp-bus" placeholder="Escriba el número de serie..." oninput="buscarGlobal()"></div>
+      <div id="res-bus"><div class="empty"><i class="ti ti-search"></i>Escriba un número de serie para buscar</div></div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- CONFIG FIREBASE -->
+  <div id="panel-config" class="panel">
+    <div class="card">
+      <div class="slbl"><i class="ti ti-database"></i>Configuración de Firebase Firestore</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Conecta tu base de datos Firebase Firestore para que los datos se guarden en la nube y sean accesibles desde cualquier dispositivo. Si no configuras Firebase, los datos se guardan solo en este navegador.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div style="background:var(--green-bg);border:.5px solid var(--green-b);border-radius:10px;padding:12px 14px">
+          <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px"><i class="ti ti-cloud"></i> Firebase Firestore</div>
+          <ul style="font-size:11px;color:var(--green);padding-left:14px;line-height:1.8">
+            <li>Datos en la nube</li><li>Acceso desde cualquier PC</li>
+            <li>Sincronización en tiempo real</li><li>Plan Spark: 100% gratuito</li>
+          </ul>
+        </div>
+        <div style="background:var(--amber-bg);border:.5px solid var(--amber-b);border-radius:10px;padding:12px 14px">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px"><i class="ti ti-device-floppy"></i> Modo Local</div>
+          <ul style="font-size:11px;color:var(--amber);padding-left:14px;line-height:1.8">
+            <li>Solo en este navegador</li><li>Sin internet requerido</li>
+            <li>Exportar CSV para respaldo</li><li>Listo para usar ya</li>
+          </ul>
+        </div>
       </div>
-      <div id="res-bus"><div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa para buscar</div></div>
+
+      <div style="background:var(--blue-bg);border:.5px solid var(--blue-b);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:11px;color:var(--blue)">
+        <strong>Pasos para obtener tu configuración Firebase:</strong><br>
+        1. Ve a <a href="https://console.firebase.google.com" target="_blank" style="color:var(--c2)">console.firebase.google.com</a> → Crea proyecto → Habilita <strong>Firestore Database</strong><br>
+        2. Firestore → <strong>Reglas</strong> → pega: <code style="background:#fff;padding:1px 5px;border-radius:3px">allow read, write: if true;</code> → Publicar<br>
+        3. Configuración del proyecto → Aplicaciones web → Registrar app → Copia el objeto <code>firebaseConfig</code>
+      </div>
+
+      <div class="field" style="margin-bottom:12px">
+        <label>Configuración Firebase (JSON) *</label>
+        <textarea id="fb-config-input" style="min-height:130px;font-family:monospace;font-size:11px;background:#0f1e33;color:#a5f3fc;border-color:#334155" placeholder='{
+  "apiKey": "AIza...",
+  "authDomain": "tu-proyecto.firebaseapp.com",
+  "projectId": "tu-proyecto",
+  "storageBucket": "tu-proyecto.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abc123"
+}'></textarea>
+      </div>
+      <div class="arow" style="margin-top:0">
+        <button class="btn btn-p" onclick="conectarFirebase()"><i class="ti ti-plug"></i>Conectar Firebase</button>
+        <button class="btn" onclick="usarModoLocal()"><i class="ti ti-device-floppy"></i>Usar modo local</button>
+        <button class="btn btn-sm" onclick="recargarDatos()" style="margin-left:auto"><i class="ti ti-refresh"></i>Recargar datos</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="slbl"><i class="ti ti-brand-github"></i>Publicar en GitHub Pages (opcional)</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Para que el sistema esté disponible desde cualquier navegador sin instalar nada:</p>
+      <div style="font-size:12px;color:var(--text2);line-height:2">
+        <strong>1.</strong> Ve a <a href="https://github.com" target="_blank" style="color:var(--c2)">github.com</a> → Crear repositorio público → "sige-ac-judicial"<br>
+        <strong>2.</strong> Sube este archivo HTML como <code style="background:var(--bg2);padding:1px 6px;border-radius:3px">index.html</code><br>
+        <strong>3.</strong> Settings → Pages → Branch: main / root → Save<br>
+        <strong>4.</strong> URL disponible en: <code style="background:var(--bg2);padding:1px 6px;border-radius:3px">https://tu-usuario.github.io/sige-ac-judicial/</code>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL -->
+<div id="toast-box" class="toast"></div>
+<!-- MODAL DETALLE -->
 <div class="mo" id="modal">
-  <div class="mbox">
+  <div class="mbox" style="max-width:680px">
     <div class="mhdr">
-      <h3 id="m-title">Registro de mantenimiento</h3>
-      <button class="cbtn" onclick="cerrar()"><i class="ti ti-x"></i></button>
+      <h3 id="m-title">Detalle</h3>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" id="btn-imprimir" onclick="imprimirResumen()"><i class="ti ti-printer"></i>Imprimir</button>
+        <button class="cbtn" onclick="cerrar()"><i class="ti ti-x"></i></button>
+      </div>
     </div>
-    <div id="m-body"></div>
+    <div id="m-body" style="max-height:75vh;overflow-y:auto"></div>
   </div>
 </div>
 
-<script>
-const STORE_KEY='rj_arauca_mantenimiento_v1';
-const FLOTA={
-  'OBH363':{clase:'Camioneta',marca:'Toyota',modelo:'2009',tipo:'Prado VX',municipio:'Saravena'},
-  'OBI314':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca'},
-  'OFK327':{clase:'Camioneta',marca:'Toyota',modelo:'2003',tipo:'Prado TX',municipio:'Arauca'},
-  'OBI683':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca'}
+<!-- MODAL EDITAR -->
+<div class="mo" id="modal-editar">
+  <div class="mbox" style="max-width:660px">
+    <div class="mhdr"><h3 id="me-title">Editar</h3><button class="cbtn" onclick="cerrarEditar()"><i class="ti ti-x"></i></button></div>
+    <div id="me-body"></div>
+  </div>
+</div>
+
+<script type="module">
+// ══ FIREBASE SDK ══
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getFirestore,collection,addDoc,getDocs,doc,updateDoc,deleteDoc,query,orderBy,Timestamp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const STORE_KEY='sige_ac_v1';
+const INMUEBLES={'Palacio de Justicia Calle 21':['Coordinación Administrativa de Arauca','Juzgado 1º de Familia','Juzgado 2º de Familia','Juzgado Civil del Circuito','Juzgado Laboral del Circuito','Juzgado 1º Administrativo','Juzgado 2º Administrativo','Juzgado 3º Administrativo','Juzgado 4º Administrativo','Juzgado 5º Administrativo','Juzgado 6º Administrativo','Juzgado 7º Administrativo','Despacho 1 Tribunal Administrativo','Despacho 2 Tribunal Administrativo','Despacho 3 Tribunal Administrativo','Despacho 1 Tribunal Superior','Despacho 2 Tribunal Superior','Despacho 3 Tribunal Superior','Secretaría del Tribunal Administrativo','Secretaría del Tribunal Superior'],'Palacio de Justicia SPA':['Juzgado 1º Civil Municipal','Juzgado 2º Civil Municipal','Juzgado 1º Penal Municipal','Juzgado 2º Penal Municipal','Juzgado 1º Penal del Circuito','Juzgado 2º Penal del Circuito','Juzgado 05 Penal Municipal con Funciones Mixtas','Juzgado Penal del Circuito Especializado de Arauca','Juzgado 2º Penal del Circuito Especializado de Arauca'],'Contraloría':['Juzgado Penal del Circuito de Saravena','Juzgado 3º Penal Municipal con Funciones Mixtas','Juzgado 4º Penal Municipal con Funciones Mixtas'],'CESPA':['Centro de Servicios Judiciales de Arauca','Juzgado 1º Penal del Circuito para Adolescentes - Conocimiento','Juzgado 1º Penal Municipal para Adolescentes']};
+const ESTADOS_ORDEN=['Solicitud','En Mantenimiento','Entregado conforme','No conforme'];
+const CE_ESTADOS=['#378ADD','#EF9F27','#1e8449','#c0392b'];
+const CT_TIPOS={'Preventivo':'#378ADD','Correctivo':'#EF9F27','Instalación':'#1e8449','Desmonte':'#E24B4A'};
+const SATS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
+const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
+const SBGS={'1':'#fce8e8','2':'#fff3e0','3':'#fffde7','4':'#e6f7ee','5':'#e8f0fa'};
+const SAT_ICOS={'1':'ti-mood-sad','2':'ti-mood-confused','3':'ti-mood-neutral','4':'ti-mood-smile','5':'ti-mood-happy'};
+let regs=[],raReg=null,ordenActiva=null,decisionSeleccionada=null,firmaCtx=null,firmaVacia=true,chTipo=null,chEst=null,chSat=null;
+let db=null,fbApp=null,isDemoMode=false;
+// ══ FIREBASE CONNECT ══
+window.conectarFirebase=async()=>{
+  const raw=(document.getElementById('fb-config-input')||{}).value||'';
+  if(!raw){showToast('Pega tu configuración Firebase primero','w');return;}
+  try{
+    const cfg=JSON.parse(raw.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/.*/g,''));
+    fbApp=initializeApp(cfg,'sige_'+Date.now());
+    db=getFirestore(fbApp);
+    await getDocs(query(collection(db,'ordenes')));
+    isDemoMode=false;
+    localStorage.setItem('sige_fb_cfg',raw);
+    setDbStatus('firebase');
+    showToast('✓ Conectado a Firebase Firestore','s');
+    await loadData();
+  }catch(e){showToast('Error al conectar: '+e.message,'e');setDbStatus('error');}
 };
-const ESTADOS=['En taller','Listo para entrega','En garantía','Entregado conforme'];
-const CE=['#EF9F27','#1D9E75','#E24B4A','#378ADD'];
-const CT={'Preventivo':'#378ADD','Correctivo':'#EF9F27','Garantía':'#E24B4A'};
 
-let regs=[], raReg=null, chTipo=null, chEst=null;
-let fc=null, fctx=null, fdb=false, ux=0, uy=0;
+window.usarModoLocal=()=>{
+  isDemoMode=true;db=null;
+  setDbStatus('local');
+  loadData();
+  showToast('Modo local activo — datos en este navegador','w');
+};
 
-const DESC_PREV_CORR = 'Cambio de aceite de motor, filtro de aceite y filtro de aire. Revisión, ajuste y corrección del nivel de liquidos y lubricantes (hidráulico, transmisión, diferencial, dirección, liquido de frenos y refrigerante). Revisión del sistema de frenos. Alineación de la dirección, rotación y balanceo de llantas. Sincronización del motor, revisión de sistemas eléctricos y de suspensión.';
-const DESC_PREV     = 'Mantenimiento Preventivo: Cambio de aceite de motor, filtro de aceite y filtro de aire. Revisión, ajuste y corrección del nivel de liquidos y lubricantes (hidráulico, transmisión, diferencial, dirección, liquido de frenos y refrigerante). Revisión del sistema de frenos. Alineación de la dirección, rotación y balanceo de llantas. Sincronización del motor, revisión de sistemas eléctricos y de suspensión.';
-
-function aplicarTipoMant(){
-  const t=document.getElementById('f-tipo').value;
-  const ta=document.getElementById('f-trabajos');
-  if(t==='Preventivo/Correctivo'||t==='Preventivo'){
-    ta.value=t==='Preventivo'?DESC_PREV:DESC_PREV_CORR;
-  } else if(t==='Correctivo'||t==='Garantía'){
-    // solo limpia si tenía el texto automático
-    if(ta.value===DESC_PREV_CORR||ta.value===DESC_PREV) ta.value='';
+function setDbStatus(modo){
+  const st=document.getElementById('storage-status'),tx=document.getElementById('storage-status-txt');
+  if(modo==='firebase'){
+    st.style.background='linear-gradient(135deg,#e6f7ee,#f0fff4)';st.style.borderColor='#a8d5b8';
+    tx.innerHTML='<i class="ti ti-database" style="color:#155230"></i> <strong style="color:#155230">✓ Firebase Firestore conectado.</strong> Los datos se sincronizan en la nube. <button class="btn btn-sm" style="margin-left:8px" onclick="goTab(\'config\',document.querySelector(\'.nav-btn:last-child\'))">Ver config</button>';
+  }else if(modo==='local'){
+    st.style.background='linear-gradient(135deg,#fff8e1,#fffde7)';st.style.borderColor='#fde68a';
+    tx.innerHTML='<i class="ti ti-device-floppy" style="color:#7c5800"></i> <strong style="color:#7c5800">Modo local.</strong> Datos en este navegador. <button class="btn btn-sm btn-p" style="margin-left:8px" onclick="goTab(\'config\',document.querySelector(\'.nav-btn:last-child\'))">Conectar Firebase</button>';
+  }else{
+    st.style.background='#fce8e8';st.style.borderColor='#f5c6c6';
+    tx.innerHTML='<i class="ti ti-alert-circle" style="color:#8b1a1a"></i> <strong style="color:#8b1a1a">Error de conexión.</strong> Revisa la configuración. <button class="btn btn-sm" style="margin-left:8px" onclick="goTab(\'config\',document.querySelector(\'.nav-btn:last-child\'))">Reintentar</button>';
   }
 }
 
-
-function loadData(){
-  try{const d=localStorage.getItem(STORE_KEY);if(d)regs=JSON.parse(d);}catch(e){regs=[];}
+async function loadData(){
+  if(isDemoMode||!db){
+    try{const d=localStorage.getItem(STORE_KEY);regs=d?JSON.parse(d):[];}catch(e){regs=[];}
+    renderAll();return;
+  }
+  try{
+    const snap=await getDocs(query(collection(db,'ordenes'),orderBy('_ts','desc')));
+    regs=snap.docs.map(d=>({...d.data(),id:d.id,_ts:d.data()._ts?.toMillis?.()??0}));
+    renderAll();
+  }catch(e){showToast('Error al cargar datos: '+e.message,'e');}
 }
-function saveData(){
-  try{localStorage.setItem(STORE_KEY,JSON.stringify(regs));}
-  catch(e){alert('Error al guardar: '+e.message);}
+
+async function saveData(reg,esNuevo=false){
+  if(isDemoMode||!db){
+    // Guardar en localStorage
+    if(esNuevo){regs.unshift(reg);}else{const i=regs.findIndex(r=>r.id===reg.id);if(i>=0)regs[i]=reg;}
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(regs));}catch(e){alert('Error al guardar: '+e.message);}
+    renderAll();return;
+  }
+  try{
+    const {id,...datos}=reg;
+    datos._ts=Timestamp.now();
+    if(esNuevo){
+      const ref=await addDoc(collection(db,'ordenes'),datos);
+      reg.id=ref.id;
+      regs.unshift(reg);
+    }else{
+      await updateDoc(doc(db,'ordenes',id),datos);
+      const i=regs.findIndex(r=>r.id===id);if(i>=0)regs[i]=reg;
+    }
+    renderAll();
+  }catch(e){showToast('Error al guardar en Firebase: '+e.message,'e');}
 }
 
-// ── UTILS ─────────────────────────────────────────────
+async function deleteData(id){
+  if(isDemoMode||!db){
+    regs=regs.filter(x=>x.id!==id);
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(regs));}catch(e){}
+    renderAll();return;
+  }
+  try{await deleteDoc(doc(db,'ordenes',id));regs=regs.filter(x=>x.id!==id);renderAll();}
+  catch(e){showToast('Error al eliminar: '+e.message,'e');}
+}
 const gid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const fmt=d=>{if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;};
-const fmtNow=()=>{const n=new Date();return n.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+n.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});};
+const fmtNow=()=>new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
 const hoy=()=>new Date().toISOString().split('T')[0];
+function showToast(msg,t){const b=document.getElementById('toast-box');b.className='toast t'+(t||'s');b.innerHTML='<i class="ti ti-'+(t==='e'?'alert-circle':t==='w'?'alert-triangle':'circle-check')+'"></i>'+msg;b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),3500);}
+function showA(msg,t){const el=document.getElementById('alert-box');el.className='alert show a'+(t||'s');el.innerHTML='<i class="ti ti-'+(t==='e'?'alert-circle':'circle-check')+'"></i> '+msg;setTimeout(()=>el.classList.remove('show'),3500);}
+function bdgOrden(e){const m={'Solicitud':'b-sol','En Mantenimiento':'b-mant','Pendiente Evaluación':'b-eval','Entregado conforme':'b-conf','No conforme':'b-nconf'};const ico={'Solicitud':'ti-file-plus','En Mantenimiento':'ti-tool','Pendiente Evaluación':'ti-clock','Entregado conforme':'ti-circle-check','No conforme':'ti-circle-x'};return`<span class="bdg ${m[e]||'b-def'}"><i class="ti ${ico[e]||'ti-circle'}" style="font-size:9px"></i>${e||'—'}</span>`;}
+function bdgTipo(t){const c=CT_TIPOS[t]||'#94a3b8';return`<span class="bdg" style="background:${c}22;color:${c}">${t||'—'}</span>`;}
+function goTab(t,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+t).classList.add('active');btn.classList.add('active');if(t==='historial')renderHist();if(t==='dashboard')renderDash();if(t==='buscar'){document.getElementById('res-bus').innerHTML='<div class="empty"><i class="ti ti-search"></i>Escriba un número de serie</div>';document.getElementById('inp-bus').value='';}if(t==='nuevo'){mostrarPaso(1);limpiar();}if(t==='config'){const s=localStorage.getItem('sige_fb_cfg');if(s&&document.getElementById('fb-config-input'))document.getElementById('fb-config-input').value=s;}}
+function actualizarStepper(paso){[1,2,3].forEach(n=>{const si=document.getElementById('si'+n),sn=document.getElementById('sn'+n);if(!si)return;si.classList.remove('active','done');sn.classList.remove('active','done');if(n<paso){si.classList.add('done');sn.classList.add('done');sn.innerHTML='<i class="ti ti-check" style="font-size:12px"></i>';}else if(n===paso){si.classList.add('active');sn.classList.add('active');sn.textContent=n;}else{sn.textContent=n;}});[1,2].forEach(n=>{const sc=document.getElementById('sc'+n);if(sc)sc.classList.toggle('done',n<paso);});}
+function mostrarPaso(n){['etapa1','etapa2','etapa3'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const e=document.getElementById('etapa'+n);if(e)e.style.display='block';actualizarStepper(n);if(n===3)initFirma();window.scrollTo(0,0);}
+function onCiudadChange(){const ciudad=document.getElementById('f-ciudad').value,gI=document.getElementById('grupo-inmueble'),gT=document.getElementById('grupo-despacho-texto'),gDA=document.getElementById('grupo-despacho-arauca');document.getElementById('f-inmueble').value='';document.getElementById('f-despacho-arauca').innerHTML='<option value="">Seleccionar despacho...</option>';document.getElementById('f-despacho').value='';const dt=document.getElementById('f-despacho-texto');if(dt)dt.value='';gDA.style.display='none';if(ciudad==='Arauca'){gI.style.display='block';gT.style.display='none';}else if(ciudad){gI.style.display='none';gT.style.display='block';}else{gI.style.display='none';gT.style.display='none';}}
+function onInmuebleChange(){const inm=document.getElementById('f-inmueble').value,sel=document.getElementById('f-despacho-arauca'),gDA=document.getElementById('grupo-despacho-arauca');sel.innerHTML='<option value="">Seleccionar despacho...</option>';document.getElementById('f-despacho').value='';if(inm&&INMUEBLES[inm]){INMUEBLES[inm].forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;sel.appendChild(o);});gDA.style.display='block';}else{gDA.style.display='none';}}
+function getDespacho(){const ciudad=document.getElementById('f-ciudad').value;if(ciudad==='Arauca'){const inm=document.getElementById('f-inmueble').value,dep=document.getElementById('f-despacho-arauca').value;if(!inm||!dep)return null;return{despacho:`${inm} — ${dep}`,inmueble:inm};}else{const dep=(document.getElementById('f-despacho-texto')||{}).value||'';if(!dep.trim())return null;return{despacho:dep.trim(),inmueble:''};}}
+function buscarEquipo(){
+  const rawSerial=(document.getElementById('f-serial').value||'').trim().toUpperCase();
+  const panel=document.getElementById('equipo-info-panel');
+  const grupoNuevo=document.getElementById('grupo-equipo-nuevo');
+  const sugBox=document.getElementById('serial-sugerencias');
 
-function showA(msg,t){
-  const el=document.getElementById('alert-box');
-  el.className='alert show a'+(t||'s');el.innerHTML='<i class="ti ti-'+(t==='e'?'alert-circle':'circle-check')+'"></i> '+msg;
-  setTimeout(()=>el.classList.remove('show'),3500);
-}
-
-function bdg(e){
-  const m={'En taller':'bt','Listo para entrega':'bl','En garantía':'bg','Entregado conforme':'be'};
-  const ico={'En taller':'ti-tool','Listo para entrega':'ti-check','En garantía':'ti-refresh','Entregado conforme':'ti-circle-check'};
-  return`<span class="bdg ${m[e]||'bv'}"><i class="ti ${ico[e]||'ti-circle'}" style="font-size:9px"></i>${e||'—'}</span>`;
-}
-
-// ── NAVEGACIÓN ────────────────────────────────────────
-function goTab(t,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+t).classList.add('active');
-  btn.classList.add('active');
-  if(t==='historial')renderHist();
-  if(t==='dashboard')renderDash();
-  if(t==='buscar'){document.getElementById('res-bus').innerHTML='<div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa</div>';document.getElementById('inp-bus').value='';}
-}
-
-// ── FORMULARIO ────────────────────────────────────────
-function autocompletar(){
-  const p=document.getElementById('f-placa').value,v=FLOTA[p];
-  const ip=document.getElementById('veh-info-panel');
-  if(v){
-    document.getElementById('f-mun').value=v.municipio;
-    document.getElementById('vi-c').textContent=v.clase;
-    document.getElementById('vi-m').textContent=v.marca;
-    document.getElementById('vi-mo').textContent=v.modelo;
-    document.getElementById('vi-t').textContent=v.tipo;
-    document.getElementById('vi-mu').textContent=v.municipio;
-    ip.style.display='block';
-  }else{
-    document.getElementById('f-mun').value='';
-    ip.style.display='none';
-  }
-}
-
-function guardarReg(){
-  const placa=document.getElementById('f-placa').value;
-  const tipo=document.getElementById('f-tipo').value;
-  const fecha=document.getElementById('f-fecha').value;
-  const trabajos=document.getElementById('f-trabajos').value.trim();
-  const resp=document.getElementById('f-resp').value.trim();
-  const cedula=document.getElementById('f-cedula').value.trim();
-  if(!placa||!tipo||!fecha||!trabajos||!resp){showA('Complete todos los campos obligatorios marcados con *','e');return;}
-  const v=FLOTA[placa]||{};
-  const reg={
-    id:gid(),placa,clase:v.clase,marca:v.marca,modeloVeh:v.modelo,tipoVeh:v.tipo,municipio:v.municipio,
-    tipoMant:tipo,fechaIngreso:fecha,km:document.getElementById('f-km').value,
-    taller:document.getElementById('f-taller').value,tallerNit:document.getElementById('f-nit').value,
-    trabajos,estadoIngreso:document.getElementById('f-estado').value,
-    responsable:resp,cedula,cargo:document.getElementById('f-cargo').value,dep:document.getElementById('f-dep').value,
-    estado:'En taller',creadoEn:fmtNow(),
-    timeline:[{fecha:fmtNow(),evento:'Vehículo ingresado al taller',tipo:'i',detalle:`Responsable: ${resp}${cedula?' C.C.'+cedula:''} | Tipo: ${tipo}`}],
-    firma:null,trabajosR:'',obsE:'',fechaSalida:'',fechaEnt:'',garantiaDesc:''
-  };
-  regs.unshift(reg);
-  saveData();
-  showA(`Registro guardado correctamente — ${placa} (${v.tipo||''}, ${v.municipio||''})`,'s');
-  limpiar();
-  document.getElementById('last-update').textContent='Guardado: '+fmtNow();
-}
-
-function limpiar(){
-  ['f-placa','f-km','f-estado','f-resp','f-cargo','f-dep','f-cedula'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
-  document.getElementById('f-fecha').value=hoy();
-  document.getElementById('f-mun').value='';
-  document.getElementById('f-tipo').value='Preventivo/Correctivo';
-  document.getElementById('f-taller').value='SERVICIOS AUTOLLANOS S.A.S.';
-  document.getElementById('f-nit').value='900589774-5';
-  document.getElementById('f-trabajos').value=DESC_PREV_CORR;
-  document.getElementById('veh-info-panel').style.display='none';
-  const sg=document.getElementById('resp-sugerencia');if(sg)sg.style.display='none';
-}
-
-// ── RESPONSABLES ──────────────────────────────────────
-const RESP_KEY='rj_arauca_responsables_v1';
-let responsables=[];
-
-function loadResp(){
-  try{const d=localStorage.getItem(RESP_KEY);if(d)responsables=JSON.parse(d);}catch(e){responsables=[];}
-}
-function saveResp(){
-  try{localStorage.setItem(RESP_KEY,JSON.stringify(responsables));}catch(e){}
-}
-
-function buscarResponsable(){
-  const ced=document.getElementById('f-cedula').value.trim();
-  const sg=document.getElementById('resp-sugerencia');
-  if(!ced||ced.length<4){sg.style.display='none';return;}
-  const found=responsables.find(r=>r.cedula===ced);
-  if(found){
-    document.getElementById('f-resp').value=found.nombre;
-    document.getElementById('f-cargo').value=found.cargo;
-    document.getElementById('f-dep').value=found.dep;
-    document.getElementById('resp-sugerencia-txt').textContent=`✓ Responsable encontrado: ${found.nombre} — ${found.cargo} / ${found.dep}`;
-    sg.style.display='flex';
-  }else{
-    sg.style.display='none';
-  }
-}
-
-function abrirModalResponsable(){
-  loadResp();
-  renderListaResp();
-  document.getElementById('modal-resp').classList.add('open');
-}
-function cerrarModalResp(){
-  document.getElementById('modal-resp').classList.remove('open');
-  ['nr-cedula','nr-nombre','nr-cargo','nr-dep'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('nr-alert').className='alert';
-}
-
-function showNrAlert(msg,t){
-  const el=document.getElementById('nr-alert');
-  el.className='alert show a'+(t||'s');
-  el.innerHTML='<i class="ti ti-'+(t==='e'?'alert-circle':'circle-check')+'"></i> '+msg;
-  setTimeout(()=>el.className='alert',3000);
-}
-
-function guardarResponsable(){
-  const ced=document.getElementById('nr-cedula').value.trim();
-  const nom=document.getElementById('nr-nombre').value.trim();
-  const car=document.getElementById('nr-cargo').value.trim();
-  const dep=document.getElementById('nr-dep').value.trim();
-  if(!ced||!nom||!car||!dep){showNrAlert('Complete todos los campos','e');return;}
-  const existe=responsables.findIndex(r=>r.cedula===ced);
-  if(existe>=0){
-    responsables[existe]={cedula:ced,nombre:nom,cargo:car,dep};
-    showNrAlert(`Responsable ${nom} actualizado correctamente`,'s');
-  }else{
-    responsables.push({cedula:ced,nombre:nom,cargo:car,dep});
-    showNrAlert(`Responsable ${nom} registrado correctamente`,'s');
-  }
-  saveResp();
-  ['nr-cedula','nr-nombre','nr-cargo','nr-dep'].forEach(id=>document.getElementById(id).value='');
-  renderListaResp();
-}
-
-function eliminarResponsable(ced){
-  if(!confirm('¿Eliminar este responsable del directorio?'))return;
-  responsables=responsables.filter(r=>r.cedula!==ced);
-  saveResp();renderListaResp();
-}
-
-function renderListaResp(){
-  const el=document.getElementById('nr-lista');
-  if(!responsables.length){el.innerHTML='<div style="font-size:11px;color:var(--text2);text-align:center;padding:1rem">Sin responsables registrados</div>';return;}
-  el.innerHTML='<div style="max-height:200px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">'+
-    '<thead><tr><th style="padding:5px 7px;background:var(--bg2);text-align:left;color:var(--text2);border-bottom:1px solid var(--border)">Cédula</th><th style="padding:5px 7px;background:var(--bg2);text-align:left;color:var(--text2);border-bottom:1px solid var(--border)">Nombre</th><th style="padding:5px 7px;background:var(--bg2);text-align:left;color:var(--text2);border-bottom:1px solid var(--border)">Cargo / Dep.</th><th style="padding:5px 7px;background:var(--bg2);border-bottom:1px solid var(--border)"></th></tr></thead><tbody>'+
-    responsables.map(r=>`<tr><td style="padding:5px 7px;border-bottom:.5px solid var(--border)">${r.cedula}</td><td style="padding:5px 7px;border-bottom:.5px solid var(--border)">${r.nombre}</td><td style="padding:5px 7px;border-bottom:.5px solid var(--border);color:var(--text2)">${r.cargo} / ${r.dep}</td><td style="padding:5px 7px;border-bottom:.5px solid var(--border)"><button class="btn btn-sm" style="background:#fce8e8;color:#8b1a1a;border-color:#f5c6c6;padding:2px 7px" onclick="eliminarResponsable('${r.cedula}')"><i class="ti ti-trash" style="font-size:10px"></i></button></td></tr>`).join('')+
-    '</tbody></table></div>';
-}
-
-// ── ELIMINAR REGISTRO ─────────────────────────────────
-function eliminarReg(id){
-  const reg=regs.find(r=>r.id===id);
-  if(!reg)return;
-  if(!confirm(`¿Eliminar el registro de mantenimiento para la placa ${reg.placa} con fecha ${fmt(reg.fechaIngreso)}?\n\nEsta acción no se puede deshacer.`))return;
-  regs=regs.filter(r=>r.id!==id);
-  saveData();
-  renderHist();
-  renderAll();
-}
-
-
-// ── HISTORIAL ─────────────────────────────────────────
-function renderHist(){
-  const c=document.getElementById('tabla-hist');
-  if(!regs.length){c.innerHTML='<div class="empty"><i class="ti ti-database"></i>Sin registros aún. Cree el primer registro en la pestaña "Nuevo registro".</div>';return;}
-  c.innerHTML='<div class="tw"><table><thead><tr><th>Placa</th><th>Tipo veh.</th><th>Municipio</th><th>Mantenimiento</th><th>Ingreso</th><th>Km</th><th>Taller</th><th>Responsable</th><th>Cédula</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'+
-    regs.map(r=>`<tr>
-      <td><span class="placa">${r.placa}</span></td>
-      <td>${r.tipoVeh||'—'}</td><td>${r.municipio||'—'}</td><td>${r.tipoMant||'—'}</td>
-      <td>${fmt(r.fechaIngreso)}</td><td>${r.km?r.km+' km':'—'}</td>
-      <td>${r.taller||'—'}</td><td>${r.responsable||'—'}</td><td>${r.cedula||'—'}</td>
-      <td>${bdg(r.estado)}</td>
-      <td style="white-space:nowrap">
-        <button class="btn btn-sm" onclick="abrirMod('${r.id}')"><i class="ti ti-eye"></i>Ver</button>
-        <button class="btn btn-sm" onclick="imprimirResumen('${r.id}')" title="Imprimir resumen"><i class="ti ti-printer"></i></button>
-        <button class="btn btn-sm" onclick="eliminarReg('${r.id}')" title="Eliminar registro" style="background:#fce8e8;color:#8b1a1a;border-color:#f5c6c6"><i class="ti ti-trash"></i></button>
-      </td>
-    </tr>`).join('')+'</tbody></table></div>';
-}
-
-// ── BÚSQUEDA ──────────────────────────────────────────
-function buscar(){
-  const q=document.getElementById('inp-bus').value.trim().toUpperCase();
-  const c=document.getElementById('res-bus');
-  if(!q){c.innerHTML='<div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa para buscar</div>';return;}
-  const res=regs.filter(r=>r.placa.toUpperCase().includes(q));
-  if(!res.length){c.innerHTML='<div class="empty"><i class="ti ti-file-off"></i>No se encontraron registros para la placa "'+q+'"</div>';return;}
-  const v=FLOTA[q]||{};
-  let h='';
-  if(v.marca){
-    h+=`<div style="background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border-radius:9px;padding:10px 12px;margin-bottom:10px;border:.5px solid #c8daf5">
-      <div style="font-size:10px;font-weight:700;color:var(--c1);margin-bottom:6px">DATOS DEL VEHÍCULO</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:11px">
-        ${[['Clase',v.clase],['Marca',v.marca],['Modelo',v.modelo],['Tipo',v.tipo],['Municipio',v.municipio]].map(([l,val])=>`<div><div style="color:var(--text2)">${l}</div><div style="font-weight:600;color:var(--c1)">${val}</div></div>`).join('')}
-      </div>
-    </div>`;
-  }
-  h+=`<div style="font-size:11px;color:var(--text2);margin-bottom:8px">${res.length} registro(s) encontrado(s)</div>`;
-  h+='<div class="tw"><table><thead><tr><th>Tipo mant.</th><th>Ingreso</th><th>Km</th><th>Taller</th><th>Responsable</th><th>Estado</th><th></th></tr></thead><tbody>'+
-    res.map(r=>`<tr><td>${r.tipoMant||'—'}</td><td>${fmt(r.fechaIngreso)}</td><td>${r.km?r.km+' km':'—'}</td><td>${r.taller||'—'}</td><td>${r.responsable||'—'}</td><td>${bdg(r.estado)}</td><td style="white-space:nowrap"><button class="btn btn-sm" onclick="abrirMod('${r.id}')"><i class="ti ti-eye"></i>Ver</button> <button class="btn btn-sm" onclick="imprimirResumen('${r.id}')" title="Imprimir"><i class="ti ti-printer"></i></button></td></tr>`).join('')+
-    '</tbody></table></div>';
-  c.innerHTML=h;
-}
-
-// ── DASHBOARD ─────────────────────────────────────────
-function renderDash(){
-  const tot=regs.length,
-    enT=regs.filter(r=>r.estado==='En taller').length,
-    gar=regs.filter(r=>r.estado==='En garantía').length,
-    ent=regs.filter(r=>r.estado==='Entregado conforme').length,
-    lst=regs.filter(r=>r.estado==='Listo para entrega').length,
-    conf=tot>0?Math.round(ent/tot*100):0;
-
-  document.getElementById('krow').innerHTML=`
-    <div class="kpi"><div class="val" style="color:var(--c1)">${tot}</div><div class="lbl">Total registros</div><div class="sub">${Object.keys(FLOTA).length} vehículos en flota</div></div>
-    <div class="kpi"><div class="val" style="color:#7c5800">${enT}</div><div class="lbl">En taller</div><div class="sub">${lst} listos para entrega</div></div>
-    <div class="kpi"><div class="val" style="color:#8b1a1a">${gar}</div><div class="lbl">En garantía</div><div class="sub">${gar>0?'⚠ Requieren atención':'Sin garantías activas'}</div></div>
-    <div class="kpi"><div class="val" style="color:${conf>=80?'#155230':conf>=50?'#7c5800':'#8b1a1a'}">${conf}%</div><div class="lbl">Tasa de conformidad</div><div class="sub">${ent} de ${tot} conformes</div></div>`;
-
-  const tipos=['Preventivo','Correctivo','Garantía'];
-  const tCounts=tipos.map(t=>regs.filter(r=>r.tipoMant===t).length);
-  document.getElementById('leg-tipo').innerHTML=tipos.map((t,i)=>`<span><span class="lsq" style="background:${CT[t]}"></span>${t} (${tCounts[i]})</span>`).join('');
-
-  const ctxT=document.getElementById('ch-tipo');
-  if(!tot){ctxT.parentElement.innerHTML='<div class="empty" style="padding:1rem"><i class="ti ti-database"></i>Sin datos aún</div>';goto_chart_est();return;}
-  if(chTipo)chTipo.destroy();
-  chTipo=new Chart(ctxT,{type:'bar',data:{labels:tipos,datasets:[{data:tCounts,backgroundColor:tipos.map(t=>CT[t]),borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} registro(s)`}}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:11}}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#888',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}}}});
-
-  goto_chart_est();
-}
-
-function goto_chart_est(){
-  const tot=regs.length;
-  const eCounts=ESTADOS.map(e=>regs.filter(r=>r.estado===e).length);
-  document.getElementById('leg-est').innerHTML=ESTADOS.map((e,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;font-size:11px"><span class="lsq" style="background:${CE[i]}"></span><span style="flex:1;color:var(--text2)">${e}</span><strong>${eCounts[i]}</strong></div>`).join('');
-  const ctxE=document.getElementById('ch-est');
-  if(chEst)chEst.destroy();
-  if(!tot){ctxE.parentElement.innerHTML='<div class="empty" style="padding:1rem"><i class="ti ti-database"></i>Sin datos</div>';goto_veh();return;}
-  chEst=new Chart(ctxE,{type:'doughnut',data:{labels:ESTADOS,datasets:[{data:eCounts,backgroundColor:CE,borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${tot>0?Math.round(c.raw/tot*100):0}%)`}}}}});
-  goto_veh();
-}
-
-function goto_veh(){
-  const tot=regs.length;
-  const mx=Math.max(1,...Object.keys(FLOTA).map(p=>regs.filter(r=>r.placa===p).length));
-  document.getElementById('veh-act').innerHTML=Object.entries(FLOTA).map(([p,v])=>{
-    const n=regs.filter(r=>r.placa===p).length,ul=regs.find(r=>r.placa===p);
-    return`<div class="vrow"><span class="placa">${p}</span><div class="pbar"><div class="pfill" style="width:${Math.round(n/mx*100)}%;background:var(--c2)"></div></div><span style="font-size:11px;font-weight:600;min-width:20px;text-align:right">${n}</span>${ul?bdg(ul.estado):'<span class="bdg bv">Sin reg.</span>'}</div>`;
-  }).join('');
-
-  const prev=regs.filter(r=>r.tipoMant==='Preventivo').length;
-  const corr=regs.filter(r=>r.tipoMant==='Correctivo').length;
-  const garT=regs.filter(r=>r.timeline&&r.timeline.some(t=>t.tipo==='g')).length;
-  const ent=regs.filter(r=>r.estado==='Entregado conforme').length;
-  document.getElementById('ind-panel').innerHTML=[
-    {l:'Conformidad',v:tot>0?Math.round(ent/tot*100):0,c:'#639922'},
-    {l:'Preventivo',v:tot>0?Math.round(prev/tot*100):0,c:'#378ADD'},
-    {l:'Correctivo',v:tot>0?Math.round(corr/tot*100):0,c:'#EF9F27'},
-    {l:'Con garantía',v:tot>0?Math.round(garT/tot*100):0,c:'#E24B4A'}
-  ].map(d=>`<div class="ebar"><span class="elbl">${d.l}</span><div class="etr"><div class="efl" style="width:${d.v}%;background:${d.c}"></div></div><span class="evl">${d.v}%</span></div>`).join('');
-
-  const eventos=[];
-  regs.forEach(r=>(r.timeline||[]).forEach(t=>eventos.push({...t,placa:r.placa})));
-  eventos.sort((a,b)=>b.fecha.localeCompare(a.fecha));
-  const dc={'i':'tld','e':'tld e','g':'tld g','l':'tld l'};
-  document.getElementById('act-rec').innerHTML=eventos.slice(0,7).map(e=>`<div class="tli-row"><div class="${dc[e.tipo]||'tld'}" style="margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div style="font-size:11px;font-weight:500"><span class="placa" style="font-size:10px;padding:1px 5px">${e.placa}</span> ${e.evento}</div><div style="font-size:10px;color:var(--text2)">${e.fecha}${e.detalle?' — '+e.detalle.substring(0,55):''}</div></div></div>`).join('')||'<div class="empty" style="padding:1rem"><i class="ti ti-history"></i>Sin actividad registrada</div>';
-
-  document.getElementById('flota-det').innerHTML=Object.entries(FLOTA).map(([p,v])=>{
-    const rr=regs.filter(r=>r.placa===p),ul=rr[0];
-    return`<div class="vrow" style="flex-wrap:wrap;gap:6px">
-      <span class="placa">${p}</span>
-      <span style="font-size:11px;color:var(--text2);flex:1">${v.tipo} — ${v.municipio}</span>
-      <span style="font-size:10px;color:var(--text2)">${rr.length} reg.</span>
-      ${ul?bdg(ul.estado):'<span class="bdg bv">Sin registros</span>'}
-      ${ul?`<button class="btn btn-sm" onclick="abrirMod('${ul.id}')"><i class="ti ti-eye"></i>Ver</button>`:''}
-    </div>`;
-  }).join('');
-}
-
-// ── MODAL ─────────────────────────────────────────────
-function abrirMod(id){
-  raReg=regs.find(r=>r.id===id);if(!raReg)return;
-  const r=raReg;
-  document.getElementById('m-title').innerHTML=`<span class="placa">${r.placa}</span> &nbsp;${r.tipoVeh||''} — ${r.municipio||''}`;
-  // Botón imprimir en cabecera
-  document.querySelector('.mhdr').innerHTML=`
-    <h3 id="m-title"><span class="placa">${r.placa}</span> &nbsp;${r.tipoVeh||''} — ${r.municipio||''}</h3>
-    <div style="display:flex;gap:6px;align-items:center">
-      <button class="btn btn-sm" onclick="imprimirResumen('${r.id}')" title="Imprimir resumen"><i class="ti ti-printer"></i>Imprimir</button>
-      <button class="cbtn" onclick="cerrar()"><i class="ti ti-x"></i></button>
-    </div>`;
-  let h=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;font-size:12px">
-    ${[['Placa',`<span class="placa">${r.placa}</span>`],['Estado',bdg(r.estado)],['Tipo veh.',r.tipoVeh||'—'],['Mantenimiento',r.tipoMant||'—'],['Fecha ingreso',fmt(r.fechaIngreso)],['Km',r.km?r.km+' km':'—'],['Taller',r.taller||'—'],['Responsable',r.responsable||'—'],['Cargo/Dep.',`${r.cargo||'—'} / ${r.dep||'—'}`]].map(([l,v])=>`<div><div style="color:var(--text2);font-size:10px;margin-bottom:2px">${l}</div><div>${v}</div></div>`).join('')}
-  </div>
-  <div style="background:var(--bg2);border-radius:8px;padding:9px;font-size:12px;margin-bottom:9px"><div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px">TRABAJOS SOLICITADOS</div>${r.trabajos||'—'}</div>`;
-  if(r.trabajosR)h+=`<div style="background:#e6f7ee;border-radius:8px;padding:9px;font-size:12px;margin-bottom:9px;border:.5px solid #a8d5b8"><div style="font-size:10px;font-weight:600;color:#155230;margin-bottom:3px">TRABAJOS REALIZADOS</div>${r.trabajosR}</div>`;
-  if(r.estadoIngreso)h+=`<div style="background:var(--bg2);border-radius:8px;padding:9px;font-size:12px;margin-bottom:9px"><div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px">ESTADO AL INGRESO</div>${r.estadoIngreso}</div>`;
-
-  h+=`<hr class="divd"><div class="slbl" style="margin-bottom:8px"><i class="ti ti-history"></i>Línea de tiempo</div>
-  <ul class="tl">${(r.timeline||[]).map(t=>`<li class="tli"><div class="tld ${t.tipo==='g'?'g':t.tipo==='e'?'e':t.tipo==='l'?'l':''}"></div><div class="tlc"><strong style="font-size:12px">${t.evento}</strong><p>${t.fecha}${t.detalle?' — '+t.detalle.substring(0,70):''}</p></div></li>`).join('')}</ul>`;
-
-  if(r.firma)h+=`<hr class="divd"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px"><i class="ti ti-pen"></i> FIRMA DE RECIBIDO A SATISFACCIÓN</div><img src="${r.firma}" style="max-width:200px;border:.5px solid var(--border);border-radius:6px">`;
-
-  if(r.satisfaccion){
-    const SATS=[{val:'1',lbl:'No Satisfactorio',ico:'ti-mood-sad',color:'#c0392b'},{val:'2',lbl:'Poco Satisfactorio',ico:'ti-mood-confused',color:'#d4871a'},{val:'3',lbl:'Normal',ico:'ti-mood-neutral',color:'#7c6500'},{val:'4',lbl:'Satisfactorio',ico:'ti-mood-smile',color:'#1e8449'},{val:'5',lbl:'Muy Satisfactorio',ico:'ti-mood-happy',color:'#1a4d8a'}];
-    const s=SATS.find(x=>x.val===r.satisfaccion)||SATS[2];
-    h+=`<hr class="divd"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px"><i class="ti ti-star" style="color:#f59e0b"></i> CALIFICACIÓN DE SATISFACCIÓN</div>
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;border:1.5px solid ${s.color};background:${s.color}15">
-      <i class="ti ${s.ico}" style="font-size:20px;color:${s.color}"></i>
-      <span style="font-size:13px;font-weight:600;color:${s.color}">${s.lbl}</span>
-      <span style="font-size:11px;color:var(--text2)">(${r.satisfaccion}/5)</span>
-    </div>`;
+  if(!rawSerial){
+    panel.style.display='none';
+    grupoNuevo.style.display='grid';
+    sugBox.style.display='none';
+    return;
   }
 
-  h+=`<hr class="divd"><div class="slbl" style="margin-bottom:10px"><i class="ti ti-settings"></i>Gestionar registro</div>`;
+  // Buscar coincidencias parciales para autocomplete
+  const coincidencias=[...new Map(
+    regs.filter(r=>(r.serial||'').toUpperCase().includes(rawSerial))
+        .sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)
+        .map(r=>[r.serial.toUpperCase(),r])
+  ).values()];
 
-  if(r.estado==='En taller'){
-    h+=`<div class="field" style="margin-bottom:8px"><label>Trabajos realizados por el taller</label><textarea id="g-tr" style="border:.5px solid var(--border);border-radius:8px;padding:8px;width:100%;font-size:12px;font-family:inherit;min-height:60px">${r.trabajosR||''}</textarea></div>
-    <div class="field" style="margin-bottom:10px"><label>Fecha de salida del taller</label><input type="date" id="g-fs" value="${r.fechaSalida||hoy()}" style="border:.5px solid var(--border);border-radius:8px;padding:7px;font-size:12px;font-family:inherit;width:100%"></div>
-    <button class="btn btn-p" onclick="marcarListo()"><i class="ti ti-check"></i>Marcar como listo para entrega</button>`;
-  }
+  // Coincidencia exacta
+  const exacto = coincidencias.find(r=>(r.serial||'').toUpperCase()===rawSerial);
 
-  if(r.estado==='Listo para entrega'){
-    h+=`<div style="background:var(--bg2);border-radius:10px;padding:1rem;border:.5px solid var(--border)">
-      <div style="font-size:12px;font-weight:600;color:var(--c1);margin-bottom:12px"><i class="ti ti-user-check"></i> Acta de entrega — Responsable: ${r.responsable}</div>
-
-      <!-- ENCUESTA DE SATISFACCIÓN -->
-      <div style="background:#fff;border-radius:9px;padding:12px 14px;margin-bottom:12px;border:.5px solid var(--border)">
-        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;gap:5px">
-          <i class="ti ti-star" style="color:#f59e0b"></i>Encuesta de satisfacción del servicio
+  if(exacto){
+    // Ocultar sugerencias — match exacto
+    sugBox.style.display='none';
+    seleccionarEquipo(exacto);
+  } else if(coincidencias.length>0 && rawSerial.length>=2){
+    // Mostrar lista de sugerencias
+    sugBox.style.display='block';
+    sugBox.innerHTML=coincidencias.slice(0,8).map(r=>`
+      <div class="serial-sug-item" onclick="elegirSugerencia('${r.serial}')">
+        <div>
+          <div><span class="serial-sug-serial">${r.serial}</span></div>
+          <div class="serial-sug-info">${[r.tipoEq,r.marca,r.capacidad?r.capacidad+' BTU':''].filter(Boolean).join(' · ')||'Sin datos'}</div>
+          <div class="serial-sug-desp"><i class="ti ti-building" style="font-size:10px"></i> ${r.despacho||'—'} · ${r.ciudad||'—'}</div>
         </div>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Califique el servicio de mantenimiento recibido:</div>
-        <div style="display:flex;flex-direction:column;gap:7px" id="enc-opciones">
-          ${[
-            {val:'1',lbl:'No Satisfactorio',ico:'ti-mood-sad',color:'#c0392b',bg:'#fce8e8'},
-            {val:'2',lbl:'Poco Satisfactorio',ico:'ti-mood-confused',color:'#d4871a',bg:'#fff3e0'},
-            {val:'3',lbl:'Normal',ico:'ti-mood-neutral',color:'#7c6500',bg:'#fffde7'},
-            {val:'4',lbl:'Satisfactorio',ico:'ti-mood-smile',color:'#1e8449',bg:'#e6f7ee'},
-            {val:'5',lbl:'Muy Satisfactorio',ico:'ti-mood-happy',color:'#1a4d8a',bg:'#e8f0fa'}
-          ].map(o=>`
-            <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;background:#fff" 
-              onmouseover="this.style.borderColor='${o.color}';this.style.background='${o.bg}'" 
-              onmouseout="syncEncuesta()">
-              <input type="radio" name="enc-sat" value="${o.val}" style="accent-color:${o.color};width:15px;height:15px;flex-shrink:0" onchange="syncEncuesta()">
-              <i class="ti ${o.ico}" style="font-size:18px;color:${o.color}"></i>
-              <span style="font-size:12px;font-weight:500;color:${o.color}">${o.lbl}</span>
-            </label>`).join('')}
-        </div>
+      </div>`).join('');
+    panel.style.display='none';
+    grupoNuevo.style.display='grid';
+  } else {
+    // Serial no encontrado en registros
+    sugBox.style.display='none';
+    panel.style.display='none';
+    grupoNuevo.style.display='grid';
+  }
+}
 
-        <!-- BOTÓN ENLACE ENCUESTA -->
-        <div style="margin-top:10px;padding:10px 12px;background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border-radius:8px;border:.5px solid #c8daf5">
-          <div style="font-size:11px;font-weight:600;color:var(--c1);margin-bottom:7px;display:flex;align-items:center;gap:5px">
-            <i class="ti ti-link" style="font-size:13px"></i>Encuesta digital para el conductor
-          </div>
-          <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Genera un enlace único para que el conductor complete la encuesta desde su teléfono o computador.</div>
-          <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
-            <button class="btn btn-p btn-sm" onclick="generarEnlaceEncuesta('${r.id}')"><i class="ti ti-link"></i>Generar enlace de encuesta</button>
-            <button class="btn btn-sm" onclick="compartirWhatsApp('${r.id}')" style="background:#25D366;color:#fff;border-color:#1da851"><i class="ti ti-brand-whatsapp"></i>Compartir por WhatsApp</button>
-          </div>
-          <div id="enc-link-box" style="display:none;margin-top:10px">
-            <div style="font-size:10px;font-weight:600;color:var(--text2);margin-bottom:4px">ENLACE GENERADO — copie y envíe al conductor:</div>
-            <div style="display:flex;gap:6px;align-items:center">
-              <input id="enc-link-input" type="text" readonly style="flex:1;border:.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:11px;font-family:monospace;background:#fff;color:var(--text)">
-              <button class="btn btn-sm" onclick="copiarEnlace()" title="Copiar enlace"><i class="ti ti-copy"></i>Copiar</button>
-            </div>
-            <div id="enc-link-copied" style="display:none;font-size:10px;color:#1e8449;margin-top:4px;font-weight:600"><i class="ti ti-check"></i> ¡Enlace copiado al portapapeles!</div>
-          </div>
-        </div>
-      </div>
+function elegirSugerencia(serial){
+  document.getElementById('f-serial').value=serial;
+  document.getElementById('serial-sugerencias').style.display='none';
+  const r=regs.filter(x=>(x.serial||'').toUpperCase()===serial.toUpperCase())
+              .sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)[0];
+  if(r) seleccionarEquipo(r);
+}
 
-      <div class="field" style="margin-bottom:10px"><label>Observaciones al recibir el vehículo</label><textarea id="g-obs" style="border:.5px solid var(--border);border-radius:8px;padding:8px;width:100%;font-size:12px;font-family:inherit;min-height:55px">${r.obsE||''}</textarea></div>
-      <div class="firma-wrap" style="margin-bottom:10px">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:7px"><i class="ti ti-pen"></i> Firma del responsable (dibuje con el mouse o el dedo)</div>
-        <canvas id="firma-c" width="380" height="90" style="max-width:100%"></canvas>
-        <div style="display:flex;gap:7px;justify-content:center;margin-top:8px">
-          <button class="btn btn-sm" onclick="clrFirma()"><i class="ti ti-eraser"></i>Limpiar firma</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-s" onclick="conforme()"><i class="ti ti-circle-check"></i>Recibido a satisfacción ✓</button>
-        <button class="btn btn-d" onclick="noConforme()"><i class="ti ti-refresh"></i>No conforme — reingresar por garantía</button>
-      </div>
-    </div>`;
+function seleccionarEquipo(r){
+  const panel=document.getElementById('equipo-info-panel');
+  const grupoNuevo=document.getElementById('grupo-equipo-nuevo');
+
+  // Datos básicos
+  document.getElementById('ei-tipo').textContent=r.tipoEq||'—';
+  document.getElementById('ei-marca').textContent=r.marca||'—';
+  document.getElementById('ei-cap').textContent=r.capacidad?r.capacidad+' BTU':'—';
+  document.getElementById('ei-ubic').textContent=r.ubicacion||'—';
+  document.getElementById('ei-despacho').textContent=r.despacho||(r.ciudad||'—');
+
+  // Autocompletar ciudad y despacho en el formulario
+  const citySelect=document.getElementById('f-ciudad');
+  if(r.ciudad && citySelect){
+    citySelect.value=r.ciudad;
+    onCiudadChange();
+    // Rellenar inmueble y despacho según ciudad
+    if(r.ciudad==='Arauca'){
+      setTimeout(()=>{
+        const inmSel=document.getElementById('f-inmueble');
+        if(inmSel && r.inmueble){
+          inmSel.value=r.inmueble;
+          onInmuebleChange();
+          setTimeout(()=>{
+            const dspSel=document.getElementById('f-despacho-arauca');
+            // Extraer el despacho sin el prefijo del inmueble
+            const dspVal=r.despacho.includes('—')?r.despacho.split('—').slice(1).join('—').trim():r.despacho;
+            if(dspSel){
+              // Buscar opción que coincida
+              const opts=[...dspSel.options];
+              const found=opts.find(o=>o.value.trim()===dspVal.trim());
+              if(found) dspSel.value=found.value;
+              else{
+                // Agregar como opción si no existe
+                const opt=document.createElement('option');
+                opt.value=dspVal;opt.textContent=dspVal;
+                dspSel.appendChild(opt);dspSel.value=dspVal;
+              }
+              syncDespachoFromSel();
+            }
+          },80);
+        }
+      },50);
+    } else {
+      // Otros municipios: rellenar campo texto
+      setTimeout(()=>{
+        const dtxt=document.getElementById('f-despacho-texto');
+        if(dtxt && r.despacho) dtxt.value=r.despacho;
+        document.getElementById('f-despacho').value=r.despacho||'';
+      },50);
+    }
   }
 
-  if(r.estado==='En garantía'){
-    h+=`<div class="gbanner"><i class="ti ti-alert-triangle"></i>Vehículo reingresó al taller por garantía. Permanece hasta que las reparaciones pendientes sean completadas.</div>
-    <div class="field" style="margin-bottom:10px"><label>Descripción de trabajos pendientes de garantía</label><textarea id="g-gd" style="border:.5px solid var(--border);border-radius:8px;padding:8px;width:100%;font-size:12px;font-family:inherit;min-height:55px">${r.garantiaDesc||''}</textarea></div>
-    <button class="btn btn-w" onclick="resGarantia()"><i class="ti ti-check"></i>Garantía resuelta — listo para nueva entrega</button>`;
+  // Historial del equipo
+  const historiales=regs.filter(x=>(x.serial||'').toUpperCase()===(r.serial||'').toUpperCase())
+                        .sort((a,b)=>b.creadoEn>a.creadoEn?1:-1);
+  const histEl=document.getElementById('ei-historial');
+  if(historiales.length){
+    histEl.innerHTML=`
+      <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px">
+        <i class="ti ti-history"></i> Historial (${historiales.length} orden${historiales.length>1?'es':''})
+      </div>
+      <div style="max-height:130px;overflow-y:auto">
+        ${historiales.map(h=>`
+          <div class="ei-hist-row">
+            <span style="font-family:monospace;font-size:10px;font-weight:700;color:var(--c1);flex-shrink:0">${fmtConsecutivo(h)}</span>
+            <span>${bdgTipo(h.tipoMant)}</span>
+            <span style="flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.despacho||'—'}</span>
+            <span style="color:var(--text3);font-size:10px;flex-shrink:0">${h.fechaSolicitud?fmt(h.fechaSolicitud):'—'}</span>
+            ${bdgOrden(h.estadoOrden||'Solicitud')}
+          </div>`).join('')}
+      </div>`;
+  } else {
+    histEl.innerHTML='';
   }
 
-  document.getElementById('m-body').innerHTML=h;
-  document.getElementById('modal').classList.add('open');
-  if(r.estado==='Listo para entrega')setTimeout(initFirma,150);
+  panel.style.display='block';
+  grupoNuevo.style.display='none';
+
+  // Mostrar equipos del mismo despacho (buscador inverso)
+  mostrarEquiposDespacho(r.despacho,r.serial);
 }
 
-function initFirma(){
-  fc=document.getElementById('firma-c');if(!fc)return;
-  fctx=fc.getContext('2d');fctx.strokeStyle='#1a3a5c';fctx.lineWidth=2;fctx.lineCap='round';fctx.lineJoin='round';
-  const gp=e=>{const rc=fc.getBoundingClientRect(),sx=fc.width/rc.width,sy=fc.height/rc.height;return[(e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy];};
-  fc.onmousedown=e=>{fdb=true;[ux,uy]=gp(e);};
-  fc.onmousemove=e=>{if(!fdb)return;const[x,y]=gp(e);fctx.beginPath();fctx.moveTo(ux,uy);fctx.lineTo(x,y);fctx.stroke();[ux,uy]=[x,y];};
-  fc.onmouseup=fc.onmouseleave=()=>fdb=false;
-  fc.ontouchstart=e=>{e.preventDefault();fdb=true;[ux,uy]=gp(e.touches[0]);};
-  fc.ontouchmove=e=>{e.preventDefault();if(!fdb)return;const[x,y]=gp(e.touches[0]);fctx.beginPath();fctx.moveTo(ux,uy);fctx.lineTo(x,y);fctx.stroke();[ux,uy]=[x,y];};
-  fc.ontouchend=()=>fdb=false;
-}
-function clrFirma(){if(fctx)fctx.clearRect(0,0,fc.width,fc.height);}
+function mostrarEquiposDespacho(despacho, serialActual){
+  if(!despacho) return;
+  const panel=document.getElementById('busq-despacho-panel');
+  const resultado=document.getElementById('busq-despacho-resultado');
+  // Equipos únicos del mismo despacho (excluyendo el actual)
+  const otrosSeriales=[...new Map(
+    regs.filter(r=>r.despacho===despacho && (r.serial||'').toUpperCase()!==(serialActual||'').toUpperCase() && r.serial)
+        .map(r=>[r.serial.toUpperCase(),r])
+  ).values()];
 
-function marcarListo(){
-  const tr=document.getElementById('g-tr').value,fs=document.getElementById('g-fs').value;
-  raReg.estado='Listo para entrega';raReg.trabajosR=tr;raReg.fechaSalida=fs;
-  raReg.timeline.push({fecha:fmtNow(),evento:'Trabajos completados — listo para entrega',tipo:'l',detalle:tr?tr.substring(0,70):''});
-  saveData();cerrar();renderAll();
-}
-function syncEncuesta(){
-  // Resalta visualmente la opción seleccionada
-  const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
-  const SBGS={'1':'#fce8e8','2':'#fff3e0','3':'#fffde7','4':'#e6f7ee','5':'#e8f0fa'};
-  document.querySelectorAll('#enc-opciones label').forEach(lbl=>{
-    const inp=lbl.querySelector('input');
-    const c=SCOLORS[inp.value],bg=SBGS[inp.value];
-    if(inp.checked){lbl.style.borderColor=c;lbl.style.background=bg;}
-    else{lbl.style.borderColor='var(--border)';lbl.style.background='#fff';}
-  });
-}
-
-function getEncuesta(){
-  const sel=document.querySelector('input[name="enc-sat"]:checked');
-  return sel?sel.value:null;
-}
-
-function conforme(){
-  const enc=getEncuesta();
-  if(!enc){alert('Por favor seleccione una calificación de satisfacción antes de confirmar la entrega.');return;}
-  const obs=document.getElementById('g-obs').value,firma=fc?fc.toDataURL():null;
-  const SLBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
-  raReg.estado='Entregado conforme';raReg.obsE=obs;raReg.firma=firma;raReg.fechaEnt=hoy();raReg.satisfaccion=enc;
-  raReg.timeline.push({fecha:fmtNow(),evento:'Recibido a satisfacción — firmado por el responsable',tipo:'e',detalle:`Satisfacción: ${SLBLS[enc]}${obs?' | '+obs.substring(0,50):''}`});
-  saveData();cerrar();renderAll();
-}
-function noConforme(){
-  const enc=getEncuesta();
-  const obs=document.getElementById('g-obs').value,firma=fc?fc.toDataURL():null;
-  const SLBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
-  raReg.estado='En garantía';raReg.obsE=obs;raReg.firma=firma;if(enc)raReg.satisfaccion=enc;
-  raReg.timeline.push({fecha:fmtNow(),evento:'No conforme — reingreso al taller por garantía',tipo:'g',detalle:`${enc?'Satisfacción: '+SLBLS[enc]+' | ':''}${obs?obs.substring(0,60):''}`});
-  saveData();cerrar();renderAll();
-}
-
-function imprimirResumen(id){
-  const r=regs.find(x=>x.id===id);if(!r)return;
-  const SATS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
-  const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
-  const tl=(r.timeline||[]).map(t=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;font-size:12pt;color:#64748b;white-space:nowrap">${t.fecha}</td><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;font-size:12pt">${t.evento}${t.detalle?' — <em>'+t.detalle+'</em>':''}</td></tr>`).join('');
-  const firmaSrc=r.firma?`<div style="margin-top:6px"><div style="font-size:10px;color:#64748b;margin-bottom:4px;font-weight:600">FIRMA DEL RESPONSABLE</div><img src="${r.firma}" style="height:55px;border:1px solid #e2e8f0;border-radius:4px"></div>`:'';
-  const satHtml=r.satisfaccion?`<div style="margin-top:10px;padding:8px 12px;border-radius:6px;border:1.5px solid ${SCOLORS[r.satisfaccion]};display:inline-flex;align-items:center;gap:8px">
-    <span style="font-size:12px;font-weight:700;color:${SCOLORS[r.satisfaccion]}">⭐ Calificación: ${SATS[r.satisfaccion]} (${r.satisfaccion}/5)</span></div>`:'<span style="color:#94a3b8;font-size:11px">Sin calificación registrada</span>';
-
-  const win=window.open('','_blank','width=800,height:950');
-  win.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Resumen Mantenimiento — ${r.placa}</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',system-ui,sans-serif;font-size:12pt;color:#1e293b;background:#fff;padding:20px}
-    .hdr{background:#1a3a5c;color:#fff;padding:14px 18px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-    .hdr h1{font-size:14pt;font-weight:600}
-    .hdr p{font-size:10pt;opacity:.75;margin-top:2px}
-    .hdr .placa{font-family:monospace;font-size:18pt;font-weight:700;letter-spacing:2px;background:rgba(255,255,255,.2);padding:4px 12px;border-radius:5px}
-    .section{margin-bottom:14px}
-    .section-title{font-size:11pt;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.8px;border-bottom:2px solid #1a3a5c;padding-bottom:4px;margin-bottom:8px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .cell{background:#f8fafc;border-radius:5px;padding:7px 9px;border:.5px solid #e2e8f0}
-    .cell-lbl{font-size:10pt;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-    .cell-val{font-size:12pt;font-weight:500;color:#1e293b}
-    .tbox{background:#f8fafc;border-radius:5px;padding:8px 10px;font-size:12pt;color:#1e293b;border:.5px solid #e2e8f0;line-height:1.6}
-    table{width:100%;border-collapse:collapse}
-    td{font-size:12pt}
-    .bdg{display:inline-flex;align-items:center;gap:3px;font-size:10pt;padding:2px 8px;border-radius:10px;font-weight:600}
-    .bt{background:#fff8e1;color:#7c5800}.bg{background:#fce8e8;color:#8b1a1a}
-    .be{background:#e6f7ee;color:#155230}.bl{background:#e8f5e9;color:#1b5e20}.bv{background:#f1f5f9;color:#64748b}
-    .footer{margin-top:18px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:10pt;color:#94a3b8;display:flex;justify-content:space-between}
-    @media print{body{padding:10px}.no-print{display:none}}
-  </style></head><body>
-
-  <div class="hdr">
-    <div>
-      <h1>Resumen de Mantenimiento Vehicular</h1>
-      <p>Dirección Seccional Administrativa — Rama Judicial Arauca</p>
-      <p>Generado: ${fmtNow()}</p>
+  if(!otrosSeriales.length){panel.style.display='none';return;}
+  panel.style.display='block';
+  resultado.innerHTML=`
+    <div style="font-size:11px;color:var(--amber);margin-bottom:6px">
+      Otros equipos registrados en <strong>${despacho.split('—').pop().trim()}</strong>:
     </div>
-    <div class="placa">${r.placa}</div>
-  </div>
+    ${otrosSeriales.map(r=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:.5px solid var(--amber-b);font-size:11px">
+        <span class="serial-tag" style="cursor:pointer" onclick="elegirSugerencia('${r.serial}')" title="Clic para seleccionar">${r.serial}</span>
+        <span style="color:var(--amber)">${[r.tipoEq,r.marca,r.capacidad?r.capacidad+' BTU':''].filter(Boolean).join(' · ')||'—'}</span>
+        <span style="margin-left:auto;color:var(--text3);font-size:10px">${bdgOrden(r.estadoOrden||'Solicitud')}</span>
+        <button class="btn btn-sm" style="padding:2px 7px;font-size:10px" onclick="elegirSugerencia('${r.serial}')"><i class="ti ti-arrow-up-right"></i></button>
+      </div>`).join('')}`;
+}
 
-  <div class="section">
-    <div class="section-title">Datos del vehículo</div>
-    <div class="grid3">
-      <div class="cell"><div class="cell-lbl">Clase</div><div class="cell-val">${r.clase||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Marca</div><div class="cell-val">${r.marca||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Modelo</div><div class="cell-val">${r.modeloVeh||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Tipo</div><div class="cell-val">${r.tipoVeh||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Municipio</div><div class="cell-val">${r.municipio||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Kilometraje</div><div class="cell-val">${r.km?r.km+' km':'—'}</div></div>
+function limpiarSeleccionEquipo(){
+  document.getElementById('equipo-info-panel').style.display='none';
+  document.getElementById('grupo-equipo-nuevo').style.display='grid';
+  document.getElementById('serial-sugerencias').style.display='none';
+  document.getElementById('busq-despacho-panel').style.display='none';
+  document.getElementById('f-serial').value='';
+  document.getElementById('f-serial').focus();
+}
+
+function syncDespachoFromSel(){
+  const inm=document.getElementById('f-inmueble').value;
+  const dep=document.getElementById('f-despacho-arauca').value;
+  if(inm&&dep) document.getElementById('f-despacho').value=`${inm} — ${dep}`;
+}
+// ── CONSECUTIVO ──
+const CONSEC_KEY='sige_consecutivo_v1';
+function getNextConsecutivo(){
+  const anio=new Date().getFullYear();
+  const key=CONSEC_KEY+'_'+anio;
+  let n=0;
+  try{n=parseInt(localStorage.getItem(key)||'0');}catch(e){}
+  if(regs.length){const maxRegs=Math.max(...regs.map(r=>r.consecutivo||0).filter(Boolean),0);if(maxRegs>=n)n=maxRegs;}
+  n++;
+  try{localStorage.setItem(key,n);}catch(e){}
+  return{num:n,anio,codigo:`OS-${anio}-${String(n).padStart(4,'0')}`};
+}
+function fmtConsecutivo(r){
+  if(r&&r.codigoOrden)return r.codigoOrden;
+  if(r&&r.consecutivo)return`OS-${r.anioOrden||new Date().getFullYear()}-${String(r.consecutivo).padStart(4,'0')}`;
+  return'—';
+}
+
+async function guardarSolicitud(){const ciudad=document.getElementById('f-ciudad').value,tipo=document.getElementById('f-tipo').value,serial=(document.getElementById('f-serial').value||'').trim().toUpperCase(),desc=document.getElementById('f-descripcion').value.trim();if(!ciudad||!tipo||!desc){showA('Complete todos los campos obligatorios (*)','e');return;}const despInfo=getDespacho();if(!despInfo){showA('Seleccione el inmueble y el despacho','e');return;}const primero=regs.filter(r=>(r.serial||'').toUpperCase()===serial).sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)[0];const consec=getNextConsecutivo();const reg={id:gid(),consecutivo:consec.num,anioOrden:consec.anio,codigoOrden:consec.codigo,serial,ciudad,inmueble:despInfo.inmueble,despacho:despInfo.despacho,tipoMant:tipo,descripcion:desc,fechaSolicitud:document.getElementById('f-fecha').value,tipoEq:primero?primero.tipoEq:document.getElementById('f-tipo-eq').value,marca:primero?primero.marca:document.getElementById('f-marca').value,modelo:'',capacidad:primero?primero.capacidad:document.getElementById('f-capacidad').value,ubicacion:primero?primero.ubicacion:document.getElementById('f-ubicacion').value,estadoOrden:'Solicitud',estado:'Solicitado',creadoEn:fmtNow(),timeline:[{fecha:fmtNow(),evento:'Solicitud registrada',tipo:'i',detalle:`${tipo} · ${despInfo.despacho} · ${ciudad}`}],contratista:'',empresa:'',fechaEjecucion:'',fechaSalida:'',actividades:'',obsTecnico:'',obsAdmin:'',estadoFin:'',responsableRecibe:'',cargoResp:'',obsEntrega:'',satisfaccion:'',firma:null,decision:'',motivoInconformidad:''};await saveData(reg,true);showA(`✓ Solicitud guardada — ${serial} · ${despInfo.despacho}`,'s');limpiar();document.getElementById('last-update').textContent='Guardado: '+fmtNow();setTimeout(()=>{document.querySelectorAll('.nav-btn')[2].click();},1200);}
+async function guardarEjecucion(){const contratista=document.getElementById('g-contratista').value.trim(),fechaej=document.getElementById('g-fechaej').value,actividades=document.getElementById('g-actividades').value.trim();if(!contratista||!fechaej||!actividades){showA('Complete contratista, fecha de ejecución y actividades','e');return;}if(!ordenActiva){showA('Error: no hay orden activa','e');return;}const r=regs.find(x=>x.id===ordenActiva.id);if(!r){showA('Error: orden no encontrada','e');return;}r.contratista=contratista;r.empresa='';r.fechaEjecucion=fechaej;r.fechaSalida='';r.actividades=actividades;r.obsTecnico=document.getElementById('g-obs-tec').value;r.obsAdmin='';r.estadoFin=document.getElementById('g-estado-fin').value;r.estadoOrden='En Mantenimiento';r.estado='En Mantenimiento';r.timeline.push({fecha:fmtNow(),evento:'Trabajos completados — notificación al administrativo',tipo:'l',detalle:`Técnico: ${contratista} | ${actividades.substring(0,60)}`});await saveData(r,false);showA('✓ Ejecución guardada correctamente','s');ordenActiva=null;document.getElementById('last-update').textContent='Actualizado: '+fmtNow();setTimeout(()=>{document.querySelectorAll('.nav-btn')[2].click();},1200);}
+async function guardarEvaluacion(){
+  if(!decisionSeleccionada){showA('Seleccione Conforme o No conforme antes de finalizar','e');return;}
+  const resp=document.getElementById('g-resp-recibe').value.trim();
+  if(!resp){showA('Ingrese el nombre del responsable que recibe','e');return;}
+  if(firmaVacia){showA('Registre la firma digital antes de continuar','e');return;}
+  const enc=document.querySelector('input[name="enc-sat"]:checked');
+  if(!enc){showA('Seleccione una calificación de satisfacción','e');return;}
+  if(decisionSeleccionada==='no-conforme'&&!document.getElementById('g-motivo-nc').value.trim()){showA('Describa el motivo de la inconformidad','e');return;}
+  if(!ordenActiva){showA('Error: no hay orden activa','e');return;}
+  const r=regs.find(x=>x.id===ordenActiva.id);
+  if(!r){showA('Error: orden no encontrada','e');return;}
+  const canvas=document.getElementById('firma-c');
+  r.responsableRecibe=resp;
+  r.cargoResp=document.getElementById('g-cargo-resp').value;
+  r.obsEntrega=document.getElementById('g-obs-e').value;
+  r.satisfaccion=enc.value;
+  r.firma=canvas.toDataURL('image/png');
+  r.decision=decisionSeleccionada;
+  if(decisionSeleccionada==='no-conforme')r.motivoInconformidad=document.getElementById('g-motivo-nc').value.trim();
+  r.estadoOrden=decisionSeleccionada==='conforme'?'Entregado conforme':'No conforme';
+  r.estado=r.estadoOrden;
+  r.fechaEntrega=hoy();
+  r.timeline.push({fecha:fmtNow(),evento:decisionSeleccionada==='conforme'?'Entregado conforme — proceso finalizado':'No conforme — inconformidad registrada',tipo:decisionSeleccionada==='conforme'?'e':'g',detalle:`Responsable: ${resp} | Satisfacción: ${SATS[enc.value]}${decisionSeleccionada==='no-conforme'?' | '+r.motivoInconformidad:''}`});
+  await saveData(r,false);
+  showA('✓ Orden finalizada: '+r.estadoOrden,'s');
+  ordenActiva=null;decisionSeleccionada=null;
+  document.getElementById('last-update').textContent='Actualizado: '+fmtNow();
+  setTimeout(()=>{document.querySelectorAll('.nav-btn')[2].click();},1500);
+}
+function selDecision(tipo){decisionSeleccionada=tipo;document.getElementById('dec-conf').className='dec-card'+(tipo==='conforme'?' sel-conf':'');document.getElementById('dec-nconf').className='dec-card'+(tipo==='no-conforme'?' sel-nconf':'');document.getElementById('grupo-inconformidad').style.display=tipo==='no-conforme'?'block':'none';const btn=document.getElementById('btn-finalizar');if(btn){btn.disabled=false;btn.style.opacity='1';}}
+// guardarDecision: unificada en guardarEvaluacion
+function cancelarPaso(){ordenActiva=null;decisionSeleccionada=null;document.querySelectorAll('.nav-btn')[2].click();}
+function continuarOrden(id,paso){const r=regs.find(x=>x.id===id);if(!r)return;ordenActiva=r;decisionSeleccionada=null;firmaVacia=true;firmaCtx=null;document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn')[1].classList.add('active');document.getElementById('panel-nuevo').classList.add('active');if(paso===2){document.getElementById('e2-resumen').innerHTML=`<i class="ti ti-info-circle"></i> <strong>Solicitud:</strong> ${r.tipoMant} · Serial: <strong>${r.serial}</strong> · ${r.despacho} · ${r.ciudad}`;document.getElementById('g-fechaej').value=hoy();mostrarPaso(2);}else if(paso===3){document.getElementById('e3-resumen').innerHTML=`<i class="ti ti-info-circle"></i> <strong>Ejecución:</strong> ${r.tipoMant} · Técnico: <strong>${r.contratista||'—'}</strong> · ${r.fechaEjecucion||'—'}`;renderEncuesta();decisionSeleccionada=null;document.getElementById('btn-finalizar').disabled=true;document.getElementById('btn-finalizar').style.opacity='.5';document.getElementById('grupo-inconformidad').style.display='none';['dec-conf','dec-nconf'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dec-card';});mostrarPaso(3);}}
+function initFirma(){const canvas=document.getElementById('firma-c');if(!canvas)return;const newC=canvas.cloneNode(true);canvas.parentNode.replaceChild(newC,canvas);firmaVacia=true;firmaCtx=null;document.getElementById('firma-estado').textContent='';const ctx=newC.getContext('2d');firmaCtx=ctx;ctx.strokeStyle='#1a3a5c';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';let drawing=false,lx=0,ly=0;const gp=e=>{const r=newC.getBoundingClientRect(),sx=newC.width/r.width,sy=newC.height/r.height;const s=e.touches?e.touches[0]:e;return[(s.clientX-r.left)*sx,(s.clientY-r.top)*sy];};const start=e=>{e.preventDefault();drawing=true;[lx,ly]=gp(e);};const draw=e=>{e.preventDefault();if(!drawing)return;const[x,y]=gp(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();[lx,ly]=[x,y];firmaVacia=false;document.getElementById('firma-estado').textContent='✓ Firma registrada';};const stop=e=>{e.preventDefault();drawing=false;};newC.addEventListener('mousedown',start);newC.addEventListener('mousemove',draw);newC.addEventListener('mouseup',stop);newC.addEventListener('mouseleave',stop);newC.addEventListener('touchstart',start,{passive:false});newC.addEventListener('touchmove',draw,{passive:false});newC.addEventListener('touchend',stop,{passive:false});}
+function clrFirma(){const c=document.getElementById('firma-c');if(firmaCtx)firmaCtx.clearRect(0,0,c.width,c.height);firmaVacia=true;document.getElementById('firma-estado').textContent='';}
+function renderEncuesta(){document.getElementById('enc-opciones').innerHTML=[{val:'5',lbl:'Muy Satisfactorio',ico:'ti-mood-happy'},{val:'4',lbl:'Satisfactorio',ico:'ti-mood-smile'},{val:'3',lbl:'Normal',ico:'ti-mood-neutral'},{val:'2',lbl:'Poco Satisfactorio',ico:'ti-mood-confused'},{val:'1',lbl:'No Satisfactorio',ico:'ti-mood-sad'}].map(o=>`<label class="enc-opt" onmouseover="this.style.borderColor='${SCOLORS[o.val]}';this.style.background='${SBGS[o.val]}'" onmouseout="syncEncuesta()"><input type="radio" name="enc-sat" value="${o.val}" style="accent-color:${SCOLORS[o.val]};width:15px;height:15px;flex-shrink:0" onchange="syncEncuesta()"><i class="ti ${o.ico}" style="font-size:20px;color:${SCOLORS[o.val]};flex-shrink:0"></i><span style="font-size:12px;font-weight:600;color:${SCOLORS[o.val]}">${o.lbl}</span><span style="font-size:11px;color:var(--text2);flex:1;padding-left:4px">${o.val}/5</span></label>`).join('');}
+function syncEncuesta(){document.querySelectorAll('#enc-opciones label').forEach(lbl=>{const inp=lbl.querySelector('input');lbl.style.borderColor=inp.checked?SCOLORS[inp.value]:'var(--border)';lbl.style.background=inp.checked?SBGS[inp.value]:'#fff';});}
+function limpiar(){['f-ciudad','f-inmueble','f-tipo','f-serial','f-tipo-eq','f-marca','f-capacidad','f-ubicacion','f-descripcion'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';if(el.tagName==='SELECT')el.selectedIndex=0;}});const dt=document.getElementById('f-despacho-texto');if(dt)dt.value='';document.getElementById('f-despacho').value='';document.getElementById('f-fecha').value=hoy();document.getElementById('grupo-inmueble').style.display='none';document.getElementById('grupo-despacho-arauca').style.display='none';document.getElementById('grupo-despacho-texto').style.display='none';document.getElementById('equipo-info-panel').style.display='none';document.getElementById('grupo-equipo-nuevo').style.display='grid';document.getElementById('f-despacho-arauca').innerHTML='<option value="">Seleccionar despacho...</option>';mostrarPaso(1);}
+function miniTimeline(r){const e=r.estadoOrden||'Solicitud';const pasos=[{lbl:'Solicitud',done:true},{lbl:'Ejecución',done:['En Mantenimiento','Entregado conforme','No conforme'].includes(e)},{lbl:'Evaluación',done:['Entregado conforme','No conforme'].includes(e)}];let h='<div class="mtl">';pasos.forEach((p,i)=>{const curr=!p.done&&(i===0||(pasos[i-1]&&pasos[i-1].done));h+=`<div class="mtl-dot ${p.done?'done':curr?'curr':''}"><i class="ti ${p.done?'ti-check':curr?'ti-point':'ti-circle'}" style="font-size:9px"></i></div><span class="mtl-lbl">${p.lbl}</span>`;if(i<2)h+=`<div class="mtl-line ${p.done?'done':''}"></div>`;});return h+'</div>';}
+function btnSiguiente(r){const e=r.estadoOrden||'Solicitud';if(e==='Solicitud')return`<button class="btn btn-p btn-sm" onclick="continuarOrden('${r.id}',2)"><i class="ti ti-tool"></i>Registrar ejecución</button>`;if(e==='En Mantenimiento')return`<button class="btn btn-sm btn-w" onclick="continuarOrden('${r.id}',3)"><i class="ti ti-star"></i>Registrar evaluación</button>`;return'';}
+function renderHist(){const municipios=[...new Set(regs.map(r=>r.ciudad).filter(Boolean))];const selMun=document.getElementById('fil-municipio'),curMun=selMun.value;selMun.innerHTML='<option value="">Todos los municipios</option>'+municipios.map(m=>`<option value="${m}"${m===curMun?' selected':''}>${m}</option>`).join('');const q=(document.getElementById('inp-filtro').value||'').toLowerCase(),filEst=document.getElementById('fil-estado').value,filMun=document.getElementById('fil-municipio').value,filTipo=document.getElementById('fil-tipo').value;let data=regs.filter(r=>{const mQ=!q||JSON.stringify(r).toLowerCase().includes(q),mE=!filEst||(r.estadoOrden||'Solicitud')===filEst,mM=!filMun||r.ciudad===filMun,mT=!filTipo||r.tipoMant===filTipo;return mQ&&mE&&mM&&mT;});const c=document.getElementById('tabla-hist');if(!data.length){c.innerHTML='<div class="empty"><i class="ti ti-database"></i>Sin órdenes que coincidan.</div>';return;}const activas=data.filter(r=>!['Entregado conforme','No conforme'].includes(r.estadoOrden));const cerradas=data.filter(r=>['Entregado conforme','No conforme'].includes(r.estadoOrden));const renderCard=r=>{const sig=btnSiguiente(r);const cerrada=!sig;return`<div class="oc ${cerrada?'oc-cerrada':r.estadoOrden==='No conforme'?'oc-nconf':''}"><div class="oc-head"><div style="flex:1;min-width:0"><div class="oc-title"><span style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;color:var(--c1);background:var(--blue-bg);border:.5px solid var(--blue-b);padding:2px 8px;border-radius:5px">${fmtConsecutivo(r)}</span>${r.serial?`<span class="serial-tag">${r.serial}</span>`:`<button class="btn btn-sm" style="padding:2px 8px;font-size:10px;background:var(--amber-bg);color:var(--amber);border-color:var(--amber-b)" onclick="abrirEditar('${r.id}')" title="Asignar número de serie"><i class="ti ti-barcode"></i> Asignar serial</button>`}${bdgTipo(r.tipoMant)}${bdgOrden(r.estadoOrden||'Solicitud')}</div><div class="oc-sub">${r.despacho||'—'} · ${r.ciudad||'—'} · ${r.fechaSolicitud?fmt(r.fechaSolicitud):'—'}</div>${r.descripcion?`<div class="oc-desc">${r.descripcion.substring(0,100)}${r.descripcion.length>100?'...':''}</div>`:''}${miniTimeline(r)}</div><div class="oc-actions">${sig}<button class="btn btn-sm" onclick="abrirMod('${r.id}')"><i class="ti ti-eye"></i>Ver</button><button class="btn btn-sm" onclick="abrirEditar('${r.id}')" style="background:var(--blue-bg);color:var(--c2);border-color:var(--blue-b)"><i class="ti ti-edit"></i></button><button class="btn btn-sm" onclick="eliminarReg('${r.id}')" style="background:var(--red-bg);color:var(--red);border-color:var(--red-b)"><i class="ti ti-trash"></i></button><button class="btn btn-sm" onclick="imprimirResumenId('${r.id}')"><i class="ti ti-printer"></i></button></div></div>${(r.tipoEq||r.marca||r.contratista)?`<div class="oc-foot">${r.tipoEq||r.marca?`<span><i class="ti ti-wind" style="margin-right:3px"></i>${[r.tipoEq,r.marca,r.modelo,r.capacidad?r.capacidad+' BTU':''].filter(Boolean).join(' · ')}</span>`:''}${r.contratista?`<span><i class="ti ti-user-check" style="margin-right:3px"></i>${r.contratista}</span>`:''}${r.responsableRecibe?`<span><i class="ti ti-pen" style="margin-right:3px"></i>${r.responsableRecibe}</span>`:''}${r.satisfaccion?`<span style="color:${SCOLORS[r.satisfaccion]}"><i class="ti ti-star-filled" style="margin-right:3px"></i>${SATS[r.satisfaccion]} (${r.satisfaccion}/5)</span>`:''}</div>`:''}  </div>`;}; let html='';if(activas.length){html+=`<div class="oc-group-lbl"><i class="ti ti-clock"></i>En proceso (${activas.length})</div>`;html+=activas.map(renderCard).join('');}if(cerradas.length){html+=`<div class="oc-group-lbl" style="margin-top:14px"><i class="ti ti-check"></i>Finalizadas (${cerradas.length})</div>`;html+=cerradas.map(renderCard).join('');}c.innerHTML=html;}
+async function eliminarReg(id){const r=regs.find(x=>x.id===id);if(!r)return;if(!confirm(`¿Eliminar la orden de ${r.serial} — ${r.despacho}?\n\nEsta acción no se puede deshacer.`))return;await deleteData(id);}
+function buscarGlobal(){const q=document.getElementById('inp-bus').value.trim().toUpperCase();const c=document.getElementById('res-bus');if(!q){c.innerHTML='<div class="empty"><i class="ti ti-search"></i>Escriba un número de serie</div>';return;}const res=regs.filter(r=>(r.serial||'').toUpperCase().includes(q));if(!res.length){c.innerHTML=`<div class="empty"><i class="ti ti-file-off"></i>No se encontraron registros para "${q}"</div>`;return;}const primero=res.sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)[0];let h=`<div style="background:var(--blue-bg);border-radius:9px;padding:10px 12px;margin-bottom:10px;border:.5px solid var(--blue-b)"><div style="font-size:10px;font-weight:700;color:var(--c1);margin-bottom:6px">DATOS DEL EQUIPO</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:11px">${[['Serial',primero.serial],['Tipo',primero.tipoEq||'—'],['Marca',primero.marca||'—'],['Modelo',primero.modelo||'—'],['Capacidad',primero.capacidad?primero.capacidad+' BTU':'—'],['Ubicación',primero.ubicacion||'—'],['Ciudad',primero.ciudad||'—']].map(([l,v])=>`<div><div style="color:var(--text2);font-size:10px">${l}</div><div style="font-weight:600;color:var(--c1)">${v}</div></div>`).join('')}</div></div>`;h+=`<div style="font-size:11px;color:var(--text2);margin-bottom:8px">${res.length} registro(s) encontrado(s)</div>`;h+='<div class="tw"><table><thead><tr><th>N° Orden</th><th>Tipo mant.</th><th>Solicitud</th><th>Ejecución</th><th>Contratista</th><th>Responsable</th><th>Satisfacción</th><th>Estado</th><th></th></tr></thead><tbody>'+res.map(r=>`<tr><td style="font-family:monospace;font-weight:700;color:var(--c1)">${fmtConsecutivo(r)}</td><td>${bdgTipo(r.tipoMant)}</td><td>${r.fechaSolicitud?fmt(r.fechaSolicitud):'—'}</td><td>${r.fechaEjecucion?fmt(r.fechaEjecucion):'—'}</td><td>${r.contratista||'—'}</td><td>${r.responsableRecibe||'—'}</td><td>${r.satisfaccion?`<span style="color:${SCOLORS[r.satisfaccion]};font-weight:600">${SATS[r.satisfaccion]} (${r.satisfaccion}/5)</span>`:'—'}</td><td>${bdgOrden(r.estadoOrden||'Solicitud')}</td><td style="white-space:nowrap"><button class="btn btn-sm" onclick="abrirMod('${r.id}')"><i class="ti ti-eye"></i>Ver</button> <button class="btn btn-sm btn-p" onclick="usarEquipoEnNuevaOrden('${r.serial}')" title="Usar este equipo en nueva orden"><i class="ti ti-plus"></i>Nueva orden</button></td></tr>`).join('')+'</tbody></table></div>';c.innerHTML=h;}
+function abrirMod(id){raReg=regs.find(r=>r.id===id);if(!raReg)return;const r=raReg;document.getElementById('m-title').innerHTML=`<span style="font-family:monospace;font-size:12px;font-weight:700;background:var(--blue-bg);color:var(--c1);border:.5px solid var(--blue-b);padding:2px 8px;border-radius:5px;margin-right:6px">${fmtConsecutivo(r)}</span>${r.serial?`<span class="serial-tag">${r.serial}</span> &nbsp;`:''} ${r.tipoEq||''} ${r.marca?'· '+r.marca:''} — ${r.ciudad||''}`;const sec=(titulo,ico)=>`<div style="font-size:10px;font-weight:700;color:var(--c1);text-transform:uppercase;letter-spacing:1px;margin:12px 0 6px;display:flex;align-items:center;gap:5px;padding-bottom:5px;border-bottom:.5px solid var(--border)"><i class="ti ${ico}"></i>${titulo}</div>`;const dr=(l,v)=>v?`<div style="display:flex;gap:10px;padding:5px 0;border-bottom:.5px solid var(--bg2);font-size:12px"><span style="color:var(--text2);min-width:150px;flex-shrink:0;font-size:11px">${l}</span><span style="font-weight:500">${v}</span></div>`:'';let h=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${bdgTipo(r.tipoMant)} ${bdgOrden(r.estadoOrden||'Solicitud')}</div>`;h+=miniTimeline(r);h+=dr('N° de Orden',`<span style="font-family:monospace;font-size:14px;font-weight:700;color:var(--c1)">${fmtConsecutivo(r)}</span>`);if(!r.serial)h+=`<div style="background:var(--amber-bg);border:.5px solid var(--amber-b);border-radius:7px;padding:8px 12px;margin:6px 0;font-size:12px;color:var(--amber);display:flex;align-items:center;gap:8px"><i class="ti ti-barcode"></i><span>Esta orden no tiene número de serie asignado.</span><button class="btn btn-sm" style="margin-left:auto;background:var(--amber);color:#fff;border-color:var(--amber)" onclick="cerrar();abrirEditar('${r.id}')"><i class="ti ti-barcode"></i> Asignar serial</button></div>`;h+=sec('Paso 1 — Solicitud','ti-file-description');h+=dr('Fecha solicitud',r.fechaSolicitud?fmt(r.fechaSolicitud):'—');h+=dr('Ciudad',r.ciudad);h+=dr('Inmueble',r.inmueble);h+=dr('Despacho',r.despacho);h+=dr('Tipo de mantenimiento',r.tipoMant);h+=dr('Descripción',r.descripcion);h+=sec('Equipo','ti-wind');h+=dr('Serial',`<span style="font-family:monospace">${r.serial}</span>`);h+=dr('Tipo',r.tipoEq);h+=dr('Marca · Modelo',[r.marca,r.modelo].filter(Boolean).join(' · '));h+=dr('Capacidad',r.capacidad?r.capacidad+' BTU':'');h+=dr('Ubicación',r.ubicacion);if(r.contratista||r.actividades){h+=sec('Paso 2 — Ejecución','ti-tool');h+=dr('Contratista',r.contratista);h+=dr('Fecha ejecución',r.fechaEjecucion?fmt(r.fechaEjecucion):'');h+=dr('Estado final equipo',r.estadoFin);h+=dr('Actividades realizadas',r.actividades);h+=dr('Obs. técnico',r.obsTecnico);}if(r.responsableRecibe){const s=r.satisfaccion;h+=sec('Paso 3 — Evaluación y Firma','ti-star');h+=dr('Responsable que recibe',r.responsableRecibe);h+=dr('Cargo',r.cargoResp);if(s)h+=dr('Calificación',`<span style="color:${SCOLORS[s]};font-weight:700"><i class="ti ${SAT_ICOS[s]}"></i> ${SATS[s]} (${s}/5)</span>`);h+=dr('Observaciones',r.obsEntrega);if(r.firma)h+=dr('Firma',`<img src="${r.firma}" style="max-width:220px;border:.5px solid var(--border);border-radius:6px;background:#fff">`);}if(r.decision){h+=dr('Resultado',bdgOrden(r.estadoOrden));h+=dr('Fecha entrega',r.fechaEntrega?fmt(r.fechaEntrega):'');h+=dr('Motivo inconformidad',r.motivoInconformidad);}h+=`<hr class="divd"><div class="slbl"><i class="ti ti-history"></i>Línea de tiempo</div><ul class="tl">${(r.timeline||[]).map(t=>`<li class="tli"><div class="tld ${t.tipo==='g'?'g':t.tipo==='e'?'e':t.tipo==='l'?'l':t.tipo==='p'?'p':''}"></div><div class="tlc"><strong style="font-size:12px">${t.evento}</strong><p>${t.fecha}${t.detalle?' — '+t.detalle.substring(0,80):''}</p></div></li>`).join('')}</ul>`;document.getElementById('m-body').innerHTML=h;document.getElementById('modal').classList.add('open');}
+function cerrar(){document.getElementById('modal').classList.remove('open');raReg=null;}
+function abrirEditar(id){
+  const r=regs.find(x=>x.id===id); if(!r) return;
+  document.getElementById('me-title').innerHTML=
+    `<i class="ti ti-edit"></i> Editar orden &nbsp;<span style="font-family:monospace;font-size:12px;background:var(--blue-bg);color:var(--c1);border:.5px solid var(--blue-b);padding:2px 9px;border-radius:5px">${fmtConsecutivo(r)}</span>`;
+  const sel=(arr,val)=>arr.map(v=>`<option value="${v}"${v===val?' selected':''}>${v}</option>`).join('');
+  const TM=['Preventivo','Correctivo','Instalación','Desmonte'];
+  const TE=['Mini-split','Multi-V','Cassete','Pared','Ventana','Otro'];
+  const EO=['Solicitud','En Mantenimiento','Entregado conforme','No conforme'];
+
+  document.getElementById('me-body').innerHTML=`
+    <div class="alert" id="me-alert" style="margin-bottom:10px"></div>
+    <div style="background:var(--amber-bg);border:.5px solid var(--amber-b);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--amber);margin-bottom:12px">
+      <i class="ti ti-alert-triangle"></i> Edite los campos necesarios. La línea de tiempo se actualiza automáticamente.
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-title">Datos del mantenimiento</div>
-    <div class="grid3">
-      <div class="cell"><div class="cell-lbl">Tipo</div><div class="cell-val">${r.tipoMant||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Fecha de ingreso</div><div class="cell-val">${fmt(r.fechaIngreso)}</div></div>
-      <div class="cell"><div class="cell-lbl">Fecha de salida</div><div class="cell-val">${fmt(r.fechaSalida)||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Taller</div><div class="cell-val">${r.taller||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">NIT taller</div><div class="cell-val">${r.tallerNit||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Estado actual</div><div class="cell-val">${r.estado||'—'}</div></div>
+    <!-- SECCIÓN NÚMERO DE SERIE -->
+    <div style="background:var(--blue-bg);border:.5px solid var(--blue-b);border-radius:9px;padding:11px 14px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--c1);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+        <i class="ti ti-barcode"></i> NÚMERO DE SERIE DEL EQUIPO
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+        <div class="field" style="flex:1;min-width:160px">
+          <label>N° de serie actual</label>
+          <input type="text" id="me-serial" value="${r.serial||''}"
+            placeholder="Ingrese el número de serie"
+            oninput="buscarSerialEnEdicion()"
+            style="font-family:monospace;font-size:13px;font-weight:700;letter-spacing:1px">
+        </div>
+        <button class="btn btn-p btn-sm" style="padding:8px 14px" onclick="buscarSerialEnEdicion()">
+          <i class="ti ti-search"></i> Buscar equipo
+        </button>
+      </div>
+      <!-- Panel resultado búsqueda en edición -->
+      <div id="me-serial-resultado" style="margin-top:8px"></div>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-title">Responsable</div>
-    <div class="grid3">
-      <div class="cell"><div class="cell-lbl">Cédula</div><div class="cell-val">${r.cedula||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Nombre</div><div class="cell-val">${r.responsable||'—'}</div></div>
-      <div class="cell"><div class="cell-lbl">Cargo</div><div class="cell-val">${r.cargo||'—'}</div></div>
-      <div class="cell" style="grid-column:span 3"><div class="cell-lbl">Dependencia / Juzgado</div><div class="cell-val">${r.dep||'—'}</div></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Trabajos solicitados</div>
-    <div class="tbox">${r.trabajos||'—'}</div>
-  </div>
-
-  ${r.trabajosR?`<div class="section"><div class="section-title">Trabajos realizados</div><div class="tbox">${r.trabajosR}</div></div>`:''}
-  ${r.estadoIngreso?`<div class="section"><div class="section-title">Estado del vehículo al ingreso</div><div class="tbox">${r.estadoIngreso}</div></div>`:''}
-  ${r.obsE?`<div class="section"><div class="section-title">Observaciones al recibir</div><div class="tbox">${r.obsE}</div></div>`:''}
-
-  <div class="section">
-    <div class="section-title">Calificación de satisfacción</div>
-    ${satHtml}
-  </div>
-
-  <div class="section">
-    <div class="section-title">Línea de tiempo del proceso</div>
-    <table><tbody>${tl}</tbody></table>
-  </div>
-
-  ${firmaSrc?`<div class="section">${firmaSrc}</div>`:''}
-
-  <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:30px">
-    <div style="text-align:center;border-top:1px solid #1e293b;padding-top:6px;font-size:10px;color:#64748b">Firma del responsable que entrega</div>
-    <div style="text-align:center;border-top:1px solid #1e293b;padding-top:6px;font-size:10px;color:#64748b">Firma del funcionario que recibe</div>
-  </div>
-
-  <div class="footer">
-    <span>Rama Judicial — Dirección Seccional Administrativa Arauca</span>
-    <span>ID Registro: ${r.id}</span>
-  </div>
-
-  <script>window.onload=function(){window.print();}<\/script>
-  <!-- MODAL NUEVO RESPONSABLE -->
-<div class="mo" id="modal-resp">
-  <div class="mbox" style="max-width:480px">
-    <div class="mhdr">
-      <h3><i class="ti ti-user-plus" style="color:var(--c2)"></i> Nuevo responsable</h3>
-      <button class="cbtn" onclick="cerrarModalResp()"><i class="ti ti-x"></i></button>
-    </div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">Complete los datos del responsable. Al guardar quedará disponible para autocompletar por cédula.</div>
+    <!-- DATOS DEL EQUIPO -->
     <div class="fg fg2" style="margin-bottom:10px">
-      <div class="field"><label>Número de cédula *</label><input type="text" id="nr-cedula" placeholder="Ej: 12345678"></div>
-      <div class="field"><label>Nombre completo *</label><input type="text" id="nr-nombre" placeholder="Nombre completo"></div>
+      <div class="field"><label>Tipo equipo</label><select id="me-tipoeq">${sel(TE,r.tipoEq)}</select></div>
+      <div class="field"><label>Marca</label><input type="text" id="me-marca" value="${(r.marca||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Capacidad (BTU)</label><input type="text" id="me-cap" value="${r.capacidad||''}"></div>
+      <div class="field"><label>Ubicación</label><input type="text" id="me-ubic" value="${(r.ubicacion||'').replace(/"/g,'&quot;')}"></div>
     </div>
-    <div class="fg fg2" style="margin-bottom:14px">
-      <div class="field"><label>Cargo *</label><input type="text" id="nr-cargo" placeholder="Cargo"></div>
-      <div class="field"><label>Dependencia / Juzgado *</label><input type="text" id="nr-dep" placeholder="Dependencia"></div>
+
+    <!-- DATOS DE LA SOLICITUD -->
+    <div class="fg fg3" style="margin-bottom:10px">
+      <div class="field"><label>Tipo mantenimiento</label><select id="me-tipomant">${sel(TM,r.tipoMant)}</select></div>
+      <div class="field"><label>Fecha solicitud</label><input type="date" id="me-fecha" value="${r.fechaSolicitud||''}"></div>
+      <div class="field"><label>Estado del proceso</label><select id="me-estord">${sel(EO,r.estadoOrden||'Solicitud')}</select></div>
     </div>
-    <div id="nr-alert" class="alert" style="margin-bottom:10px"></div>
+    <div class="fg fg1" style="margin-bottom:10px">
+      <div class="field"><label>Descripción</label><textarea id="me-desc" style="min-height:55px">${r.descripcion||''}</textarea></div>
+    </div>
+
+    <!-- EJECUCIÓN -->
+    <div class="fg fg2" style="margin-bottom:10px">
+      <div class="field"><label>Contratista</label><input type="text" id="me-cont" value="${(r.contratista||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Fecha ejecución</label><input type="date" id="me-fechaej" value="${r.fechaEjecucion||''}"></div>
+    </div>
+    <div class="fg fg1" style="margin-bottom:12px">
+      <div class="field"><label>Actividades realizadas</label><textarea id="me-activ" style="min-height:55px">${r.actividades||''}</textarea></div>
+    </div>
+
     <div style="display:flex;gap:8px">
-      <button class="btn btn-p" onclick="guardarResponsable()"><i class="ti ti-device-floppy"></i>Guardar responsable</button>
-      <button class="btn" onclick="cerrarModalResp()"><i class="ti ti-x"></i>Cancelar</button>
+      <button class="btn btn-s" onclick="guardarEdicion('${id}')"><i class="ti ti-device-floppy"></i>Guardar cambios</button>
+      <button class="btn" onclick="cerrarEditar()"><i class="ti ti-x"></i>Cancelar</button>
+    </div>`;
+
+  // Si ya tiene serial, mostrar info del equipo
+  if(r.serial) setTimeout(()=>buscarSerialEnEdicion(),80);
+
+  document.getElementById('modal-editar').classList.add('open');
+}
+
+// Buscar equipo dentro del modal de edición
+function buscarSerialEnEdicion(){
+  const serialInput = document.getElementById('me-serial');
+  if(!serialInput) return;
+  const serial = (serialInput.value||'').trim().toUpperCase();
+  const res = document.getElementById('me-serial-resultado');
+  if(!res) return;
+
+  if(!serial){ res.innerHTML=''; return; }
+
+  // Buscar todos los registros con ese serial
+  const encontrados = [...new Map(
+    regs.filter(r=>(r.serial||'').toUpperCase().includes(serial))
+        .sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)
+        .map(r=>[r.serial.toUpperCase(),r])
+  ).values()];
+
+  if(!encontrados.length){
+    res.innerHTML=`<div style="font-size:11px;color:var(--text3);padding:6px 0"><i class="ti ti-info-circle"></i> Serial no encontrado en registros existentes — se guardará como nuevo equipo.</div>`;
+    return;
+  }
+
+  // Exacto
+  const exacto = encontrados.find(r=>(r.serial||'').toUpperCase()===serial);
+  if(exacto){
+    res.innerHTML=renderEquipoEdicion(exacto);
+  } else {
+    // Sugerencias
+    res.innerHTML=`<div style="font-size:10px;color:var(--text2);margin-bottom:6px;font-weight:600">Seriales encontrados — haga clic para seleccionar:</div>`+
+      encontrados.slice(0,5).map(r=>`
+        <div onclick="aplicarEquipoEdicion('${r.serial}')" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;border:.5px solid var(--border);margin-bottom:4px;background:#fff;transition:all .15s" onmouseover="this.style.background='var(--blue-bg)'" onmouseout="this.style.background='#fff'">
+          <span style="font-family:monospace;font-weight:700;font-size:12px;color:var(--c1);background:var(--blue-bg);padding:2px 8px;border-radius:4px">${r.serial}</span>
+          <span style="font-size:11px;color:var(--text2)">${[r.tipoEq,r.marca,r.capacidad?r.capacidad+' BTU':''].filter(Boolean).join(' · ')||'Sin datos'}</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3)">${r.despacho||'—'}</span>
+        </div>`).join('');
+  }
+}
+
+function renderEquipoEdicion(r){
+  const historial = regs.filter(x=>(x.serial||'').toUpperCase()===(r.serial||'').toUpperCase())
+                        .sort((a,b)=>b.creadoEn>a.creadoEn?1:-1);
+  return `
+    <div style="background:#fff;border:.5px solid var(--green-b);border-radius:8px;padding:10px 12px;margin-top:4px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <i class="ti ti-circle-check" style="color:var(--green);font-size:15px"></i>
+        <span style="font-size:11px;font-weight:700;color:var(--green)">Equipo encontrado</span>
+        <button onclick="aplicarEquipoEdicion('${r.serial}')" class="btn btn-s btn-sm" style="margin-left:auto;padding:3px 10px">
+          <i class="ti ti-arrow-right"></i> Aplicar a esta orden
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:11px;margin-bottom:8px">
+        <div><div style="color:var(--text2);font-size:10px">Tipo</div><div style="font-weight:600">${r.tipoEq||'—'}</div></div>
+        <div><div style="color:var(--text2);font-size:10px">Marca</div><div style="font-weight:600">${r.marca||'—'}</div></div>
+        <div><div style="color:var(--text2);font-size:10px">Capacidad</div><div style="font-weight:600">${r.capacidad?r.capacidad+' BTU':'—'}</div></div>
+        <div><div style="color:var(--text2);font-size:10px">Ubicación</div><div style="font-weight:600;font-size:10px">${r.ubicacion||'—'}</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--text2);font-weight:600;margin-bottom:4px">Historial (${historial.length} orden${historial.length!==1?'es':''}):</div>
+      <div style="max-height:100px;overflow-y:auto">
+        ${historial.map(h=>`
+          <div style="display:flex;gap:6px;align-items:center;padding:3px 0;border-bottom:.5px solid var(--border);font-size:10px">
+            <span style="font-family:monospace;color:var(--c1);font-weight:700;flex-shrink:0">${fmtConsecutivo(h)}</span>
+            ${bdgTipo(h.tipoMant)}
+            <span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.despacho||'—'}</span>
+            <span style="color:var(--text3);flex-shrink:0">${h.fechaSolicitud?fmt(h.fechaSolicitud):'—'}</span>
+            ${bdgOrden(h.estadoOrden||'Solicitud')}
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function aplicarEquipoEdicion(serial){
+  const r = regs.filter(x=>(x.serial||'').toUpperCase()===serial.toUpperCase())
+                .sort((a,b)=>a.creadoEn>b.creadoEn?1:-1)[0];
+  if(!r) return;
+  // Rellenar el campo serial con el valor exacto
+  const inp=document.getElementById('me-serial');
+  if(inp) inp.value=r.serial;
+  // Rellenar datos del equipo
+  const tipoeq=document.getElementById('me-tipoeq');
+  const marca=document.getElementById('me-marca');
+  const cap=document.getElementById('me-cap');
+  const ubic=document.getElementById('me-ubic');
+  if(tipoeq) tipoeq.value=r.tipoEq||'';
+  if(marca) marca.value=r.marca||'';
+  if(cap) cap.value=r.capacidad||'';
+  if(ubic) ubic.value=r.ubicacion||'';
+  // Actualizar resultado con panel de confirmación
+  const res=document.getElementById('me-serial-resultado');
+  if(res) res.innerHTML=renderEquipoEdicion(r);
+  // Feedback visual
+  const alertEl=document.getElementById('me-alert');
+  if(alertEl){alertEl.className='alert show as';alertEl.innerHTML='<i class="ti ti-circle-check"></i> Equipo '+r.serial+' aplicado — revise y guarde los cambios';}
+}
+async function guardarEdicion(id){
+  const r=regs.find(x=>x.id===id); if(!r) return;
+  const serialAnterior=r.serial||'';
+  const serialNuevo=(document.getElementById('me-serial').value||'').trim().toUpperCase();
+  r.serial=serialNuevo;
+  r.tipoMant=document.getElementById('me-tipomant').value;
+  r.fechaSolicitud=document.getElementById('me-fecha').value;
+  r.tipoEq=document.getElementById('me-tipoeq').value;
+  r.marca=document.getElementById('me-marca').value;
+  r.capacidad=document.getElementById('me-cap').value;
+  r.ubicacion=document.getElementById('me-ubic').value;
+  r.descripcion=document.getElementById('me-desc').value;
+  r.contratista=document.getElementById('me-cont').value;
+  r.fechaEjecucion=document.getElementById('me-fechaej').value;
+  r.estadoOrden=document.getElementById('me-estord').value;
+  r.estado=r.estadoOrden;
+  r.actividades=document.getElementById('me-activ').value;
+  const detalle=serialNuevo!==serialAnterior
+    ? `Serial: ${serialAnterior||'(vacío)'} → ${serialNuevo||'(vacío)'} | Estado: ${r.estadoOrden}`
+    : `Estado: ${r.estadoOrden}`;
+  r.timeline.push({fecha:fmtNow(),evento:'Registro editado manualmente',tipo:'i',detalle});
+  await saveData(r,false);
+  const el=document.getElementById('me-alert');
+  el.className='alert show as';
+  el.innerHTML='<i class="ti ti-circle-check"></i> Cambios guardados'+(serialNuevo!==serialAnterior?` — Serial actualizado a <strong>${serialNuevo}</strong>`:'');
+  setTimeout(()=>{cerrarEditar();renderAll();},1200);
+}
+function cerrarEditar(){document.getElementById('modal-editar').classList.remove('open');}
+function exportar(){if(!regs.length){alert('No hay datos para exportar');return;}const enc=s=>`"${(s||'').toString().replace(/"/g,"''")}"`; const cab='ID,Serial,Ciudad,Inmueble,Despacho,Tipo Mant.,Fecha Solicitud,Tipo Equipo,Marca,Modelo,Capacidad,Ubicación,Estado Orden,Contratista,Fecha Ejecución,Actividades,Responsable Recibe,Cargo,Satisfacción,Decisión\n';const fil=regs.map(r=>[r.id,r.serial,r.ciudad,r.inmueble,enc(r.despacho),r.tipoMant,r.fechaSolicitud||'',r.tipoEq||'',r.marca||'',r.modelo||'',r.capacidad||'',enc(r.ubicacion||''),r.estadoOrden||'',r.contratista||'',r.fechaEjecucion||'',enc(r.actividades||''),r.responsableRecibe||'',r.cargoResp||'',r.satisfaccion?SATS[r.satisfaccion]:'',r.decision||''].join(',')).join('\n');const blob=new Blob(['\uFEFF'+cab+fil],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`SIGE_AC_${hoy()}.csv`;a.click();}
+function imprimirResumen(){if(raReg)imprimirResumenId(raReg.id);}
+function imprimirResumenId(id){
+  const r=regs.find(x=>x.id===id);
+  if(!r)return;
+
+  // ── Helpers de fecha ──
+  const fmtFecha=(d)=>{
+    if(!d)return'__/__/____';
+    const[y,m,dd]=d.split('-');
+    return`${dd}/${m}/${y}`;
+  };
+  const parseFecha=(d)=>{
+    if(!d)return{dia:'____',mes:'____________',anio:'____'};
+    const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const[y,m,dd]=d.split('-');
+    return{dia:dd,mes:meses[parseInt(m,10)-1]||m,anio:y};
+  };
+
+  const fs=parseFecha(r.fechaSolicitud);
+  const fe=parseFecha(r.fechaEjecucion);
+  const codOrden=fmtConsecutivo(r);
+  const firmaSrc=r.firma?`<img src="${r.firma}" style="height:50px;max-width:200px">`:'';
+  const satTexto={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
+  const marcaSI = r.decision==='conforme'?'✔':'';
+  const marcaNO = r.decision==='no-conforme'?'✔':'';
+
+  const win=window.open('','_blank','width=850,height=1100');
+  win.document.write(`<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="UTF-8">
+<title>Orden ${codOrden}</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Times New Roman',Times,serif;font-size:11pt;color:#000;background:#fff;padding:18px 22px}
+  .page{width:100%;max-width:740px;margin:0 auto}
+  /* ENCABEZADO INSTITUCIONAL */
+  .inst-hdr{display:flex;align-items:center;gap:10px;border:1px solid #000;padding:6px 10px;margin-bottom:0}
+  .inst-logo{width:70px;flex-shrink:0;text-align:center}
+  .inst-logo img{width:60px}
+  .inst-logo-txt{font-size:7pt;line-height:1.3;text-align:center}
+  .inst-middle{flex:1;text-align:center;line-height:1.5}
+  .inst-middle .entidad{font-size:12pt;font-weight:bold;font-style:italic}
+  .inst-middle .sub{font-size:11pt;font-style:italic}
+  .inst-right{width:120px;text-align:right;font-size:8pt;color:#444;line-height:1.5}
+  /* TÍTULO FORMATO */
+  .fmt-title{border:1px solid #000;border-top:none;text-align:center;padding:5px;font-weight:bold;font-size:11.5pt;letter-spacing:.3px}
+  /* SECCIÓN TÍTULO */
+  .sec-title{background:#bfbfbf;border:1px solid #000;border-top:none;text-align:center;padding:4px;font-weight:bold;font-size:11pt;letter-spacing:.5px}
+  /* CUADRO PRINCIPAL */
+  .main-box{border:1px solid #000;border-top:none;padding:8px 12px}
+  .field-line{margin-bottom:6px;font-size:10.5pt;line-height:1.6}
+  .field-line .lbl{font-weight:bold}
+  .field-val{border-bottom:1px solid #000;display:inline-block;min-width:120px;padding:0 3px}
+  .field-val.wide{min-width:340px}
+  .field-val.full{min-width:96%;display:block;margin-top:2px}
+  /* NÚMERO DE ORDEN DESTACADO */
+  .no-orden{display:inline-block;font-family:'Courier New',monospace;font-size:13pt;font-weight:bold;color:#1a3a5c;background:#e8f0fa;padding:2px 10px;border:1px solid #1a3a5c;border-radius:3px}
+  /* TABLA INTERIOR */
+  .inner-table{width:100%;border-collapse:collapse;margin-top:6px}
+  .inner-table td,.inner-table th{border:1px solid #000;padding:5px 8px;font-size:10pt;vertical-align:top}
+  .inner-table th{background:#e0e0e0;font-weight:bold;text-align:center;font-size:10pt}
+  /* SECCIÓN EJECUCIÓN */
+  .exec-box{border:1px solid #000;border-top:none;padding:8px 12px}
+  /* TABLA SATISFACCIÓN */
+  .sat-table{width:100%;border-collapse:collapse;margin-top:4px}
+  .sat-table td{border:1px solid #000;padding:5px 8px;font-size:10pt;vertical-align:middle}
+  .sat-table .sat-lbl{font-weight:bold;background:#f0f0f0;width:38%}
+  /* INDICADORES */
+  .ind-table{width:100%;border-collapse:collapse}
+  .ind-table td{border:1px solid #000;padding:5px 7px;font-size:10pt;text-align:center;vertical-align:middle}
+  .ind-table .ind-lbl{text-align:left;font-size:10pt}
+  /* MARCAS SI/NO */
+  .marca-box{display:inline-block;width:18px;height:18px;border:1.5px solid #000;text-align:center;line-height:17px;font-size:13pt;font-weight:bold;vertical-align:middle}
+  /* FIRMAS */
+  .firma-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:10px}
+  .firma-box{border-top:1.5px solid #000;padding-top:5px;text-align:center;font-size:9.5pt}
+  .firma-img{min-height:50px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+  /* PIE */
+  .footer-row{display:flex;justify-content:space-between;font-size:8.5pt;color:#555;margin-top:10px;padding-top:6px;border-top:1px solid #ccc}
+  @media print{
+    body{padding:10px 12px}
+    @page{size:letter;margin:1.2cm}
+    .no-print{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- BOTONES ACCIÓN -->
+  <div class="no-print" style="margin-bottom:12px;display:flex;gap:8px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px">
+    <span style="font-size:11px;color:#64748b;margin-right:4px">Acciones:</span>
+    <button id="btn-imprimir" onclick="window.print()" style="padding:7px 16px;background:#1a3a5c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px">🖨 Imprimir</button>
+    <button id="btn-pdf" onclick="guardarPDF()" style="padding:7px 16px;background:#1e8449;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px">⬇ Guardar PDF</button>
+    <button onclick="window.close()" style="padding:7px 12px;background:#e2e8f0;color:#374151;border:none;border-radius:6px;cursor:pointer;font-size:12px">✕ Cerrar</button>
+    <span id="pdf-status" style="font-size:11px;color:#64748b;margin-left:4px"></span>
+  </div>
+
+  <!-- ENCABEZADO INSTITUCIONAL -->
+  <div class="inst-hdr">
+    <div class="inst-logo">
+      <div class="inst-logo-txt"><strong>Rama Judicial<br>del Poder Público</strong><br>Consejo Superior<br>de la Judicatura<br>República de Colombia</div>
     </div>
-    <div style="margin-top:14px">
-      <div class="slbl" style="margin-bottom:8px"><i class="ti ti-users"></i>Responsables registrados</div>
-      <div id="nr-lista"></div>
+    <div class="inst-middle">
+      <div class="entidad">Rama Judicial del Poder Público</div>
+      <div class="sub">Consejo Superior de la Judicatura</div>
+      <div class="sub">Sala Administrativa</div>
+      <div class="sub">Dirección Seccional de Administración Judicial de Arauca</div>
+    </div>
+    <div class="inst-right">
+      Código: ______<br>
+      Versión: ______<br>
+      Página: 1 de 1
     </div>
   </div>
-</div>
 
+  <!-- TÍTULO FORMATO -->
+  <div class="fmt-title">FORMATO PRESTACIÓN DE SERVICIOS ÁREA ADMINISTRATIVA</div>
+
+  <!-- SECCIÓN SOLICITUD -->
+  <div class="sec-title">SOLICITUD DE SERVICIOS</div>
+  <div class="main-box">
+
+    <!-- N° DE ORDEN Y CIUDAD / FECHA -->
+    <div class="field-line" style="display:flex;gap:20px;flex-wrap:wrap;align-items:baseline">
+      <span><span class="lbl">No. de Orden: </span><span class="no-orden">${codOrden}</span></span>
+      <span><span class="lbl">Ciudad: </span><span class="field-val">&nbsp;${r.ciudad||'___________'}&nbsp;</span></span>
+      <span><span class="lbl">Fecha: </span><span class="field-val">&nbsp;${fs.dia} de ${fs.mes} de ${fs.anio}&nbsp;</span></span>
+    </div>
+
+    <!-- OFICINA / DESPACHO -->
+    <div class="field-line" style="margin-top:7px">
+      <span class="lbl">Oficina o despacho que requiere el servicio: </span>
+      <span class="field-val wide">&nbsp;${r.despacho||'_________________________________'}&nbsp;</span>
+    </div>
+
+    <!-- INMUEBLE -->
+    ${r.inmueble?`<div class="field-line"><span class="lbl">Inmueble: </span><span class="field-val wide">&nbsp;${r.inmueble}&nbsp;</span></div>`:''}
+
+    <!-- TIPO DE MANTENIMIENTO Y SERIAL -->
+    <div class="field-line" style="display:flex;gap:20px;flex-wrap:wrap">
+      <span><span class="lbl">Tipo de mantenimiento: </span><span class="field-val">&nbsp;${r.tipoMant||'___________'}&nbsp;</span></span>
+      <span><span class="lbl">No. Serie equipo: </span><span class="field-val">&nbsp;${r.serial||'___________'}&nbsp;</span></span>
+    </div>
+
+    <!-- DATOS DEL EQUIPO -->
+    <div style="margin-top:7px">
+      <table class="inner-table">
+        <thead>
+          <tr>
+            <th>Tipo de equipo</th><th>Marca</th><th>Capacidad (BTU)</th><th>Ubicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${r.tipoEq||'—'}</td>
+            <td>${r.marca||'—'}</td>
+            <td>${r.capacidad||'—'}</td>
+            <td>${r.ubicacion||'—'}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DESCRIPCIÓN DE LA SOLICITUD -->
+    <div class="field-line" style="margin-top:8px">
+      <span class="lbl">Servicio solicitado / Descripción: </span>
+      <div class="field-val full" style="min-height:38px;border:1px solid #aaa;padding:3px 6px;border-radius:2px;background:#fafafa">${r.descripcion||''}</div>
+    </div>
+
+  </div>
+
+  <!-- SECCIÓN EJECUCIÓN -->
+  <div class="sec-title" style="margin-top:0">EJECUCIÓN DEL MANTENIMIENTO</div>
+  <div class="exec-box">
+
+    <div class="field-line" style="display:flex;gap:20px;flex-wrap:wrap">
+      <span><span class="lbl">Contratista / Técnico: </span><span class="field-val wide">&nbsp;${r.contratista||'_______________________________'}&nbsp;</span></span>
+    </div>
+    <div class="field-line" style="display:flex;gap:20px;flex-wrap:wrap;margin-top:5px">
+      <span><span class="lbl">Fecha de ejecución: </span><span class="field-val">&nbsp;${fe.dia} de ${fe.mes} de ${fe.anio}&nbsp;</span></span>
+      <span><span class="lbl">Estado final del equipo: </span><span class="field-val">&nbsp;${r.estadoFin||'___________'}&nbsp;</span></span>
+    </div>
+
+    <!-- ACTIVIDADES -->
+    <div class="field-line" style="margin-top:7px">
+      <span class="lbl">Actividades realizadas: </span>
+      <div class="field-val full" style="min-height:55px;border:1px solid #aaa;padding:3px 6px;border-radius:2px;background:#fafafa">${(r.actividades||'').replace(/\n/g,'<br>')}</div>
+    </div>
+
+    <!-- OBSERVACIONES -->
+    ${r.obsTecnico?`<div class="field-line" style="margin-top:6px">
+      <span class="lbl">Observaciones: </span>
+      <div class="field-val full" style="min-height:35px;border:1px solid #aaa;padding:3px 6px;border-radius:2px;background:#fafafa">${r.obsTecnico.replace(/\n/g,'<br>')}</div>
+    </div>`:''}
+
+  </div>
+
+  <!-- SECCIÓN ENTREGA A SATISFACCIÓN -->
+  <div class="sec-title" style="margin-top:0">ENTREGA A SATISFACCIÓN</div>
+  <div class="exec-box">
+
+    <!-- CALIFICACIÓN -->
+    <table class="sat-table">
+      <tr>
+        <td class="sat-lbl">Calificación del servicio</td>
+        <td>${r.satisfaccion?`<strong>${satTexto[r.satisfaccion]||r.satisfaccion}</strong> (${r.satisfaccion}/5)`:'Sin calificación'}</td>
+      </tr>
+      <tr>
+        <td class="sat-lbl">Responsable que recibe</td>
+        <td>${r.responsableRecibe||'_______________________________'}</td>
+      </tr>
+      <tr>
+        <td class="sat-lbl">Cargo</td>
+        <td>${r.cargoResp||'_______________________________'}</td>
+      </tr>
+      <tr>
+        <td class="sat-lbl">Fecha de recibo</td>
+        <td>${r.fechaEntrega?fmtFecha(r.fechaEntrega):'__/__/____'}</td>
+      </tr>
+      ${r.obsEntrega?`<tr><td class="sat-lbl">Observaciones al recibir</td><td>${r.obsEntrega}</td></tr>`:''}
+    </table>
+
+    <!-- DECISIÓN CONFORME / NO CONFORME -->
+    <div style="margin-top:12px;display:flex;gap:30px;align-items:center">
+      <strong style="font-size:10.5pt">¿Recibe conforme?</strong>
+      <span><span class="marca-box">${marcaSI}</span>&nbsp;&nbsp;<strong>SÍ — Conforme</strong></span>
+      <span><span class="marca-box">${marcaNO}</span>&nbsp;&nbsp;<strong>NO — No conforme</strong></span>
+    </div>
+    ${r.motivoInconformidad?`<div class="field-line" style="margin-top:7px">
+      <span class="lbl">Motivo de la inconformidad: </span>
+      <div class="field-val full" style="min-height:30px;border:1px solid #aaa;padding:3px 6px;border-radius:2px;background:#fff3f3">${r.motivoInconformidad}</div>
+    </div>`:''}
+
+    <!-- FIRMAS -->
+    <div class="firma-row" style="margin-top:16px">
+      <div class="firma-box">
+        <div class="firma-img"><div style="color:#94a3b8;font-size:9pt">— Espacio para firma física —</div></div>
+        <div><strong>FIRMA CONTRATISTA O TÉCNICO</strong></div>
+        <div style="font-size:9pt;margin-top:2px">${r.contratista||'_______________________'}</div>
+      </div>
+      <div class="firma-box">
+        <div class="firma-img">${firmaSrc||'<div style="color:#94a3b8;font-size:9pt">— Firma digital registrada —</div>'}</div>
+        <div><strong>FIRMA SERVIDOR JUDICIAL QUE RECIBE</strong></div>
+        <div style="font-size:9pt;margin-top:2px">${r.responsableRecibe||'_______________________'}</div>
+        ${r.cargoResp?`<div style="font-size:9pt">${r.cargoResp}</div>`:''}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <div class="footer-row">
+    <span>SIGE — Rama Judicial · Dirección Seccional Administrativa Arauca</span>
+    <span>Orden: ${codOrden} &nbsp;|&nbsp; Generado: ${fmtNow()}</span>
+  </div>
+
+</div>
+<script>
+function guardarPDF(){
+  var el=document.querySelector('.page');
+  var st=document.getElementById('pdf-status');
+  var btnPrint=document.getElementById('btn-imprimir');
+  var btnPdf=document.getElementById('btn-pdf');
+  if(!el){alert('No se encontró el contenido a exportar');return;}
+  st.textContent='Generando PDF...';
+  btnPdf.disabled=true;btnPdf.style.opacity='0.6';
+  btnPrint.disabled=true;
+
+  // Escalar correctamente
+  var origW=el.offsetWidth;
+  html2canvas(el,{
+    scale:2,
+    useCORS:true,
+    allowTaint:true,
+    backgroundColor:'#ffffff',
+    width:origW,
+    scrollX:0,scrollY:0
+  }).then(function(canvas){
+    var imgData=canvas.toDataURL('image/jpeg',0.97);
+    var w=canvas.width, h=canvas.height;
+    // Tamaño carta en pts: 612 x 792
+    var pdfW=612, pdfH=Math.round((h/w)*pdfW);
+    var {jsPDF}=window.jspdf;
+    var orient=pdfH>pdfW?'p':'l';
+    var doc=new jsPDF({orientation:orient,unit:'pt',format:[pdfW,pdfH]});
+    doc.addImage(imgData,'JPEG',0,0,pdfW,pdfH);
+    var nombre=el.querySelector('.no-orden')?el.querySelector('.no-orden').textContent.trim():'orden';
+    doc.save('OrdenServicio_'+nombre+'.pdf');
+    st.textContent='✓ PDF guardado correctamente';
+    btnPdf.disabled=false;btnPdf.style.opacity='1';
+    btnPrint.disabled=false;
+    setTimeout(function(){st.textContent='';},4000);
+  }).catch(function(err){
+    st.textContent='Error al generar PDF: '+err.message;
+    btnPdf.disabled=false;btnPdf.style.opacity='1';
+    btnPrint.disabled=false;
+  });
+}
+// No auto-imprimir al cargar — el usuario elige
+<\/script>
 </body></html>`);
   win.document.close();
 }
-// ── ENLACE DE ENCUESTA ────────────────────────────────
-function generarEnlaceEncuesta(id){
-  const r=regs.find(x=>x.id===id);if(!r)return;
-  // Empaqueta solo los datos necesarios en un objeto compacto
-  const payload={
-    id:r.id,
-    placa:r.placa,
-    clase:r.clase||'',
-    marca:r.marca||'',
-    modelo:r.modeloVeh||'',
-    tipo:r.tipoVeh||'',
-    municipio:r.municipio||'',
-    tipoMant:r.tipoMant||'',
-    fechaIngreso:r.fechaIngreso||'',
-    fechaSalida:r.fechaSalida||'',
-    km:r.km||'',
-    taller:r.taller||'',
-    tallerNit:r.tallerNit||'',
-    trabajos:r.trabajos||'',
-    trabajosR:r.trabajosR||'',
-    responsable:r.responsable||'',
-    cedula:r.cedula||'',
-    cargo:r.cargo||'',
-    dep:r.dep||''
-  };
-  // Codifica en base64 para la URL
+
+function renderDash(){const tot=regs.length,sol=regs.filter(r=>r.estadoOrden==='Solicitud').length,mant=regs.filter(r=>r.estadoOrden==='En Mantenimiento').length,conf=regs.filter(r=>r.estadoOrden==='Entregado conforme').length,nconf=regs.filter(r=>r.estadoOrden==='No conforme').length,tasaConf=tot>0?Math.round(conf/tot*100):0,satNums=regs.filter(r=>r.satisfaccion).map(r=>parseInt(r.satisfaccion)),satProm=satNums.length?(satNums.reduce((a,b)=>a+b,0)/satNums.length).toFixed(1):'—';document.getElementById('krow').innerHTML=`<div class="kpi"><div class="val" style="color:var(--c1)">${tot}</div><div class="lbl">Total órdenes</div><div class="sub">${new Set(regs.map(r=>r.serial)).size} equipo(s)</div></div><div class="kpi"><div class="val" style="color:#378ADD">${sol+mant}</div><div class="lbl">En proceso</div><div class="sub">${sol} sol · ${mant} mant.</div></div><div class="kpi"><div class="val" style="color:var(--green)">${conf}</div><div class="lbl">Conformes</div><div class="sub">${tasaConf}% tasa conformidad</div></div><div class="kpi"><div class="val" style="color:var(--red)">${nconf}</div><div class="lbl">No conformes</div><div class="sub">${nconf>0?'Requieren atención':'Sin inconformidades'}</div></div><div class="kpi"><div class="val" style="color:${satProm!=='—'&&parseFloat(satProm)>=4?'#155230':satProm!=='—'&&parseFloat(satProm)>=3?'#7c6500':'#8b1a1a'}">${satProm}${satProm!=='—'?'/5':''}</div><div class="lbl">Satisfacción prom.</div><div class="sub">${satNums.length} calificación(es)</div></div>`;const tipos=['Preventivo','Correctivo','Instalación','Desmonte'];const tC=tipos.map(t=>regs.filter(r=>r.tipoMant===t).length);document.getElementById('leg-tipo').innerHTML=tipos.map((t,i)=>`<span><span class="lsq" style="background:${CT_TIPOS[t]}"></span>${t} (${tC[i]})</span>`).join('');const ctxT=document.getElementById('ch-tipo');if(!tot){if(ctxT)ctxT.style.display='none';}else{if(ctxT)ctxT.style.display='block';if(chTipo)chTipo.destroy();chTipo=new Chart(ctxT,{type:'bar',data:{labels:tipos,datasets:[{data:tC,backgroundColor:tipos.map(t=>CT_TIPOS[t]),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});}const muns=[...new Set(regs.map(r=>r.ciudad).filter(Boolean))];const munSorted=muns.map(m=>({m,c:regs.filter(r=>r.ciudad===m).length})).sort((a,b)=>b.c-a.c);const maxMun=Math.max(...munSorted.map(x=>x.c),1);document.getElementById('mun-act').innerHTML=munSorted.map(x=>`<div class="vrow"><span style="font-size:12px;min-width:90px;flex-shrink:0">${x.m}</span><div class="pbar"><div class="pfill" style="width:${Math.round(x.c/maxMun*100)}%;background:var(--c2)"></div></div><span style="font-size:11px;font-weight:600;color:var(--c2);min-width:24px;text-align:right">${x.c}</span></div>`).join('')||'<div class="empty" style="padding:1rem"><i class="ti ti-wind"></i>Sin datos</div>';const ctxS=document.getElementById('ch-sat');if(chSat)chSat.destroy();const munConSat=muns.filter(m=>regs.some(r=>r.ciudad===m&&r.satisfaccion));if(munConSat.length){const promsMun=munConSat.map(m=>{const ss=regs.filter(r=>r.ciudad===m&&r.satisfaccion).map(r=>parseInt(r.satisfaccion));return{m,p:(ss.reduce((a,b)=>a+b,0)/ss.length).toFixed(1)};});if(chSat)chSat.destroy();chSat=new Chart(ctxS,{type:'bar',data:{labels:promsMun.map(x=>x.m),datasets:[{label:'Satisfacción',data:promsMun.map(x=>x.p),backgroundColor:'rgba(37,99,168,.75)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:5,ticks:{stepSize:1}}}}});}const estC=ESTADOS_ORDEN.map(e=>regs.filter(r=>(r.estadoOrden||'Solicitud')===e).length);const ctxE=document.getElementById('ch-est');if(chEst)chEst.destroy();if(!estC.every(x=>x===0)){if(ctxE)ctxE.style.display='block';chEst=new Chart(ctxE,{type:'doughnut',data:{labels:ESTADOS_ORDEN,datasets:[{data:estC,backgroundColor:CE_ESTADOS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});}document.getElementById('leg-est').innerHTML=ESTADOS_ORDEN.map((e,i)=>`<div class="vrow" style="padding:4px 0"><span class="lsq" style="background:${CE_ESTADOS[i]};display:inline-block;margin-right:5px;border-radius:2px"></span><span style="font-size:11px">${e}</span><span style="margin-left:auto;font-weight:700;font-size:12px;color:${CE_ESTADOS[i]}">${estC[i]}</span></div>`).join('');const enProceso=regs.filter(r=>!['Entregado conforme','No conforme'].includes(r.estadoOrden)).length;document.getElementById('ind-panel').innerHTML=`<div class="ebar"><span class="elbl">Conformidad</span><div class="etr"><div class="efl" style="width:${tasaConf}%;background:#1e8449"></div></div><span class="evl">${tasaConf}%</span></div><div class="ebar"><span class="elbl">En proceso</span><div class="etr"><div class="efl" style="width:${tot?Math.round(enProceso/tot*100):0}%;background:#EF9F27"></div></div><span class="evl">${enProceso}</span></div><div class="ebar"><span class="elbl">Con firma</span><div class="etr"><div class="efl" style="width:${tot?Math.round(regs.filter(r=>r.firma).length/tot*100):0}%;background:#378ADD"></div></div><span class="evl">${regs.filter(r=>r.firma).length}</span></div><div class="ebar"><span class="elbl">Con calif.</span><div class="etr"><div class="efl" style="width:${tot?Math.round(satNums.length/tot*100):0}%;background:#7C3AED"></div></div><span class="evl">${satNums.length}</span></div>`;const rec=regs.slice(0,5);document.getElementById('act-rec').innerHTML=rec.length?rec.map(r=>`<div class="tli-row"><div class="tld" style="width:8px;height:8px;border-radius:50%;background:${CE_ESTADOS[ESTADOS_ORDEN.indexOf(r.estadoOrden||'Solicitud')]||'#94a3b8'};flex-shrink:0;margin-top:4px"></div><div><div style="font-size:12px;font-weight:600"><span class="serial-tag">${r.serial}</span> ${r.tipoMant}</div><div style="font-size:11px;color:var(--text2)">${r.ciudad||'—'} · ${r.fechaSolicitud?fmt(r.fechaSolicitud):'—'} · ${bdgOrden(r.estadoOrden||'Solicitud')}</div></div></div>`).join(''):'<div class="empty" style="padding:1.5rem"><i class="ti ti-wind"></i>Sin actividad</div>';const seriales=[...new Set(regs.map(r=>r.serial))];document.getElementById('equipo-det').innerHTML=seriales.slice(0,8).map(s=>{const ur=regs.find(r=>r.serial===s);return`<div class="vrow"><span style="font-size:11px"><span class="serial-tag">${s}</span></span>${bdgOrden(ur&&ur.estadoOrden||'Solicitud')}</div>`;}).join('')||'<div class="empty" style="padding:1rem"><i class="ti ti-wind"></i>Sin equipos</div>';renderSatGlobal();}
+function renderSatGlobal(){const todos=regs.filter(r=>r.satisfaccion).map(r=>parseInt(r.satisfaccion));if(!todos.length){document.getElementById('sat-global').innerHTML='<div class="empty" style="padding:1rem"><i class="ti ti-star"></i>Sin calificaciones</div>';return;}const promGlobal=(todos.reduce((a,b)=>a+b,0)/todos.length).toFixed(1);const dist=[5,4,3,2,1].map(v=>({v,c:todos.filter(x=>x===v).length,col:SCOLORS[v],lbl:SATS[v]}));const mx=Math.max(...dist.map(d=>d.c),1);document.getElementById('sat-global').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="font-size:28px;font-weight:700;color:${SCOLORS[Math.round(parseFloat(promGlobal))]||'#1e8449'}">${promGlobal}/5</div><div><div style="font-size:12px;font-weight:600;color:var(--c1)">${SATS[Math.round(parseFloat(promGlobal))]||''}</div><div style="font-size:11px;color:var(--text2)">${todos.length} calificación(es)</div></div></div>${dist.map(d=>`<div class="ebar"><span class="elbl" style="color:${d.col};min-width:120px">${d.lbl}</span><div class="etr"><div class="efl" style="width:${Math.round(d.c/mx*100)}%;background:${d.col}"></div></div><span class="evl">${d.c}</span></div>`).join('')}`;}
+
+async function recargarDatos(){await loadData();showToast('Datos actualizados','s');}
+function renderAll(){if(document.getElementById('panel-historial').classList.contains('active'))renderHist();if(document.getElementById('panel-dashboard').classList.contains('active'))renderDash();if(document.getElementById('panel-buscar').classList.contains('active')){const q=document.getElementById('inp-bus').value;if(q)buscarGlobal();}document.getElementById('last-update').textContent='Actualizado: '+fmtNow();}
+(async function(){
+  ['modal','modal-editar'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('click',function(e){if(e.target===this){if(id==='modal')cerrar();else cerrarEditar();}});});
+  document.getElementById('f-fecha').value=hoy();
+  renderEncuesta();
+
+  // Auto-reconectar Firebase si hay config guardada
+  const savedCfg=localStorage.getItem('sige_fb_cfg');
+  if(savedCfg){
+    if(document.getElementById('fb-config-input'))document.getElementById('fb-config-input').value=savedCfg;
+    try{
+      const cfg=JSON.parse(savedCfg.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/.*/g,''));
+      fbApp=initializeApp(cfg,'sige_'+Date.now());
+      db=getFirestore(fbApp);
+      await getDocs(query(collection(db,'ordenes'),orderBy('_ts','desc')));
+      isDemoMode=false;
+      setDbStatus('firebase');
+      await loadData();
+    }catch(e){
+      console.warn('Firebase auto-connect failed:',e.message);
+      isDemoMode=true;db=null;
+      setDbStatus('local');
+      await loadData();
+    }
+  }else{
+    isDemoMode=true;db=null;
+    setDbStatus('local');
+    await loadData();
+  }
+  document.getElementById('last-update').textContent='Iniciado: '+fmtNow();
+})();
+
+
+// ── ENLACE ENCUESTA POR CORREO ──
+function generarEnlaceEncuesta(){
+  if(!ordenActiva){showA('No hay orden activa','e');return;}
+  const r=ordenActiva;
+  const payload={id:r.id,serial:r.serial,tipoMant:r.tipoMant,despacho:r.despacho,ciudad:r.ciudad,contratista:r.contratista||'',fechaEjecucion:r.fechaEjecucion||'',actividades:r.actividades||''};
   const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  // Genera la URL que abre la página de encuesta inline en una nueva ventana
   const url=window.location.href.split('?')[0]+'?encuesta='+encoded;
   document.getElementById('enc-link-box').style.display='block';
   document.getElementById('enc-link-input').value=url;
   document.getElementById('enc-link-copied').style.display='none';
 }
-
 function copiarEnlace(){
   const inp=document.getElementById('enc-link-input');
   navigator.clipboard.writeText(inp.value).then(()=>{
-    const msg=document.getElementById('enc-link-copied');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',3000);
-  }).catch(()=>{
-    inp.select();document.execCommand('copy');
-    const msg=document.getElementById('enc-link-copied');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',3000);
-  });
+    const m=document.getElementById('enc-link-copied');m.style.display='block';setTimeout(()=>m.style.display='none',3000);
+  }).catch(()=>{inp.select();document.execCommand('copy');});
 }
-
-function compartirWhatsApp(id){
-  const r=regs.find(x=>x.id===id);if(!r)return;
-  const payload={id:r.id,placa:r.placa,clase:r.clase||'',marca:r.marca||'',modelo:r.modeloVeh||'',tipo:r.tipoVeh||'',municipio:r.municipio||'',tipoMant:r.tipoMant||'',fechaIngreso:r.fechaIngreso||'',fechaSalida:r.fechaSalida||'',km:r.km||'',taller:r.taller||'',tallerNit:r.tallerNit||'',trabajos:r.trabajos||'',trabajosR:r.trabajosR||'',responsable:r.responsable||'',cedula:r.cedula||'',cargo:r.cargo||'',dep:r.dep||''};
-  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  const url=window.location.href.split('?')[0]+'?encuesta='+encoded;
-  const msg=encodeURIComponent(`*Encuesta de satisfacción — Rama Judicial Arauca*\n\nEstimado conductor, le solicitamos completar la encuesta de satisfacción sobre el mantenimiento del vehículo *${r.placa}* (${r.tipoVeh||''}) realizado el ${fmt(r.fechaIngreso)} en ${r.taller||'el taller'}.\n\n🔗 Enlace encuesta:\n${url}`);
+function enviarCorreo(){
+  if(!ordenActiva){showA('No hay orden activa','e');return;}
+  const correo=document.getElementById('g-correo-resp').value.trim();
+  if(!correo){showA('Ingrese el correo del responsable primero','e');return;}
+  generarEnlaceEncuesta();
+  const url=document.getElementById('enc-link-input').value;
+  const r=ordenActiva;
+  const asunto=encodeURIComponent(`Encuesta de satisfacción — Mantenimiento AC ${r.serial} · Rama Judicial Arauca`);
+  const cuerpo=encodeURIComponent(`Estimado/a responsable,\n\nLe solicitamos completar la encuesta de satisfacción sobre el servicio de mantenimiento del equipo serial ${r.serial} (${r.tipoMant}) realizado en ${r.despacho} el ${r.fechaEjecucion||'—'}.\n\nAcceda a la encuesta mediante el siguiente enlace:\n${url}\n\nGracias por su participación.\n\nDirección Seccional Administrativa — Rama Judicial Arauca`);
+  window.open(`mailto:${correo}?subject=${asunto}&body=${cuerpo}`,'_blank');
+}
+function compartirWhatsApp(){
+  if(!ordenActiva){showA('No hay orden activa','e');return;}
+  generarEnlaceEncuesta();
+  const url=document.getElementById('enc-link-input').value;
+  const r=ordenActiva;
+  const msg=encodeURIComponent(`*Encuesta de satisfacción — Rama Judicial Arauca*\n\nEstimado responsable, le solicitamos completar la encuesta de satisfacción sobre el mantenimiento del equipo serial *${r.serial}* (${r.tipoMant}) realizado en ${r.despacho}.\n\n🔗 Enlace:\n${url}`);
   window.open('https://wa.me/?text='+msg,'_blank');
 }
+window.fmtConsecutivo = fmtConsecutivo;
+window.getNextConsecutivo = getNextConsecutivo;
 
-// ── PÁGINA DE ENCUESTA EXTERNA (se detecta al cargar) ─
-function detectarEncuesta(){
-  const params=new URLSearchParams(window.location.search);
-  const enc=params.get('encuesta');
-  if(!enc)return false;
-  try{
-    const d=JSON.parse(decodeURIComponent(escape(atob(enc))));
-    mostrarPaginaEncuesta(d);
-    return true;
-  }catch(e){
-    document.body.innerHTML='<div style="font-family:sans-serif;padding:2rem;text-align:center;color:#c0392b">Enlace de encuesta inválido o expirado.</div>';
-    return true;
+// Cerrar sugerencias autocomplete al hacer clic fuera
+document.addEventListener('click',function(e){
+  const sug=document.getElementById('serial-sugerencias');
+  const inp=document.getElementById('f-serial');
+  if(sug && inp && !sug.contains(e.target) && e.target!==inp){
+    sug.style.display='none';
   }
-}
-
-function mostrarPaginaEncuesta(d){
-  const fmt2=s=>{if(!s)return'—';const[y,m,dd]=s.split('-');return`${dd}/${m}/${y}`;};
-  document.title=`Encuesta de satisfacción — ${d.placa}`;
-  document.body.style.margin='0';
-  document.body.style.fontFamily="'Segoe UI',system-ui,sans-serif";
-  document.body.style.background='#f4f6f9';
-  document.body.innerHTML=`
-  <style>
-    *{box-sizing:border-box}
-    .wrap{max-width:560px;margin:0 auto;padding:1.5rem 1rem}
-    .hdr{background:#1a3a5c;color:#fff;border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;text-align:center}
-    .hdr h1{font-size:15px;font-weight:600;margin-bottom:4px}
-    .hdr p{font-size:11px;opacity:.75}
-    .placa-big{font-family:monospace;font-size:22px;font-weight:700;letter-spacing:3px;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:7px;display:inline-block;margin:8px 0}
-    .card{background:#fff;border-radius:12px;border:.5px solid #e2e8f0;padding:1.1rem 1.2rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-    .slbl{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:5px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .cell{background:#f8fafc;border-radius:7px;padding:8px 10px;border:.5px solid #e2e8f0}
-    .cell-l{font-size:10px;color:#64748b;font-weight:500;margin-bottom:2px}
-    .cell-v{font-size:12px;font-weight:600;color:#1e293b}
-    .tbox{background:#f8fafc;border-radius:7px;padding:9px 11px;font-size:12px;color:#1e293b;border:.5px solid #e2e8f0;line-height:1.55}
-    .enc-opt{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;border:2px solid #e2e8f0;cursor:pointer;margin-bottom:8px;transition:all .18s;background:#fff;width:100%;text-align:left}
-    .enc-opt:hover{border-color:#2563a8;background:#e8f0fa}
-    .enc-opt.sel{border-color:var(--oc);background:var(--ob)}
-    .enc-ico{font-size:22px}
-    .enc-lbl{font-size:13px;font-weight:600}
-    .enc-pts{font-size:11px;color:#94a3b8;margin-left:auto}
-    .stars{display:flex;gap:4px;margin-bottom:4px}
-    .star{font-size:18px;color:#d1d5db}
-    .star.on{color:#f59e0b}
-    .btn-env{width:100%;padding:13px;background:#1a3a5c;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
-    .btn-env:hover{background:#2563a8}
-    .btn-env:disabled{background:#94a3b8;cursor:not-allowed}
-    .success-panel{display:none;text-align:center;padding:2rem}
-    .success-panel .big-icon{font-size:56px;margin-bottom:12px}
-    .obs-field{width:100%;border:.5px solid #e2e8f0;border-radius:8px;padding:9px;font-size:12px;font-family:inherit;min-height:70px;resize:vertical;color:#1e293b;background:#fff;margin-top:8px}
-    .obs-field:focus{outline:none;border-color:#2563a8}
-    .req-msg{font-size:11px;color:#c0392b;display:none;margin-top:4px}
-    .req-msg.show{display:block}
-  </style>
-  <div class="wrap">
-    <div class="hdr">
-      <div style="font-size:11px;opacity:.7;margin-bottom:6px">RAMA JUDICIAL — DIRECCIÓN SECCIONAL ADMINISTRATIVA ARAUCA</div>
-      <h1>Encuesta de satisfacción del servicio de mantenimiento</h1>
-      <div class="placa-big">${d.placa}</div>
-      <p>${d.clase||''} ${d.marca||''} ${d.tipo||''} — ${d.municipio||''}</p>
-    </div>
-
-    <div class="card">
-      <div class="slbl">🚗 Información del vehículo y servicio</div>
-      <div class="grid3" style="margin-bottom:8px">
-        <div class="cell"><div class="cell-l">Placa</div><div class="cell-v" style="font-family:monospace;letter-spacing:1px">${d.placa}</div></div>
-        <div class="cell"><div class="cell-l">Tipo</div><div class="cell-v">${d.tipo||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Modelo</div><div class="cell-v">${d.modelo||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Tipo mantenimiento</div><div class="cell-v">${d.tipoMant||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Fecha ingreso</div><div class="cell-v">${fmt2(d.fechaIngreso)}</div></div>
-        <div class="cell"><div class="cell-l">Fecha salida</div><div class="cell-v">${fmt2(d.fechaSalida)||'—'}</div></div>
-        <div class="cell" style="grid-column:span 3"><div class="cell-l">Taller</div><div class="cell-v">${d.taller||'—'} ${d.tallerNit?'— NIT: '+d.tallerNit:''}</div></div>
-      </div>
-      ${d.trabajosR?`<div style="margin-top:8px"><div style="font-size:10px;font-weight:600;color:#64748b;margin-bottom:4px">TRABAJOS REALIZADOS</div><div class="tbox">${d.trabajosR}</div></div>`:''}
-      ${d.trabajos&&!d.trabajosR?`<div style="margin-top:8px"><div style="font-size:10px;font-weight:600;color:#64748b;margin-bottom:4px">TRABAJOS SOLICITADOS</div><div class="tbox">${d.trabajos}</div></div>`:''}
-    </div>
-
-    <div class="card">
-      <div class="slbl">📋 Datos del responsable</div>
-      <div class="grid2">
-        <div class="cell"><div class="cell-l">Responsable</div><div class="cell-v">${d.responsable||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Cédula</div><div class="cell-v">${d.cedula||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Cargo</div><div class="cell-v">${d.cargo||'—'}</div></div>
-        <div class="cell"><div class="cell-l">Dependencia</div><div class="cell-v">${d.dep||'—'}</div></div>
-      </div>
-    </div>
-
-    <div class="card" id="enc-card">
-      <div class="slbl">⭐ Calificación del servicio</div>
-      <div style="font-size:12px;color:#64748b;margin-bottom:14px">Por favor seleccione una opción que refleje su experiencia con el servicio de mantenimiento:</div>
-
-      ${[
-        {val:'5',lbl:'Muy Satisfactorio',desc:'Superó mis expectativas',oc:'#1a4d8a',ob:'#e8f0fa',pts:'5/5'},
-        {val:'4',lbl:'Satisfactorio',desc:'Cumplió con lo esperado',oc:'#1e8449',ob:'#e6f7ee',pts:'4/5'},
-        {val:'3',lbl:'Normal',desc:'Aceptable, sin destacar',oc:'#7c6500',ob:'#fffde7',pts:'3/5'},
-        {val:'2',lbl:'Poco Satisfactorio',desc:'Por debajo de lo esperado',oc:'#d4871a',ob:'#fff3e0',pts:'2/5'},
-        {val:'1',lbl:'No Satisfactorio',desc:'No cumplió con lo esperado',oc:'#c0392b',ob:'#fce8e8',pts:'1/5'}
-      ].map(o=>`
-        <button class="enc-opt" id="opt-${o.val}" style="--oc:${o.oc};--ob:${o.ob}" onclick="selOpt('${o.val}','${o.oc}','${o.ob}')">
-          <div class="enc-lbl" style="color:${o.oc}">${o.lbl}</div>
-          <div style="font-size:11px;color:#94a3b8;flex:1;padding-left:4px">${o.desc}</div>
-          <div class="enc-pts">${o.pts}</div>
-        </button>`).join('')}
-
-      <div id="req-msg" class="req-msg">⚠ Por favor seleccione una calificación antes de enviar.</div>
-
-      <div style="margin-top:12px">
-        <label style="font-size:11px;font-weight:600;color:#64748b">Observaciones adicionales (opcional):</label>
-        <textarea id="obs-enc" class="obs-field" placeholder="Comentarios sobre el servicio, sugerencias de mejora..."></textarea>
-      </div>
-
-      <button class="btn-env" id="btn-env" onclick="enviarEncuesta('${d.id}')">
-        <span>✔</span> Enviar calificación
-      </button>
-    </div>
-
-    <div class="card success-panel" id="success-panel">
-      <div class="big-icon">🎉</div>
-      <div style="font-size:18px;font-weight:700;color:#1a3a5c;margin-bottom:8px">¡Gracias por su calificación!</div>
-      <div style="font-size:13px;color:#64748b;margin-bottom:14px">Su respuesta ha sido registrada. La Rama Judicial agradece su participación.</div>
-      <div id="res-badge" style="display:inline-block;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:12px"></div>
-      <div style="font-size:11px;color:#94a3b8">Puede cerrar esta ventana.</div>
-    </div>
-
-    <div style="text-align:center;font-size:10px;color:#94a3b8;margin-top:1rem;padding-bottom:1rem">
-      Rama Judicial — Dirección Seccional Administrativa Arauca<br>
-      Sistema de Mantenimiento Vehicular · Registro ID: ${d.id}
-    </div>
-  </div>
-
-  <script>
-    let selVal=null,selColor=null;
-    function selOpt(v,oc,ob){
-      selVal=v;selColor=oc;
-      document.querySelectorAll('.enc-opt').forEach(b=>{
-        b.classList.remove('sel');
-        b.style.borderColor='#e2e8f0';b.style.background='#fff';
-      });
-      const el=document.getElementById('opt-'+v);
-      el.classList.add('sel');el.style.borderColor=oc;el.style.background=ob;
-      document.getElementById('req-msg').classList.remove('show');
-    }
-    function enviarEncuesta(regId){
-      if(!selVal){document.getElementById('req-msg').classList.add('show');return;}
-      const LBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
-      const obs=document.getElementById('obs-enc').value;
-      const btn=document.getElementById('btn-env');btn.disabled=true;btn.innerHTML='Enviando...';
-      // Guardar respuesta en localStorage del mismo dominio/archivo si es posible
-      try{
-        const key='rj_arauca_mantenimiento_v1';
-        const data=localStorage.getItem(key);
-        if(data){
-          const arr=JSON.parse(data);
-          const idx=arr.findIndex(r=>r.id===regId);
-          if(idx>=0){arr[idx].satisfaccion=selVal;arr[idx].obsEncuesta=obs;arr[idx].fechaEncuesta=new Date().toLocaleDateString('es-CO');localStorage.setItem(key,JSON.stringify(arr));}
-        }
-      }catch(e){}
-      setTimeout(()=>{
-        document.getElementById('enc-card').style.display='none';
-        const sp=document.getElementById('success-panel');sp.style.display='block';
-        const rb=document.getElementById('res-badge');
-        rb.textContent=LBLS[selVal]+' ('+selVal+'/5)';
-        rb.style.background=selColor+'20';rb.style.color=selColor;rb.style.border='2px solid '+selColor;
-      },600);
-    }
-  <\/script>`;
-}
-
-function resGarantia(){
-  const desc=document.getElementById('g-gd').value;
-  raReg.estado='Listo para entrega';raReg.garantiaDesc=desc;
-  raReg.timeline.push({fecha:fmtNow(),evento:'Garantía resuelta — listo para nueva entrega',tipo:'l',detalle:desc?desc.substring(0,70):''});
-  saveData();cerrar();renderAll();
-}
-
-function cerrar(){
-  document.getElementById('modal').classList.remove('open');
-  raReg=null;fc=null;fctx=null;fdb=false;
-}
-
-function renderAll(){
-  if(document.getElementById('panel-historial').classList.contains('active'))renderHist();
-  if(document.getElementById('panel-dashboard').classList.contains('active'))renderDash();
-  if(document.getElementById('panel-buscar').classList.contains('active')){const q=document.getElementById('inp-bus').value;if(q)buscar();}
-  document.getElementById('last-update').textContent='Actualizado: '+fmtNow();
-}
-
-function exportar(){
-  if(!regs.length){alert('No hay datos para exportar');return;}
-  const enc=s=>`"${(s||'').toString().replace(/"/g,"''")}"`;
-  const cab='ID,Placa,Clase,Marca,Modelo,Tipo Veh.,Municipio,Tipo Mant.,Fecha Ingreso,Km,Taller,NIT Taller,Responsable,Cargo,Dependencia,Estado,Fecha Entrega,Trabajos Solicitados,Trabajos Realizados\n';
-  const fil=regs.map(r=>[r.id,r.placa,r.clase,r.marca,r.modeloVeh,r.tipoVeh,r.municipio,r.tipoMant,r.fechaIngreso||'',r.km||'',r.taller||'',r.tallerNit||'',r.responsable||'',r.cargo||'',r.dep||'',r.estado,r.fechaEnt||'',enc(r.trabajos),enc(r.trabajosR)].join(',')).join('\n');
-  const blob=new Blob(['\uFEFF'+cab+fil],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`Mantenimiento_Vehicular_RJ_Arauca_${hoy()}.csv`;a.click();
-}
-
-// ── INIT ──────────────────────────────────────────────
-(function(){
-  // Si la URL trae ?encuesta=... mostrar página de encuesta y no inicializar el app
-  if(detectarEncuesta()) return;
-
-  document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)cerrar();});
-  document.getElementById('modal-resp').addEventListener('click',function(e){if(e.target===this)cerrarModalResp();});
-  document.getElementById('f-fecha').value=hoy();
-  document.getElementById('f-tipo').value='Preventivo/Correctivo';
-  document.getElementById('f-taller').value='SERVICIOS AUTOLLANOS S.A.S.';
-  document.getElementById('f-nit').value='900589774-5';
-  document.getElementById('f-trabajos').value=DESC_PREV_CORR;
-  loadData();
-  loadResp();
-  renderDash();
-  document.getElementById('last-update').textContent='Iniciado: '+fmtNow();
-})();
+});
+// ── Exponer funciones al window (requerido por type="module") ──
+window.goTab = goTab;
+window.actualizarStepper = actualizarStepper;
+window.mostrarPaso = mostrarPaso;
+window.onCiudadChange = onCiudadChange;
+window.onInmuebleChange = onInmuebleChange;
+window.buscarEquipo = buscarEquipo;
+window.elegirSugerencia = elegirSugerencia;
+window.seleccionarEquipo = seleccionarEquipo;
+window.limpiarSeleccionEquipo = limpiarSeleccionEquipo;
+window.mostrarEquiposDespacho = mostrarEquiposDespacho;
+window.usarEquipoEnNuevaOrden = function(serial){
+  // Ir a nueva orden y preseleccionar el equipo
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  document.getElementById('panel-nuevo').classList.add('active');
+  limpiar();
+  // Establecer el serial y buscar
+  setTimeout(()=>{
+    document.getElementById('f-serial').value=serial;
+    buscarEquipo();
+  },100);
+};
+window.guardarSolicitud = guardarSolicitud;
+window.guardarEjecucion = guardarEjecucion;
+window.guardarEvaluacion = guardarEvaluacion;
+window.selDecision = selDecision;
+window.generarEnlaceEncuesta = generarEnlaceEncuesta;
+window.copiarEnlace = copiarEnlace;
+window.enviarCorreo = enviarCorreo;
+window.compartirWhatsApp = compartirWhatsApp;
+// guardarDecision unificada en guardarEvaluacion
+window.cancelarPaso = cancelarPaso;
+window.continuarOrden = continuarOrden;
+window.initFirma = initFirma;
+window.clrFirma = clrFirma;
+window.syncEncuesta = syncEncuesta;
+window.renderEncuesta = renderEncuesta;
+window.limpiar = limpiar;
+window.renderHist = renderHist;
+window.eliminarReg = eliminarReg;
+window.buscarGlobal = buscarGlobal;
+window.abrirMod = abrirMod;
+window.cerrar = cerrar;
+window.abrirEditar = abrirEditar;
+window.guardarEdicion = guardarEdicion;
+window.buscarSerialEnEdicion = buscarSerialEnEdicion;
+window.aplicarEquipoEdicion = aplicarEquipoEdicion;
+window.renderEquipoEdicion = renderEquipoEdicion;
+window.cerrarEditar = cerrarEditar;
+window.exportar = exportar;
+window.imprimirResumen = imprimirResumen;
+window.imprimirResumenId = imprimirResumenId;
+window.renderDash = renderDash;
+window.renderAll = renderAll;
+window.recargarDatos = recargarDatos;
+window.conectarFirebase = conectarFirebase;
+window.usarModoLocal = usarModoLocal;
 </script>
 </body>
 </html>
