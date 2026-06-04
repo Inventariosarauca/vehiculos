@@ -1581,8 +1581,19 @@ function mostrarPaginaEncuesta(d){
         <label style="font-size:11px;font-weight:600;color:#64748b">Observaciones adicionales (opcional):</label>
         <textarea id="obs-enc" class="obs-field" placeholder="Comentarios sobre el servicio, sugerencias de mejora...">${d.obsE||''}</textarea>
       </div>
-      <button class="btn-env" id="btn-env" onclick="enviarEncuesta('${d.id}')">
-        ✔ Enviar calificación y firma
+
+      <!-- DECLARACIÓN DE RECIBIDO A SATISFACCIÓN -->
+      <div id="conformidad-box" style="margin-top:14px;background:#f0f7ff;border:1.5px solid #c8daf5;border-radius:10px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:#1a4d8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Declaración de recibido</div>
+        <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:12px;color:#1e293b;line-height:1.5">
+          <input type="checkbox" id="chk-conforme" onchange="toggleConforme()" style="margin-top:2px;width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:#1e8449">
+          <span>Declaro que he recibido el vehículo <strong>${d.placa}</strong> <strong>a satisfacción</strong>, que los trabajos de mantenimiento fueron realizados conforme a lo solicitado, y autorizo la continuidad del proceso con mi firma.</span>
+        </label>
+        <div id="req-conforme" class="req-msg" style="margin-top:8px">⚠ Debe confirmar el recibido a satisfacción para continuar.</div>
+      </div>
+
+      <button class="btn-env" id="btn-env" onclick="enviarEncuesta('${d.id}')" style="opacity:.55;pointer-events:none">
+        ✔ Confirmar recibido, calificación y firma
       </button>
     </div>
 
@@ -1629,6 +1640,21 @@ function initEncuestaUI(){
   }
 }
 
+function toggleConforme(){
+  const chk=document.getElementById('chk-conforme');
+  const btn=document.getElementById('btn-env');
+  const req=document.getElementById('req-conforme');
+  if(!chk||!btn)return;
+  if(chk.checked){
+    btn.style.opacity='1';
+    btn.style.pointerEvents='auto';
+    if(req)req.classList.remove('show');
+  }else{
+    btn.style.opacity='.55';
+    btn.style.pointerEvents='none';
+  }
+}
+
 function clrF(){if(encFctx&&encFc)encFctx.clearRect(0,0,encFc.width,encFc.height);}
 
 function selOpt(v,oc,ob){
@@ -1640,6 +1666,8 @@ function selOpt(v,oc,ob){
 }
 
 function enviarEncuesta(regId){
+  const chk=document.getElementById('chk-conforme');
+  if(!chk||!chk.checked){const rc=document.getElementById('req-conforme');if(rc)rc.classList.add('show');return;}
   if(!encSelVal){const rm=document.getElementById('req-msg');if(rm)rm.classList.add('show');return;}
   const LBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
   const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
@@ -1651,14 +1679,21 @@ function enviarEncuesta(regId){
     const hasContent=pixelData.some((v,i)=>i%4===3&&v>0);
     if(hasContent) firmaData=encFc.toDataURL();
   }
+  if(!firmaData&&!(ENC_DATA&&ENC_DATA.firma)){
+    alert('Por favor registre su firma antes de enviar.');
+    return;
+  }
   const btn=document.getElementById('btn-env');btn.disabled=true;btn.innerHTML='Enviando...';
-  // Guardar en Firebase Firestore vía REST API
+  // Guardar en Firebase Firestore vía REST API — incluye estado "Entregado conforme"
   const FB_PROJECT='vehiculos-rama';
-  const fbUrl='https://firestore.googleapis.com/v1/projects/'+FB_PROJECT+'/databases/(default)/documents/mantenimientos/'+regId+'?updateMask.fieldPaths=satisfaccion&updateMask.fieldPaths=obsE&updateMask.fieldPaths=fechaEnt'+(firmaData?'&updateMask.fieldPaths=firma':'');
+  const fechaEnt=new Date().toISOString().split('T')[0];
+  let mask='?updateMask.fieldPaths=satisfaccion&updateMask.fieldPaths=obsE&updateMask.fieldPaths=fechaEnt&updateMask.fieldPaths=estado'+(firmaData?'&updateMask.fieldPaths=firma':'');
+  const fbUrl='https://firestore.googleapis.com/v1/projects/'+FB_PROJECT+'/databases/(default)/documents/mantenimientos/'+regId+mask;
   const fields={
     satisfaccion:{stringValue:encSelVal},
     obsE:{stringValue:obs||''},
-    fechaEnt:{stringValue:new Date().toISOString().split('T')[0]}
+    fechaEnt:{stringValue:fechaEnt},
+    estado:{stringValue:'Entregado conforme'}
   };
   if(firmaData) fields.firma={stringValue:firmaData};
   fetch(fbUrl,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})})
@@ -1671,8 +1706,9 @@ function enviarEncuesta(regId){
     rb.textContent=LBLS[encSelVal]+' ('+encSelVal+'/5)';
     rb.style.background=SBGS[encSelVal];rb.style.color=SCOLORS[encSelVal];rb.style.border='2px solid '+SCOLORS[encSelVal];
     const fr=document.getElementById('firma-resultado');
-    if(firmaData){
-      fr.innerHTML='<div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px">✍️ Firma registrada:</div><img src="'+firmaData+'" style="max-width:200px;border-radius:6px;border:1px solid #e2e8f0">';
+    const firmaShow=firmaData||(ENC_DATA&&ENC_DATA.firma);
+    if(firmaShow){
+      fr.innerHTML='<div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px">✍️ Firma registrada:</div><img src="'+firmaShow+'" style="max-width:200px;border-radius:6px;border:1px solid #e2e8f0">';
     }
     window.scrollTo({top:0,behavior:'smooth'});
   },600);
