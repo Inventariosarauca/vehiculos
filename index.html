@@ -1600,81 +1600,82 @@ function mostrarPaginaEncuesta(d){
       Rama Judicial — Dirección Seccional Administrativa Arauca<br>
       Sistema de Mantenimiento Vehicular · Registro ID: ${d.id}
     </div>
-  </div>
+  </div>`;
 
-  <script>
-    let selVal='${d.satisfaccion||''}',selColor='${d.satisfaccion?SCOLORS[d.satisfaccion]:''}';
-    let fdb=false,ux=0,uy=0,fc=null,fctx=null;
+  // Guardar datos en variables globales para las funciones de la encuesta
+  ENC_DATA=d;
+  encSelVal=d.satisfaccion||'';
+  encSelColor=d.satisfaccion?SCOLORS[d.satisfaccion]:'';
+  // Inicializar canvas y eventos DESPUÉS de inyectar el HTML
+  setTimeout(initEncuestaUI,60);
+}
 
-    // Inicializar canvas firma
-    window.addEventListener('load',function(){
-      fc=document.getElementById('firma-c');
-      if(!fc)return;
-      fctx=fc.getContext('2d');
-      fctx.strokeStyle='#1a3a5c';fctx.lineWidth=2;fctx.lineCap='round';fctx.lineJoin='round';
-      const gp=e=>{const rc=fc.getBoundingClientRect(),sx=fc.width/rc.width,sy=fc.height/rc.height;return[(e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy];};
-      fc.onmousedown=e=>{fdb=true;[ux,uy]=gp(e);};
-      fc.onmousemove=e=>{if(!fdb)return;const[x,y]=gp(e);fctx.beginPath();fctx.moveTo(ux,uy);fctx.lineTo(x,y);fctx.stroke();[ux,uy]=[x,y];};
-      fc.onmouseup=fc.onmouseleave=()=>fdb=false;
-      fc.ontouchstart=e=>{e.preventDefault();fdb=true;[ux,uy]=gp(e.touches[0]);};
-      fc.ontouchmove=e=>{e.preventDefault();if(!fdb)return;const[x,y]=gp(e.touches[0]);fctx.beginPath();fctx.moveTo(ux,uy);fctx.lineTo(x,y);fctx.stroke();[ux,uy]=[x,y];};
-      fc.ontouchend=()=>fdb=false;
-    });
+// Variables globales de la encuesta
+let ENC_DATA=null, encSelVal='', encSelColor='', encFc=null, encFctx=null, encFdb=false, encUx=0, encUy=0;
 
-    function clrF(){if(fctx)fctx.clearRect(0,0,fc.width,fc.height);}
+function initEncuestaUI(){
+  const fc=document.getElementById('firma-c');
+  if(fc){
+    encFc=fc; encFctx=fc.getContext('2d');
+    encFctx.strokeStyle='#1a3a5c'; encFctx.lineWidth=2.2; encFctx.lineCap='round'; encFctx.lineJoin='round';
+    const gp=e=>{const rc=fc.getBoundingClientRect();const sx=fc.width/rc.width,sy=fc.height/rc.height;const t=e.touches?e.touches[0]:e;return[(t.clientX-rc.left)*sx,(t.clientY-rc.top)*sy];};
+    fc.addEventListener('mousedown',e=>{encFdb=true;[encUx,encUy]=gp(e);});
+    fc.addEventListener('mousemove',e=>{if(!encFdb)return;const[x,y]=gp(e);encFctx.beginPath();encFctx.moveTo(encUx,encUy);encFctx.lineTo(x,y);encFctx.stroke();[encUx,encUy]=[x,y];});
+    fc.addEventListener('mouseup',()=>encFdb=false);
+    fc.addEventListener('mouseleave',()=>encFdb=false);
+    fc.addEventListener('touchstart',e=>{e.preventDefault();encFdb=true;[encUx,encUy]=gp(e);},{passive:false});
+    fc.addEventListener('touchmove',e=>{e.preventDefault();if(!encFdb)return;const[x,y]=gp(e);encFctx.beginPath();encFctx.moveTo(encUx,encUy);encFctx.lineTo(x,y);encFctx.stroke();[encUx,encUy]=[x,y];},{passive:false});
+    fc.addEventListener('touchend',()=>encFdb=false);
+  }
+}
 
-    function selOpt(v,oc,ob){
-      selVal=v;selColor=oc;
-      document.querySelectorAll('.enc-opt').forEach(b=>{b.style.borderColor='#e2e8f0';b.style.background='#fff';});
-      const el=document.getElementById('opt-'+v);
-      if(el){el.style.borderColor=oc;el.style.background=ob;}
-      document.getElementById('req-msg').classList.remove('show');
+function clrF(){if(encFctx&&encFc)encFctx.clearRect(0,0,encFc.width,encFc.height);}
+
+function selOpt(v,oc,ob){
+  encSelVal=v;encSelColor=oc;
+  document.querySelectorAll('.enc-opt').forEach(b=>{b.style.borderColor='#e2e8f0';b.style.background='#fff';});
+  const el=document.getElementById('opt-'+v);
+  if(el){el.style.borderColor=oc;el.style.background=ob;}
+  const rm=document.getElementById('req-msg');if(rm)rm.classList.remove('show');
+}
+
+function enviarEncuesta(regId){
+  if(!encSelVal){const rm=document.getElementById('req-msg');if(rm)rm.classList.add('show');return;}
+  const LBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
+  const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
+  const SBGS={'1':'#fce8e8','2':'#fff3e0','3':'#fffde7','4':'#e6f7ee','5':'#e8f0fa'};
+  const obs=document.getElementById('obs-enc').value;
+  let firmaData=null;
+  if(encFc&&encFctx){
+    const pixelData=encFctx.getImageData(0,0,encFc.width,encFc.height).data;
+    const hasContent=pixelData.some((v,i)=>i%4===3&&v>0);
+    if(hasContent) firmaData=encFc.toDataURL();
+  }
+  const btn=document.getElementById('btn-env');btn.disabled=true;btn.innerHTML='Enviando...';
+  // Guardar en Firebase Firestore vía REST API
+  const FB_PROJECT='vehiculos-rama';
+  const fbUrl='https://firestore.googleapis.com/v1/projects/'+FB_PROJECT+'/databases/(default)/documents/mantenimientos/'+regId+'?updateMask.fieldPaths=satisfaccion&updateMask.fieldPaths=obsE&updateMask.fieldPaths=fechaEnt'+(firmaData?'&updateMask.fieldPaths=firma':'');
+  const fields={
+    satisfaccion:{stringValue:encSelVal},
+    obsE:{stringValue:obs||''},
+    fechaEnt:{stringValue:new Date().toISOString().split('T')[0]}
+  };
+  if(firmaData) fields.firma={stringValue:firmaData};
+  fetch(fbUrl,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})})
+    .then(res=>{if(!res.ok)console.warn('No se pudo guardar en Firebase:',res.status);})
+    .catch(e=>console.warn('Error de conexión Firebase:',e));
+  setTimeout(()=>{
+    document.getElementById('enc-card').style.display='none';
+    const sp=document.getElementById('success-panel');sp.style.display='block';
+    const rb=document.getElementById('res-badge');
+    rb.textContent=LBLS[encSelVal]+' ('+encSelVal+'/5)';
+    rb.style.background=SBGS[encSelVal];rb.style.color=SCOLORS[encSelVal];rb.style.border='2px solid '+SCOLORS[encSelVal];
+    const fr=document.getElementById('firma-resultado');
+    if(firmaData){
+      fr.innerHTML='<div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px">✍️ Firma registrada:</div><img src="'+firmaData+'" style="max-width:200px;border-radius:6px;border:1px solid #e2e8f0">';
     }
-
-    function enviarEncuesta(regId){
-      if(!selVal){document.getElementById('req-msg').classList.add('show');return;}
-      const LBLS={'1':'No Satisfactorio','2':'Poco Satisfactorio','3':'Normal','4':'Satisfactorio','5':'Muy Satisfactorio'};
-      const SCOLORS={'1':'#c0392b','2':'#d4871a','3':'#7c6500','4':'#1e8449','5':'#1a4d8a'};
-      const SBGS={'1':'#fce8e8','2':'#fff3e0','3':'#fffde7','4':'#e6f7ee','5':'#e8f0fa'};
-      const obs=document.getElementById('obs-enc').value;
-      // Obtener firma del canvas (nueva o vacía si no dibujó)
-      let firmaData=null;
-      if(fc){
-        // Verificar si el canvas tiene contenido
-        const pixelData=fctx.getImageData(0,0,fc.width,fc.height).data;
-        const hasContent=pixelData.some((v,i)=>i%4===3&&v>0);
-        if(hasContent) firmaData=fc.toDataURL();
-      }
-      const btn=document.getElementById('btn-env');btn.disabled=true;btn.innerHTML='Enviando...';
-      // Guardar en Firebase Firestore vía REST API
-      const FB_PROJECT='vehiculos-rama';
-      const fbUrl='https://firestore.googleapis.com/v1/projects/'+FB_PROJECT+'/databases/(default)/documents/mantenimientos/'+regId+'?updateMask.fieldPaths=satisfaccion&updateMask.fieldPaths=obsE&updateMask.fieldPaths=fechaEnt'+(firmaData?'&updateMask.fieldPaths=firma':'');
-      const fields={
-        satisfaccion:{stringValue:selVal},
-        obsE:{stringValue:obs||''},
-        fechaEnt:{stringValue:new Date().toISOString().split('T')[0]}
-      };
-      if(firmaData) fields.firma={stringValue:firmaData};
-      fetch(fbUrl,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({fields})
-      }).then(res=>{
-        if(!res.ok) console.warn('No se pudo guardar en Firebase:',res.status);
-      }).catch(e=>console.warn('Error de conexión Firebase:',e));
-      setTimeout(()=>{
-        document.getElementById('enc-card').style.display='none';
-        const sp=document.getElementById('success-panel');sp.style.display='block';
-        const rb=document.getElementById('res-badge');
-        rb.textContent=LBLS[selVal]+' ('+selVal+'/5)';
-        rb.style.background=SBGS[selVal];rb.style.color=SCOLORS[selVal];rb.style.border='2px solid '+SCOLORS[selVal];
-        const fr=document.getElementById('firma-resultado');
-        if(firmaData){
-          fr.innerHTML='<div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px">✍️ Firma registrada:</div><img src="'+firmaData+'" style="max-width:200px;border-radius:6px;border:1px solid #e2e8f0">';
-        }
-      },600);
-    }
-  <\/script>`;
+    window.scrollTo({top:0,behavior:'smooth'});
+  },600);
 }
 async function resGarantia(){
   const desc=document.getElementById('g-gd').value;
