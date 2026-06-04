@@ -1360,33 +1360,7 @@ function imprimirResumen(id){
 // ── ENLACE DE ENCUESTA ────────────────────────────────
 function generarEnlaceEncuesta(id){
   const r=regs.find(x=>x.id===id);if(!r)return;
-  const payload={
-    id:r.id,
-    placa:r.placa,
-    clase:r.clase||'',
-    marca:r.marca||'',
-    modelo:r.modeloVeh||'',
-    tipo:r.tipoVeh||'',
-    municipio:r.municipio||'',
-    tipoMant:r.tipoMant||'',
-    fechaIngreso:r.fechaIngreso||'',
-    fechaSalida:r.fechaSalida||'',
-    fechaEnt:r.fechaEnt||'',
-    km:r.km||'',
-    taller:r.taller||'',
-    tallerNit:r.tallerNit||'',
-    trabajos:r.trabajos||'',
-    trabajosR:r.trabajosR||'',
-    responsable:r.responsable||'',
-    cedula:r.cedula||'',
-    cargo:r.cargo||'',
-    dep:r.dep||'',
-    satisfaccion:r.satisfaccion||'',
-    obsE:r.obsE||'',
-    firma:r.firma||''
-  };
-  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  const url=window.location.href.split('?')[0]+'?encuesta='+encoded;
+  const url=window.location.href.split('?')[0]+'?enc='+encodeURIComponent(id);
   document.getElementById('enc-link-box').style.display='block';
   document.getElementById('enc-link-input').value=url;
   document.getElementById('enc-link-copied').style.display='none';
@@ -1408,9 +1382,7 @@ function copiarEnlace(){
 
 function compartirWhatsApp(id){
   const r=regs.find(x=>x.id===id);if(!r)return;
-  const payload={id:r.id,placa:r.placa,clase:r.clase||'',marca:r.marca||'',modelo:r.modeloVeh||'',tipo:r.tipoVeh||'',municipio:r.municipio||'',tipoMant:r.tipoMant||'',fechaIngreso:r.fechaIngreso||'',fechaSalida:r.fechaSalida||'',fechaEnt:r.fechaEnt||'',km:r.km||'',taller:r.taller||'',tallerNit:r.tallerNit||'',trabajos:r.trabajos||'',trabajosR:r.trabajosR||'',responsable:r.responsable||'',cedula:r.cedula||'',cargo:r.cargo||'',dep:r.dep||'',satisfaccion:r.satisfaccion||'',obsE:r.obsE||'',firma:r.firma||''};
-  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  const url=window.location.href.split('?')[0]+'?encuesta='+encoded;
+  const url=window.location.href.split('?')[0]+'?enc='+encodeURIComponent(id);
   const msg=encodeURIComponent(`*Encuesta de satisfacción — Rama Judicial Arauca*\n\nEstimado conductor, le solicitamos completar la encuesta de satisfacción sobre el mantenimiento del vehículo *${r.placa}* (${r.tipoVeh||''}) realizado el ${fmt(r.fechaIngreso)} en ${r.taller||'el taller'}.\n\n🔗 Enlace encuesta:\n${url}`);
   window.open('https://wa.me/?text='+msg,'_blank');
 }
@@ -1418,16 +1390,50 @@ function compartirWhatsApp(id){
 // ── PÁGINA DE ENCUESTA EXTERNA (se detecta al cargar) ─
 function detectarEncuesta(){
   const params=new URLSearchParams(window.location.search);
-  const enc=params.get('encuesta');
-  if(!enc)return false;
-  try{
-    const d=JSON.parse(decodeURIComponent(escape(atob(enc))));
-    mostrarPaginaEncuesta(d);
-    return true;
-  }catch(e){
-    document.body.innerHTML='<div style="font-family:sans-serif;padding:2rem;text-align:center;color:#c0392b">Enlace de encuesta inválido o expirado.</div>';
+  const encId=params.get('enc');
+  const encLegacy=params.get('encuesta');
+
+  // Nuevo formato: solo ID, se leen los datos desde Firebase
+  if(encId){
+    document.body.style.margin='0';
+    document.body.style.fontFamily="'Segoe UI',system-ui,sans-serif";
+    document.body.style.background='#f4f6f9';
+    document.body.innerHTML='<div style="font-family:sans-serif;padding:3rem 2rem;text-align:center;color:#1a3a5c"><div style="font-size:14px;font-weight:600">Cargando encuesta de satisfacción...</div><div style="font-size:12px;color:#64748b;margin-top:8px">Conectando con la base de datos</div></div>';
+    db.collection(COL_MANT).doc(encId).get().then(doc=>{
+      if(!doc.exists){
+        document.body.innerHTML='<div style="font-family:sans-serif;padding:2rem;text-align:center;color:#c0392b">La orden de servicio no existe o fue eliminada.</div>';
+        return;
+      }
+      const data=doc.data();
+      const d={
+        id:encId,placa:data.placa,clase:data.clase||'',marca:data.marca||'',
+        modelo:data.modeloVeh||'',tipo:data.tipoVeh||'',municipio:data.municipio||'',
+        tipoMant:data.tipoMant||'',fechaIngreso:data.fechaIngreso||'',fechaSalida:data.fechaSalida||'',
+        fechaEnt:data.fechaEnt||'',km:data.km||'',taller:data.taller||'',tallerNit:data.tallerNit||'',
+        trabajos:data.trabajos||'',trabajosR:data.trabajosR||'',responsable:data.responsable||'',
+        cedula:data.cedula||'',cargo:data.cargo||'',dep:data.dep||'',
+        satisfaccion:data.satisfaccion||'',obsE:data.obsE||'',firma:data.firma||''
+      };
+      mostrarPaginaEncuesta(d);
+    }).catch(e=>{
+      document.body.innerHTML='<div style="font-family:sans-serif;padding:2rem;text-align:center;color:#c0392b">Error al cargar la encuesta: '+e.message+'<br><br>Verifique su conexión a internet.</div>';
+    });
     return true;
   }
+
+  // Formato antiguo: datos codificados en la URL (compatibilidad)
+  if(encLegacy){
+    try{
+      const d=JSON.parse(decodeURIComponent(escape(atob(encLegacy))));
+      mostrarPaginaEncuesta(d);
+      return true;
+    }catch(e){
+      document.body.innerHTML='<div style="font-family:sans-serif;padding:2rem;text-align:center;color:#c0392b">Enlace de encuesta inválido o expirado.</div>';
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function mostrarPaginaEncuesta(d){
@@ -1640,22 +1646,22 @@ function mostrarPaginaEncuesta(d){
         if(hasContent) firmaData=fc.toDataURL();
       }
       const btn=document.getElementById('btn-env');btn.disabled=true;btn.innerHTML='Enviando...';
-      // Guardar en localStorage si está disponible (mismo equipo)
-      try{
-        const key='rj_arauca_mantenimiento_v1';
-        const data=localStorage.getItem(key);
-        if(data){
-          const arr=JSON.parse(data);
-          const idx=arr.findIndex(r=>r.id===regId);
-          if(idx>=0){
-            arr[idx].satisfaccion=selVal;
-            arr[idx].obsEncuesta=obs;
-            arr[idx].fechaEncuesta=new Date().toLocaleDateString('es-CO');
-            if(firmaData) arr[idx].firmaEncuesta=firmaData;
-            localStorage.setItem(key,JSON.stringify(arr));
-          }
-        }
-      }catch(e){}
+      // Guardar en Firebase Firestore vía REST API
+      const FB_PROJECT='vehiculos-rama';
+      const fbUrl='https://firestore.googleapis.com/v1/projects/'+FB_PROJECT+'/databases/(default)/documents/mantenimientos/'+regId+'?updateMask.fieldPaths=satisfaccion&updateMask.fieldPaths=obsE&updateMask.fieldPaths=fechaEnt'+(firmaData?'&updateMask.fieldPaths=firma':'');
+      const fields={
+        satisfaccion:{stringValue:selVal},
+        obsE:{stringValue:obs||''},
+        fechaEnt:{stringValue:new Date().toISOString().split('T')[0]}
+      };
+      if(firmaData) fields.firma={stringValue:firmaData};
+      fetch(fbUrl,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({fields})
+      }).then(res=>{
+        if(!res.ok) console.warn('No se pudo guardar en Firebase:',res.status);
+      }).catch(e=>console.warn('Error de conexión Firebase:',e));
       setTimeout(()=>{
         document.getElementById('enc-card').style.display='none';
         const sp=document.getElementById('success-panel');sp.style.display='block';
