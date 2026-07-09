@@ -183,6 +183,9 @@ tr:hover td{background:#f8fafc}
   .hv-cond-s{background:#d4edda!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .hv-cond-d{background:#fce8e8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .hv-pie-firma{grid-template-columns:1fr 1fr 1fr!important}
+  /* Total invertido preserva color en impresión */
+  .hv-tabla tfoot tr{background:#1a3a5c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hv-tabla tfoot td{color:#fff!important}
   /* Selector de vehículo oculto en impresión */
   #panel-hojavida > .card{display:none!important}
 }
@@ -541,6 +544,7 @@ function saveData(){}
 const gid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const fmt=d=>{if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;};
 const fmtNow=()=>{const n=new Date();return n.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+n.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});};
+const fmtCOP=v=>{const n=parseInt(v)||0;return '$ '+n.toLocaleString('es-CO');};
 const hoy=()=>new Date().toISOString().split('T')[0];
 
 function showA(msg,t){
@@ -2046,7 +2050,7 @@ function renderHojaVida(){
   <div class="hv-seccion">
     <div class="hv-sec-hdr"><i class="ti ti-history"></i>Historial de mantenimientos registrados</div>
     ${historial.length?`<table class="hv-tabla">
-      <thead><tr><th>#</th><th>Fecha ingreso</th><th>Fecha salida</th><th>Tipo</th><th>Taller</th><th>Trabajos realizados</th><th>Km</th><th>Estado</th></tr></thead>
+      <thead><tr><th>#</th><th>Fecha ingreso</th><th>Fecha salida</th><th>Tipo</th><th>Taller</th><th>Trabajos realizados</th><th>Km</th><th>Estado</th><th style="text-align:right">Costo (COP)</th><th></th></tr></thead>
       <tbody>
         ${historial.map((r,i)=>`<tr style="${i%2===0?'background:#fafbfc':''}">
           <td style="text-align:center;font-weight:700;color:var(--text2)">${i+1}</td>
@@ -2057,9 +2061,22 @@ function renderHojaVida(){
           <td style="font-size:10px;white-space:pre-wrap;min-width:200px">${r.trabajosR||r.trabajos||'—'}</td>
           <td style="white-space:nowrap">${r.km?r.km+' km':'—'}</td>
           <td><span class="hv-badge" style="background:${r.estado==='Entregado conforme'?'#d4edda':r.estado==='En taller'?'#dbeafe':r.estado==='En garantía'?'#fce8e8':'#fef3cd'};color:${r.estado==='Entregado conforme'?'#155230':r.estado==='En taller'?'#1a4d8a':r.estado==='En garantía'?'#8b1a1a':'#7c5800'}">${r.estado}</span></td>
+          <td style="text-align:right;white-space:nowrap;font-weight:600;color:${r.costo?'#155230':'#94a3b8'}">${r.costo?fmtCOP(r.costo):'Sin registrar'}</td>
+          <td style="text-align:center"><button class="btn btn-sm" onclick="abrirCostoMant('${r.id}','${placa}')" title="${r.costo?'Editar':'Ingresar'} valor del mantenimiento" style="background:#e8f0fa;color:var(--c2);border-color:#c8daf5;padding:3px 8px"><i class="ti ti-cash"></i></button></td>
         </tr>`).join('')}
       </tbody>
-    </table>`:'<div class="empty" style="padding:1rem"><i class="ti ti-history"></i>Sin mantenimientos registrados</div>'}
+      <tfoot>
+        <tr style="background:#1a3a5c;color:#fff">
+          <td colspan="8" style="text-align:right;font-weight:700;padding:9px 12px;color:#fff">VALOR TOTAL INVERTIDO EN EL VEHÍCULO ${placa}</td>
+          <td style="text-align:right;font-weight:800;font-size:13px;padding:9px 12px;color:#fff;white-space:nowrap">${fmtCOP(rr.reduce((a,r)=>a+(parseInt(r.costo)||0),0))}</td>
+          <td style="background:#1a3a5c"></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="padding:10px 14px;background:linear-gradient(135deg,#e6f7ee,#f0fff4);border-top:.5px solid #a8d5b8;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:11px;color:var(--text2)"><i class="ti ti-info-circle"></i> ${rr.filter(r=>r.costo).length} de ${rr.length} mantenimiento(s) con costo registrado</span>
+      <span style="font-size:13px;font-weight:700;color:#155230">Total acumulado: ${fmtCOP(rr.reduce((a,r)=>a+(parseInt(r.costo)||0),0))}</span>
+    </div>`:'<div class="empty" style="padding:1rem"><i class="ti ti-history"></i>Sin mantenimientos registrados</div>'}
   </div>
 
   <!-- FIRMA DEL CONDUCTOR -->
@@ -2389,6 +2406,73 @@ async function guardarConductorExtra(placa){
   await guardarHvFirebase(placa);
   showHvAlert(`Conductor ${nom} agregado correctamente`);
   setTimeout(()=>{cerrarModalHV();renderHojaVida();},900);
+}
+
+// ── COSTO DE MANTENIMIENTO ────────────────────────────
+function abrirCostoMant(id, placa){
+  const r=regs.find(x=>x.id===id);if(!r)return;
+  const mo=document.getElementById('modal-hv');
+  const body=document.getElementById('modal-hv-body');
+  const title=document.getElementById('modal-hv-title');
+  title.innerHTML=`<i class="ti ti-cash"></i> Valor del mantenimiento — ${placa}`;
+  body.innerHTML=`
+    <div id="hv-alert" class="alert"></div>
+    <div style="background:#f0f7ff;border:.5px solid #c8daf5;border-radius:8px;padding:10px 12px;font-size:11px;color:#1a4d8a;margin-bottom:12px">
+      <div style="display:flex;gap:8px;margin-bottom:4px"><strong>Fecha:</strong> ${fmt(r.fechaIngreso)}</div>
+      <div style="display:flex;gap:8px;margin-bottom:4px"><strong>Tipo:</strong> ${r.tipoMant}</div>
+      <div style="display:flex;gap:8px;margin-bottom:4px"><strong>Taller:</strong> ${r.taller||'—'}</div>
+      <div style="display:flex;gap:8px"><strong>Trabajos:</strong> ${(r.trabajosR||r.trabajos||'—').substring(0,120)}</div>
+    </div>
+    <div class="field" style="margin-bottom:8px">
+      <label>Valor total del mantenimiento (pesos colombianos) *</label>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:18px;font-weight:700;color:var(--c1)">$</span>
+        <input type="text" id="hve-costo" inputmode="numeric" value="${r.costo?parseInt(r.costo).toLocaleString('es-CO'):''}" placeholder="Ej: 1.250.000" oninput="formatearCosto(this)" style="font-size:16px;font-weight:600;flex:1">
+      </div>
+      <div id="costo-preview" style="font-size:12px;color:#155230;font-weight:600;margin-top:6px">${r.costo?fmtCOP(r.costo):''}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-s" onclick="guardarCostoMant('${id}','${placa}')"><i class="ti ti-device-floppy"></i>Guardar valor</button>
+      ${r.costo?`<button class="btn" onclick="eliminarCostoMant('${id}','${placa}')" style="background:#fce8e8;color:#8b1a1a;border-color:#f5c6c6"><i class="ti ti-trash"></i>Eliminar valor</button>`:''}
+      <button class="btn" onclick="cerrarModalHV()"><i class="ti ti-x"></i>Cancelar</button>
+    </div>`;
+  mo.classList.add('open');
+  setTimeout(()=>{const inp=document.getElementById('hve-costo');if(inp)inp.focus();},80);
+}
+
+function formatearCosto(inp){
+  let val=inp.value.replace(/[^\d]/g,'');
+  const prev=document.getElementById('costo-preview');
+  if(val){
+    inp.value=parseInt(val).toLocaleString('es-CO');
+    if(prev)prev.textContent=fmtCOP(val);
+  }else{
+    if(prev)prev.textContent='';
+  }
+}
+
+async function guardarCostoMant(id, placa){
+  const r=regs.find(x=>x.id===id);if(!r)return;
+  const raw=document.getElementById('hve-costo').value.replace(/[^\d]/g,'');
+  if(!raw||parseInt(raw)<=0){showHvAlert('Ingrese un valor válido mayor a cero','e');return;}
+  r.costo=parseInt(raw);
+  if(!r.timeline)r.timeline=[];
+  r.timeline.push({fecha:fmtNow(),evento:'Valor del mantenimiento registrado',tipo:'i',detalle:'Costo: '+fmtCOP(r.costo)});
+  try{
+    await updateReg(r);
+    showHvAlert('Valor guardado correctamente: '+fmtCOP(r.costo));
+    setTimeout(()=>{cerrarModalHV();renderHojaVida();},900);
+  }catch(e){showHvAlert('Error al guardar: '+e.message,'e');}
+}
+
+async function eliminarCostoMant(id, placa){
+  const r=regs.find(x=>x.id===id);if(!r)return;
+  if(!confirm('¿Eliminar el valor registrado de este mantenimiento?'))return;
+  delete r.costo;
+  try{
+    await updateReg(r);
+    cerrarModalHV();renderHojaVida();
+  }catch(e){showHvAlert('Error al eliminar: '+e.message,'e');}
 }
 
 function imprimirHojaVida(){
