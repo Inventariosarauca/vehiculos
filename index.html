@@ -132,7 +132,7 @@ tr:hover td{background:#f8fafc}
 .sat-dot{display:inline-block;width:9px;height:9px;border-radius:50%}
 .vcard-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:12px}
 .vcard-section-lbl{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin:10px 0 6px;display:flex;align-items:center;gap:4px}
-@media(max-width:600px){.fg2,.fg3,.fg4{grid-template-columns:1fr}.krow{grid-template-columns:1fr 1fr}.drow2,.drow3{grid-template-columns:1fr}.veh-info-grid{grid-template-columns:1fr 1fr}.nav-btn span.nav-txt{display:none}.vcard-datos,.vcard-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.fg2,.fg3,.fg4{grid-template-columns:1fr}.krow{grid-template-columns:1fr 1fr}.drow2,.drow3{grid-template-columns:1fr}.veh-info-grid{grid-template-columns:1fr 1fr}.nav-btn span.nav-txt{display:none}.vcard-datos,.vcard-stats{grid-template-columns:1fr 1fr}#costo-por-veh{grid-template-columns:1fr 1fr!important}}
 
 /* ── HOJA DE VIDA ── */
 .hv-titulo{background:var(--c1);color:#fff;padding:10px 14px;border-radius:10px 10px 0 0;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:0}
@@ -217,6 +217,21 @@ tr:hover td{background:#f8fafc}
   <!-- DASHBOARD -->
   <div id="panel-dashboard" class="panel active">
     <div class="krow" id="krow"></div>
+
+    <!-- COSTOS DE MANTENIMIENTO -->
+    <div class="card" style="margin-bottom:1rem;background:linear-gradient(135deg,#0d2a4a,#1a3a5c);border:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:11px;color:#7ab3d4;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px"><i class="ti ti-cash"></i> Inversión total en mantenimiento</div>
+          <div id="costo-total-flota" style="font-size:32px;font-weight:800;color:#fff;line-height:1">$ 0</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:#a8cce0" id="costo-total-sub">Sin costos registrados</div>
+        </div>
+      </div>
+      <div id="costo-por-veh" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px"></div>
+    </div>
+
     <div class="drow2">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -781,6 +796,53 @@ function buscar(){
   c.innerHTML=h;
 }
 
+// ── COSTOS EN DASHBOARD ───────────────────────────────
+function renderCostosDash(){
+  const totalFlota=regs.reduce((a,r)=>a+(parseInt(r.costo)||0),0);
+  const conCosto=regs.filter(r=>r.costo).length;
+  const el=document.getElementById('costo-total-flota');
+  const sub=document.getElementById('costo-total-sub');
+  if(el)el.textContent=fmtCOP(totalFlota);
+  if(sub)sub.innerHTML=conCosto>0
+    ?`${conCosto} mantenimiento(s) valorados<br>de ${regs.length} en total`
+    :'Sin costos registrados aún';
+
+  // Por vehículo
+  const COLORES={'OBH363':'#378ADD','OBI314':'#639922','OFK327':'#EF9F27','OBI683':'#7C3AED'};
+  const cont=document.getElementById('costo-por-veh');
+  if(!cont)return;
+  cont.innerHTML=Object.keys(FLOTA).map(placa=>{
+    const rr=regs.filter(r=>r.placa===placa);
+    const total=rr.reduce((a,r)=>a+(parseInt(r.costo)||0),0);
+    const nCosto=rr.filter(r=>r.costo).length;
+    const pct=totalFlota>0?Math.round(total/totalFlota*100):0;
+    const col=COLORES[placa]||'#378ADD';
+    return`<div style="background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 12px;cursor:pointer" onclick="goto_veh_hoja('${placa}')">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+        <span style="width:9px;height:9px;border-radius:50%;background:${col};display:inline-block"></span>
+        <span style="font-size:12px;font-weight:700;color:#fff;letter-spacing:.5px">${placa}</span>
+      </div>
+      <div style="font-size:17px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:3px">${fmtCOP(total)}</div>
+      <div style="font-size:9px;color:#a8cce0">${nCosto} mant. · ${pct}% del total</div>
+      <div style="height:4px;background:rgba(255,255,255,.15);border-radius:3px;margin-top:6px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:3px"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function goto_veh_hoja(placa){
+  // Ir a la pestaña Hoja de Vida y cargar ese vehículo
+  const navBtns=document.querySelectorAll('.nav-btn');
+  let hvBtn=null;
+  navBtns.forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes('hojavida'))hvBtn=b;});
+  if(hvBtn){
+    goTab('hojavida',hvBtn);
+    const sel=document.getElementById('hv-placa');
+    if(sel){sel.value=placa;hvSelPlaca();}
+  }
+}
+
 // ── DASHBOARD ─────────────────────────────────────────
 function renderDash(){
   const tot=regs.length,
@@ -795,6 +857,9 @@ function renderDash(){
     <div class="kpi"><div class="val" style="color:#7c5800">${enT}</div><div class="lbl">En taller</div><div class="sub">${lst} listos para entrega</div></div>
     <div class="kpi"><div class="val" style="color:#8b1a1a">${gar}</div><div class="lbl">En garantía</div><div class="sub">${gar>0?'⚠ Requieren atención':'Sin garantías activas'}</div></div>
     <div class="kpi"><div class="val" style="color:${conf>=80?'#155230':conf>=50?'#7c5800':'#8b1a1a'}">${conf}%</div><div class="lbl">Tasa de conformidad</div><div class="sub">${ent} de ${tot} conformes</div></div>`;
+
+  // ── COSTOS DE MANTENIMIENTO ──
+  renderCostosDash();
 
   const tipos=['Preventivo/Correctivo','Preventivo','Correctivo','Garantía'];
   const tCounts=tipos.map(t=>regs.filter(r=>r.tipoMant===t).length);
