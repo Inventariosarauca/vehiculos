@@ -9,6 +9,7 @@
 <title>Mantenimiento Vehicular — Rama Judicial Arauca</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
@@ -222,7 +223,7 @@ tr:hover td{background:#f8fafc}
     <div class="card" style="margin-bottom:1rem;background:linear-gradient(135deg,#0d2a4a,#1a3a5c);border:none">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
         <div>
-          <div style="font-size:11px;color:#7ab3d4;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px"><i class="ti ti-cash"></i> Inversión total en mantenimiento</div>
+          <div style="font-size:11px;color:#7ab3d4;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px"><i class="ti ti-cash"></i> Inversión total en mantenimiento de la flota</div>
           <div id="costo-total-flota" style="font-size:32px;font-weight:800;color:#fff;line-height:1">$ 0</div>
         </div>
         <div style="text-align:right">
@@ -422,6 +423,7 @@ tr:hover td{background:#f8fafc}
             <option value="OFK327">OFK327 — Toyota Prado TX 2003 / Arauca</option>
             <option value="OBI683">OBI683 — Toyota Prado TX 2011 / Arauca</option>
           </select>
+          <button class="btn btn-s" onclick="exportarExcelVehiculos()" style="background:#e6f7ee;color:#155230;border-color:#a8d5b8"><i class="ti ti-file-spreadsheet"></i>Excel parque automotor</button>
           <button class="btn btn-s" onclick="imprimirHojaVida()"><i class="ti ti-printer"></i>Imprimir</button>
         </div>
       </div>
@@ -479,10 +481,38 @@ const COL_MANT = 'mantenimientos';
 const COL_RESP = 'responsables';
 // ─────────────────────────────────────────────────────
 const FLOTA={
-  'OBH363':{clase:'Camioneta',marca:'Toyota',modelo:'2009',tipo:'Prado VX',municipio:'Saravena'},
-  'OBI314':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca'},
-  'OFK327':{clase:'Camioneta',marca:'Toyota',modelo:'2003',tipo:'Prado TX',municipio:'Arauca'},
-  'OBI683':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca'}
+  'OBH363':{clase:'Camioneta',marca:'Toyota',modelo:'2009',tipo:'Prado VX',municipio:'Saravena',
+    linea:'PRADO [LC 90] VX MT 3400CC 5P TC',color:'Gris Perla',combustible:'Gasolina',cilindraje:'3400',
+    nMotor:'1900001',nChasis:'MR1YX59C5B3101299',vin:'',licencia:'13583942',carroceria:'Station Wagon',
+    servicio:'Oficial',propiedad:'Propio',propietario:'La Nación - Consejo Superior de la Judicatura',nit:'8000938163',
+    organismo:'Bogotá, Cundinamarca - SIM - SDM',fMatricula:'2008-11-15',soat:'7008004329807000',aseguradora:'Previsora',
+    soatVence:'2027-01-21',tecnoVence:'2026-11-14',ultMant:'2026-06-10',km:'262716',capacidad:'5 PSJ',tanque:'20',
+    despacho:'JUZGADO 02 PROMISCUO DE SARAVENA',funcionario:'LAURA MARCELA GUERRERO',cargoFunc:'JUEZ PROMISCUO SARAVENA',
+    conductor:'LAURA MARCELA GUERRERO',cedulaConductor:'40048443',fasecolda:'9008077',blindaje:'3',tipoPoliza:'POLIZA DE AUTOS',nSerie:'9FH11VJ9599016878',tanqueoMes:'60',carpeta:'08 Documentos Parque Automotor',tipoElemento:'Elemento',ruta:'teams/SeccinTransportesDEAJ_2023/Lists/T_SECCIONAL_CUCUTA',obs:'Vehículo asignado a Saravena. En uso.',cedulaFuncionario:'40048443'},
+  'OBI314':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca',
+    linea:'PRADO [LC 150] TX AT 4000CC 5P',color:'Plata Metálico',combustible:'Gasolina',cilindraje:'4000',
+    nMotor:'1GRA139054',nChasis:'JTEBU9FJ4BK01994',vin:'JTEBU9FJ4BK01994',licencia:'10001175885',carroceria:'Station Wagon',
+    servicio:'Oficial',propiedad:'Propio',propietario:'La Nación - Consejo Superior de la Judicatura',nit:'8000938163',
+    organismo:'Bogotá, Cundinamarca - SIM - SDM',fMatricula:'2010-10-14',soat:'7008004291938000',aseguradora:'Previsora',
+    soatVence:'2026-10-23',tecnoVence:'2026-08-27',ultMant:'2026-05-21',km:'238476',capacidad:'7 PSJ',tanque:'20',
+    despacho:'JUZGADO PENAL DE SARAVENA ARAUCA',funcionario:'MARIA HELENA TORRES HERNANDEZ',cargoFunc:'JUEZ',
+    conductor:'JOSE CRISTOBAL SANCHEZ CONTRERAS',cedulaConductor:'17596664',fasecolda:'9008151',blindaje:'3',tipoPoliza:'POLIZA DE AUTOS',nSerie:'JTEBU9FJ4BK01994',tanqueoMes:'60',carpeta:'08 Documentos Parque Automotor',tipoElemento:'Elemento',ruta:'teams/SeccinTransportesDEAJ_2023/Lists/T_SECCIONAL_CUCUTA',obs:'En uso - Saravena, Arauca.'},
+  'OFK327':{clase:'Camioneta',marca:'Toyota',modelo:'2003',tipo:'Prado VX',municipio:'Arauca',
+    linea:'PRADO [LC 90] VX MT 3400CC 5P',color:'Blanco Nieve',combustible:'Gasolina',cilindraje:'3400',
+    nMotor:'1568217',nChasis:'9FH11VJ9539007515',vin:'9FH11VJ9539007515',licencia:'OFK327',carroceria:'Station Wagon',
+    servicio:'Oficial',propiedad:'Propio',propietario:'La Nación - Consejo Superior de la Judicatura',nit:'800093816',
+    organismo:'Bogotá, Cundinamarca - SIM - SDM',fMatricula:'2002-11-13',soat:'7008004328974000',aseguradora:'Previsora',
+    soatVence:'2026-03-11',tecnoVence:'2026-09-27',ultMant:'2026-06-01',km:'329653',capacidad:'5 PSJ',tanque:'20',
+    despacho:'SISTEMA PENAL ACUSATORIO DE ARAUCA',funcionario:'VILMA JUDITH SALAZAR LOPEZ',cargoFunc:'DIRECTORA ADMINISTRATIVA',
+    conductor:'SISTEMA PENAL ACUSATORIO',cedulaConductor:'',fasecolda:'9008038',blindaje:'3',tipoPoliza:'POLIZA DE AUTOS',nSerie:'9FH11VJ9539007515',tanqueoMes:'60',carpeta:'08 Documentos Parque Automotor',tipoElemento:'Elemento',ruta:'teams/SeccinTransportesDEAJ_2023/Lists/T_SECCIONAL_CUCUTA',obs:'Asignado al Sistema Penal Acusatorio de Arauca.'},
+  'OBI683':{clase:'Camioneta',marca:'Toyota',modelo:'2011',tipo:'Prado TX',municipio:'Arauca',
+    linea:'PRADO [LC 150] TX AT 4000CC 5P',color:'Plata Metálico',combustible:'Gasolina',cilindraje:'4000',
+    nMotor:'1GRA192676',nChasis:'JTEBU9FJ9BK025113',vin:'JTEBU9FJ9BK025113',licencia:'10001500667',carroceria:'Station Wagon',
+    servicio:'Oficial',propiedad:'Propio',propietario:'La Nación - Consejo Superior de la Judicatura',nit:'8000938163',
+    organismo:'Bogotá, Cundinamarca - SIM - SDM',fMatricula:'2011-02-02',soat:'7008004329032000',aseguradora:'Previsora',
+    soatVence:'2027-04-07',tecnoVence:'2026-07-10',ultMant:'2026-07-30',km:'272316',capacidad:'5 PSJ',tanque:'20',
+    despacho:'JUZGADO ESPECIALIZADO DE ARAUCA',funcionario:'ALFONSO VERDUGO BALLESTEROS',cargoFunc:'JUEZ ESPECIALIZADO DE ARAUCA',
+    conductor:'Jhon Edison Cifuentes',cedulaConductor:'1116781371',fasecolda:'9008151',blindaje:'3',tipoPoliza:'POLIZA DE AUTOS',nSerie:'JTEBU9FJ9BK025113',tanqueoMes:'60',carpeta:'08 Documentos Parque Automotor',tipoElemento:'Elemento',ruta:'teams/SeccinTransportesDEAJ_2023/Lists/T_SECCIONAL_CUCUTA',obs:'En uso - Arauca. Último mantenimiento 30/07/2026.'}
 };
 const ESTADOS=['En taller','Listo para entrega','En garantía','Entregado conforme'];
 const CE=['#EF9F27','#1D9E75','#E24B4A','#378ADD'];
@@ -2013,18 +2043,32 @@ function renderHojaVida(){
         <tr><td>Placa</td><td><strong>${placa}</strong></td></tr>
         <tr><td>Clase</td><td>${v.clase||'Camioneta'}</td></tr>
         <tr><td>Marca</td><td>${v.marca||'Toyota'}</td></tr>
-        <tr><td>Línea / Tipo</td><td>${v.tipo||''}</td></tr>
+        <tr><td>Línea</td><td>${v.linea||v.tipo||''}</td></tr>
+        <tr><td>Tipo</td><td>${v.tipo||''}</td></tr>
         <tr><td>Modelo (año)</td><td>${v.modelo||''}</td></tr>
         <tr><td>Municipio</td><td>${v.municipio||''}</td></tr>
-        <tr><td>Color</td><td>${dg.color||'—'}</td></tr>
-        <tr><td>N° motor</td><td>${dg.nMotor||'—'}</td></tr>
-        <tr><td>N° chasis / VIN</td><td>${dg.nChasis||'—'}</td></tr>
-        <tr><td>N° tarjeta de propiedad</td><td>${dg.nTarjeta||'—'}</td></tr>
-        <tr><td>Combustible</td><td>${dg.combustible||'—'}</td></tr>
-        <tr><td>Capacidad (pasajeros)</td><td>${dg.capacidad||'—'}</td></tr>
+        <tr><td>Color</td><td>${dg.color||v.color||'—'}</td></tr>
+        <tr><td>Cilindraje</td><td>${v.cilindraje?v.cilindraje+' cc':'—'}</td></tr>
+        <tr><td>N° motor</td><td>${dg.nMotor||v.nMotor||'—'}</td></tr>
+        <tr><td>N° chasis</td><td>${dg.nChasis||v.nChasis||'—'}</td></tr>
+        <tr><td>VIN</td><td>${v.vin||dg.nChasis||v.nChasis||'—'}</td></tr>
+        <tr><td>N° tarjeta de propiedad / licencia</td><td>${dg.nTarjeta||v.licencia||'—'}</td></tr>
+        <tr><td>Combustible</td><td>${dg.combustible||v.combustible||'—'}</td></tr>
+        <tr><td>Capacidad</td><td>${dg.capacidad||v.capacidad||'—'}</td></tr>
+        <tr><td>Carrocería</td><td>${v.carroceria||'—'}</td></tr>
+        <tr><td>Servicio</td><td>${v.servicio||'Oficial'}</td></tr>
+        <tr><td>Propiedad</td><td>${v.propiedad||'—'}</td></tr>
+        <tr><td>Propietario</td><td style="font-size:10px">${v.propietario||'—'}</td></tr>
+        <tr><td>NIT</td><td>${v.nit||'—'}</td></tr>
+        <tr><td>Fecha de matrícula</td><td>${v.fMatricula?fmt(v.fMatricula):'—'}</td></tr>
+        <tr><td>N° SOAT</td><td>${v.soat||'—'}</td></tr>
+        <tr><td>Aseguradora SOAT</td><td>${v.aseguradora||'—'}</td></tr>
+        <tr><td>SOAT vigente hasta</td><td>${v.soatVence?fmt(v.soatVence):'—'}</td></tr>
+        <tr><td>Tecnomecánica vigente hasta</td><td>${v.tecnoVence?fmt(v.tecnoVence):'—'}</td></tr>
         <tr><td>Entidad</td><td>Rama Judicial</td></tr>
-        <tr><td>Dependencia / Juzgado</td><td>${conductores[0]&&conductores[0].dep?conductores[0].dep:'Dirección Seccional Administrativa Arauca'}</td></tr>
-        <tr><td>Último km registrado</td><td>${dg.kmActual||ultimo&&ultimo.km?`${dg.kmActual||ultimo.km} km`:'—'}</td></tr>
+        <tr><td>Dependencia / Juzgado</td><td>${conductores[0]&&conductores[0].dep?conductores[0].dep:(v.despacho||'Dirección Seccional Administrativa Arauca')}</td></tr>
+        <tr><td>Último km registrado</td><td>${dg.kmActual?dg.kmActual+' km':(ultimo&&ultimo.km?ultimo.km+' km':(v.km?v.km+' km':'—'))}</td></tr>
+        <tr><td>Último mantenimiento (catálogo)</td><td>${v.ultMant?fmt(v.ultMant):'—'}</td></tr>
         <tr><td>Observaciones</td><td style="white-space:pre-wrap">${dg.obs||'—'}</td></tr>
       </table>
     </div>
@@ -2538,6 +2582,116 @@ async function eliminarCostoMant(id, placa){
     await updateReg(r);
     cerrarModalHV();renderHojaVida();
   }catch(e){showHvAlert('Error al eliminar: '+e.message,'e');}
+}
+
+// ── EXPORTAR EXCEL PARQUE AUTOMOTOR ───────────────────
+function exportarExcelVehiculos(){
+  if(typeof XLSX==='undefined'){alert('La librería de Excel no cargó. Verifique su conexión a internet e intente de nuevo.');return;}
+
+  // Cabeceras exactas del formato inicial (61 columnas)
+  const headers=['Título','Blindaje','Combustible','Clase  (búsqueda)','Condición vehículo (búsqueda)',
+    'Tipo de Póliza','Nit al que está registrado','Propietario','Kilometraje','Licencia Tránsito',
+    'Organismo Tránsito (Ciudad y Nombre)','Fecha de Matrícula','Número de SOAT','Compañía SOAT','Línea',
+    'FASECOLDA','Marca del vehículo','Modelo','Cilindraje C.C.','N° Serie chasis','N° Serie motor','VIN',
+    'N. de Serie','Corporación/Dependencia','Póliza todo riesgo vigente hasta','Seguro obligatorio vigente hasta',
+    'Servicio Vehículo','Tipo de Carrocería','Último mantenimiento','Color','Vigencia revisión técnico-mecánica',
+    'Identificador de Combustible','Capacidad Tanque (Gal)','Tanqueo Autorizado Mensual','Capacidad PSJ / KG',
+    'Valor Mantenimiento Vigencia 2023','Valor Mantenimiento Vigencia 2024','Valor Mantenimiento Vigencia 2025',
+    'Valor Mantenimiento Vigencia 2026','Costo Combustible Vigencia 2024','Costo Combustible Vigencia 2025',
+    'Costo Combustible Vigencia 2026','Funcionario','Identificación funcionario','Cargo','Correo Corporativo',
+    'Teléfono','Despacho','Conductor','Identificación conductor','Teléfono conductor','Ciudades',
+    'Estado Asignación','Correo Administrativo','Licencia de Conducción','Carpeta Digital','Observaciones',
+    'PROPIO, COMODATO, RENTING','Valor Compra Automotor','Tipo de elemento','Ruta de acceso'];
+
+  // Calcular costos reales de mantenimiento por vigencia desde los registros de Firebase
+  function costoVigencia(placa, anio){
+    return regs.filter(r=>r.placa===placa && r.costo && (r.fechaIngreso||'').startsWith(String(anio)))
+               .reduce((a,r)=>a+(parseInt(r.costo)||0),0);
+  }
+
+  const filas=[headers];
+  Object.entries(FLOTA).forEach(([placa,v])=>{
+    const hv=hvCache[placa]||{};
+    const dg=hv.datosGenerales||{};
+    // Costo total de mantenimientos registrados en el sistema por vigencia
+    const c2023=costoVigencia(placa,2023);
+    const c2024=costoVigencia(placa,2024);
+    const c2025=costoVigencia(placa,2025);
+    const c2026=costoVigencia(placa,2026);
+
+    filas.push([
+      placa,                                    // Título
+      v.blindaje||'',                           // Blindaje
+      v.combustible||'',                        // Combustible
+      v.clase||'',                              // Clase
+      'Operativo',                              // Condición
+      v.tipoPoliza||'POLIZA DE AUTOS',          // Tipo de Póliza
+      v.nit||'',                                // Nit
+      v.propietario||'',                        // Propietario
+      dg.kmActual||v.km||'',                    // Kilometraje
+      v.licencia||'',                           // Licencia Tránsito
+      v.organismo||'',                          // Organismo Tránsito
+      v.fMatricula||'',                         // Fecha Matrícula
+      v.soat||'',                               // Número SOAT
+      v.aseguradora||'',                        // Compañía SOAT
+      v.linea||v.tipo||'',                      // Línea
+      v.fasecolda||'',                          // FASECOLDA
+      v.marca||'',                              // Marca
+      v.modelo||'',                             // Modelo
+      v.cilindraje||'',                         // Cilindraje
+      dg.nChasis||v.nChasis||'',                // N° Serie chasis
+      dg.nMotor||v.nMotor||'',                  // N° Serie motor
+      v.vin||dg.nChasis||v.nChasis||'',         // VIN
+      v.nSerie||v.nChasis||'',                  // N. de Serie
+      'COORDINACION ADMINISTRATIVA ARAUCA',     // Corporación/Dependencia
+      v.polizaVence||'',                        // Póliza todo riesgo
+      v.soatVence||'',                          // Seguro obligatorio hasta
+      v.servicio||'Oficial',                    // Servicio
+      v.carroceria||'',                         // Tipo Carrocería
+      v.ultMant||'',                            // Último mantenimiento
+      dg.color||v.color||'',                    // Color
+      v.tecnoVence||'',                         // Vigencia tecnomecánica
+      v.combustible||'',                        // Identificador Combustible
+      v.tanque||'',                             // Capacidad Tanque
+      v.tanqueoMes||'',                         // Tanqueo Autorizado
+      dg.capacidad||v.capacidad||'',            // Capacidad PSJ/KG
+      c2023||'',                                // Valor Mant 2023
+      c2024||'',                                // Valor Mant 2024
+      c2025||'',                                // Valor Mant 2025
+      c2026||'',                                // Valor Mant 2026
+      '',                                       // Costo Combustible 2024
+      '',                                       // Costo Combustible 2025
+      '',                                       // Costo Combustible 2026
+      v.funcionario||'',                        // Funcionario
+      v.cedulaFuncionario||'',                  // Identificación funcionario
+      v.cargoFunc||'',                          // Cargo
+      v.correo||'',                             // Correo Corporativo
+      v.telefono||'',                           // Teléfono
+      v.despacho||'',                           // Despacho
+      v.conductor||'',                          // Conductor
+      v.cedulaConductor||'',                    // Identificación conductor
+      v.telConductor||'',                       // Teléfono conductor
+      v.municipio||'',                          // Ciudades
+      v.estadoAsignacion||'',                   // Estado Asignación
+      v.correoAdmin||'',                        // Correo Administrativo
+      v.licConduccion||'',                      // Licencia de Conducción
+      v.carpeta||'',                            // Carpeta Digital
+      dg.obs||v.obs||'',                        // Observaciones
+      v.propiedad||'Propio',                    // PROPIO/COMODATO/RENTING
+      v.valorCompra||'',                        // Valor Compra
+      v.tipoElemento||'Elemento',               // Tipo elemento
+      v.ruta||''                                // Ruta de acceso
+    ]);
+  });
+
+  // Crear libro y hoja
+  const ws=XLSX.utils.aoa_to_sheet(filas);
+  // Ancho de columnas
+  ws['!cols']=headers.map(()=>({wch:20}));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Parque Automotor Arauca');
+  const fecha=new Date().toISOString().split('T')[0];
+  XLSX.writeFile(wb,`Parque_Automotor_Arauca_${fecha}.xlsx`);
 }
 
 function imprimirHojaVida(){
