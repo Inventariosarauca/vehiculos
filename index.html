@@ -165,7 +165,7 @@ tr:hover td{background:#f8fafc}
 @media print{
   /* Ocultar todo excepto la hoja de vida */
   .nav,.storage-info,.mo,button,
-  #panel-dashboard,#panel-nuevo,#panel-historial,#panel-buscar,
+  #panel-dashboard,#panel-nuevo,#panel-historial,
   .header{display:none!important}
 
   /* Mostrar solo hoja de vida */
@@ -211,7 +211,6 @@ tr:hover td{background:#f8fafc}
     <button class="nav-btn active" onclick="goTab('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span class="nav-txt">Dashboard</span></button>
     <button class="nav-btn" onclick="goTab('nuevo',this)"><i class="ti ti-plus"></i><span class="nav-txt">Nuevo registro</span></button>
     <button class="nav-btn" onclick="goTab('historial',this)"><i class="ti ti-list"></i><span class="nav-txt">Historial</span></button>
-    <button class="nav-btn" onclick="goTab('buscar',this)"><i class="ti ti-search"></i><span class="nav-txt">Buscar</span></button>
     <button class="nav-btn" onclick="goTab('hojavida',this)"><i class="ti ti-id-badge"></i><span class="nav-txt">Hoja de Vida</span></button>
   </nav>
 
@@ -389,24 +388,6 @@ tr:hover td{background:#f8fafc}
         </div>
       </div>
       <div id="tabla-hist"></div>
-    </div>
-  </div>
-
-  <!-- BUSCAR -->
-  <div id="panel-buscar" class="panel">
-    <div class="card">
-      <div class="slbl"><i class="ti ti-search"></i>Buscar por placa</div>
-      <div class="sbar">
-        <input type="text" id="inp-bus" placeholder="Escriba la placa..." oninput="buscar()">
-        <select onchange="document.getElementById('inp-bus').value=this.value;buscar()">
-          <option value="">Todas las placas</option>
-          <option value="OBH363">OBH363 — Prado VX / Saravena</option>
-          <option value="OBI314">OBI314 — Prado TX / Arauca</option>
-          <option value="OFK327">OFK327 — Prado TX / Arauca</option>
-          <option value="OBI683">OBI683 — Prado TX / Arauca</option>
-        </select>
-      </div>
-      <div id="res-bus"><div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa para buscar</div></div>
     </div>
   </div>
 
@@ -625,7 +606,6 @@ function goTab(t,btn){
     if(p&&!hvCache[p]) cargarHvCache(p).then(()=>renderHojaVida());
     else renderHojaVida();
   }
-  if(t==='buscar'){document.getElementById('res-bus').innerHTML='<div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa</div>';document.getElementById('inp-bus').value='';}
 }
 
 // ── FORMULARIO ────────────────────────────────────────
@@ -670,6 +650,19 @@ async function guardarReg(){
   try{
     await saveReg(reg);
     regs.unshift(reg);
+    // Guardar/actualizar el responsable en el directorio para búsquedas futuras
+    if(cedula){
+      try{
+        await db.collection(COL_RESP).doc(cedula).set({
+          nombre:resp,
+          cargo:document.getElementById('f-cargo').value||'',
+          dep:document.getElementById('f-dep').value||''
+        },{merge:true});
+        const idx=responsables.findIndex(r=>String(r.cedula).trim()===cedula);
+        const nuevoResp={cedula,nombre:resp,cargo:document.getElementById('f-cargo').value||'',dep:document.getElementById('f-dep').value||''};
+        if(idx>=0)responsables[idx]=nuevoResp; else responsables.push(nuevoResp);
+      }catch(e){console.warn('No se pudo guardar el responsable en el directorio:',e);}
+    }
     showA(`Registro guardado correctamente — ${placa} (${v.tipo||''}, ${v.municipio||''})`,'s');
     limpiar();
     const lu=document.getElementById('last-update');if(lu)lu.textContent='Guardado: '+fmtNow();
@@ -699,8 +692,10 @@ let responsables=[];
 
 async function loadResp(){
   try{
-    const snap = await db.collection(COL_RESP).orderBy('nombre').get();
-    responsables = snap.docs.map(d => ({cedula:d.id, ...d.data()}));
+    // Sin orderBy para no excluir documentos que carezcan del campo 'nombre'
+    const snap = await db.collection(COL_RESP).get();
+    responsables = snap.docs.map(d => ({cedula:d.id, ...d.data()}))
+                            .sort((a,b)=>String(a.nombre||'').localeCompare(String(b.nombre||'')));
   }catch(e){
     console.error('loadResp error:',e);
     responsables=[];
@@ -709,19 +704,40 @@ async function loadResp(){
 
 function saveResp(){} // no-op — se maneja individualmente
 
-function buscarResponsable(){
+async function buscarResponsable(){
   const ced=document.getElementById('f-cedula').value.trim();
   const sg=document.getElementById('resp-sugerencia');
-  if(!ced||ced.length<4){sg.style.display='none';return;}
-  const found=responsables.find(r=>r.cedula===ced);
+  if(!ced||ced.length<4){if(sg)sg.style.display='none';return;}
+
+  // Si el directorio está vacío, intentar recargarlo desde Firebase
+  if(!responsables.length){
+    try{await loadResp();}catch(e){}
+  }
+
+  // 1) Buscar en el directorio de responsables
+  let found=responsables.find(r=>String(r.cedula).trim()===ced);
+
+  // 2) Si no está en el directorio, buscar en los registros de mantenimiento existentes
+  if(!found){
+    const enReg=regs.find(r=>String(r.cedula||'').trim()===ced && r.responsable);
+    if(enReg){
+      found={cedula:ced,nombre:enReg.responsable,cargo:enReg.cargo||'',dep:enReg.dep||''};
+    }
+  }
+
   if(found){
-    document.getElementById('f-resp').value=found.nombre;
-    document.getElementById('f-cargo').value=found.cargo;
-    document.getElementById('f-dep').value=found.dep;
-    document.getElementById('resp-sugerencia-txt').textContent=`✓ Responsable encontrado: ${found.nombre} — ${found.cargo} / ${found.dep}`;
-    sg.style.display='flex';
+    document.getElementById('f-resp').value=found.nombre||'';
+    document.getElementById('f-cargo').value=found.cargo||'';
+    document.getElementById('f-dep').value=found.dep||'';
+    if(sg){
+      document.getElementById('resp-sugerencia-txt').textContent=`✓ Responsable encontrado: ${found.nombre}${found.cargo?' — '+found.cargo:''}${found.dep?' / '+found.dep:''}`;
+      sg.style.display='flex';
+    }
   }else{
-    sg.style.display='none';
+    if(sg){
+      document.getElementById('resp-sugerencia-txt').textContent=`No se encontró un responsable con la cédula ${ced}. Puede escribir los datos manualmente o registrarlo en el directorio.`;
+      sg.style.display='flex';
+    }
   }
 }
 
@@ -808,30 +824,6 @@ function renderHist(){
         <button class="btn btn-sm" onclick="eliminarReg('${r.id}')" title="Eliminar registro" style="background:#fce8e8;color:#8b1a1a;border-color:#f5c6c6"><i class="ti ti-trash"></i></button>
       </td>
     </tr>`).join('')+'</tbody></table></div>';
-}
-
-// ── BÚSQUEDA ──────────────────────────────────────────
-function buscar(){
-  const q=document.getElementById('inp-bus').value.trim().toUpperCase();
-  const c=document.getElementById('res-bus');
-  if(!q){c.innerHTML='<div class="empty"><i class="ti ti-search"></i>Seleccione o escriba una placa para buscar</div>';return;}
-  const res=regs.filter(r=>r.placa.toUpperCase().includes(q));
-  if(!res.length){c.innerHTML='<div class="empty"><i class="ti ti-file-off"></i>No se encontraron registros para la placa "'+q+'"</div>';return;}
-  const v=FLOTA[q]||{};
-  let h='';
-  if(v.marca){
-    h+=`<div style="background:linear-gradient(135deg,#e8f0fa,#f0f7ff);border-radius:9px;padding:10px 12px;margin-bottom:10px;border:.5px solid #c8daf5">
-      <div style="font-size:10px;font-weight:700;color:var(--c1);margin-bottom:6px">DATOS DEL VEHÍCULO</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:11px">
-        ${[['Clase',v.clase],['Marca',v.marca],['Modelo',v.modelo],['Tipo',v.tipo],['Municipio',v.municipio]].map(([l,val])=>`<div><div style="color:var(--text2)">${l}</div><div style="font-weight:600;color:var(--c1)">${val}</div></div>`).join('')}
-      </div>
-    </div>`;
-  }
-  h+=`<div style="font-size:11px;color:var(--text2);margin-bottom:8px">${res.length} registro(s) encontrado(s)</div>`;
-  h+='<div class="tw"><table><thead><tr><th>Tipo mant.</th><th>Ingreso</th><th>Km</th><th>Taller</th><th>Responsable</th><th>Estado</th><th></th></tr></thead><tbody>'+
-    res.map(r=>`<tr><td>${r.tipoMant||'—'}</td><td>${fmt(r.fechaIngreso)}</td><td>${r.km?r.km+' km':'—'}</td><td>${r.taller||'—'}</td><td>${r.responsable||'—'}</td><td>${bdg(r.estado)}</td><td style="white-space:nowrap"><button class="btn btn-sm" onclick="abrirMod('${r.id}')"><i class="ti ti-eye"></i>Ver</button> <button class="btn btn-sm" onclick="imprimirResumen('${r.id}')" title="Imprimir"><i class="ti ti-printer"></i></button></td></tr>`).join('')+
-    '</tbody></table></div>';
-  c.innerHTML=h;
 }
 
 // ── COSTOS EN DASHBOARD ───────────────────────────────
@@ -1835,7 +1827,7 @@ function cerrar(){
 function renderAll(){
   if(document.getElementById('panel-historial').classList.contains('active'))renderHist();
   if(document.getElementById('panel-dashboard').classList.contains('active'))renderDash();
-  if(document.getElementById('panel-buscar').classList.contains('active')){const q=document.getElementById('inp-bus').value;if(q)buscar();}
+  if(document.getElementById('panel-hojavida')&&document.getElementById('panel-hojavida').classList.contains('active'))renderHojaVida();
   document.getElementById('last-update').textContent='Actualizado: '+fmtNow();
 }
 
